@@ -35,24 +35,24 @@ void corp_logo(SDL_Surface *screen)
 	//Logo animation
 	int alpha;
 	//Fade in
-	for (alpha = 0 ; alpha<255 ; alpha+=10)
+	for (alpha = 0 ; alpha<=255 ; alpha+=5)
 	{
 		SDL_SetAlpha(logo, SDL_SRCALPHA, alpha);
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 		SDL_BlitSurface(logo, NULL, screen, &logo_rect);
 		SDL_Flip(screen);
-		SDL_Delay(50);
+		SDL_Delay(20);
 	}
 	//Wait
 	SDL_Delay(2000);
 	//Fade out
-	for (alpha = 250 ; alpha>0 ; alpha-=10)
+	for (alpha = 255 ; alpha>=0 ; alpha-=5)
 	{
 		SDL_SetAlpha(logo, SDL_SRCALPHA, alpha);
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 		SDL_BlitSurface(logo, NULL, screen, &logo_rect);
 		SDL_Flip(screen);
-		SDL_Delay(50);
+		SDL_Delay(20);
 	}
 	//Wait
 	SDL_Delay(100);

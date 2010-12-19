@@ -34,7 +34,7 @@
 int main(int argc, char *argv[])
 {
 	//Print informations about the software
-	printf("%s\nVersion %s\n", APP_PR_NAME, VERSION);
+	printf("%s, version %s\n", APP_PR_NAME, VERSION);
 	//Initialize the SDL library
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0)
 	{
