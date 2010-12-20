@@ -9,7 +9,8 @@
 
 
 #include <stdio.h>
-#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "SDL.h"
 
@@ -32,6 +33,7 @@ struct DM_Menu
 
 
 DM_Menu* new_menu(char *items, char *font_name, char *cursor);
+void free_menu(DM_Menu *menu);
 
 
 #endif //MENU_H_INCLUDED
