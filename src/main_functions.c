@@ -45,7 +45,6 @@
 SDL_Surface* load_resource(char *resource_name)
 {
 	SDL_Surface *img = NULL;
-	SDL_Surface *surface = NULL;
 	char filepath[255];
 	//Try to load form the installation path
 	#ifdef LINUX
@@ -80,13 +79,8 @@ SDL_Surface* load_resource(char *resource_name)
 		fprintf(stderr, "E: Can not load the resource: %s\n", resource_name);
 		exit(EXIT_FAILURE);
 	}
-	//Blit img in surface
-	surface = SDL_CreateRGBSurface(SDL_HWSURFACE, img->w, img->h, 32, 0, 0, 0, 0);
-	SDL_BlitSurface(img, NULL, surface, NULL);
-	//Free the img memory
-	SDL_FreeSurface(img);
 	//Return the surface
-	return surface;
+	return img;
 }
 
 
@@ -105,6 +99,7 @@ SDL_Surface* load_resource(char *resource_name)
 SDL_Surface* str_to_surface(char *font_name, char *str)
 {
 	SDL_Surface *font = load_resource(font_name);
+	SDL_SetAlpha(font, 0, SDL_ALPHA_OPAQUE);
 	SDL_Surface *text = NULL;
 	int char_width = font->w / 10;
 	int char_height = font->h / 10;
@@ -141,12 +136,13 @@ SDL_Surface* str_to_surface(char *font_name, char *str)
 			SDL_HWSURFACE,
 			char_width * columns,
 			char_height * lines,
-			32, 0, 0, 0, 0
+			32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff
 			);
+	SDL_FillRect(text, 0, SDL_MapRGBA(text->format, 0, 0, 0, 0));
 	//Blit chars
 	text_rect.x = 0;
 	text_rect.y = 0;
-	font_rect.w = char_width;
+	font_rect.w = char_width - 1;
 	font_rect.h = char_height;
 	for (i=0 ; i<strlen(str) ; i++)
 	{

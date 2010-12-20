@@ -11,8 +11,8 @@ LDFLAGS = -L/usr/lib -lSDL -lSDL_image
 EXEC = damn-monkey
 
 
-$(EXEC): main.o main_menu.o main_functions.o
-	$(CC) -o bin/$(EXEC) $(LDFLAGS) obj/main.o obj/main_menu.o obj/main_functions.o
+$(EXEC): main.o main_menu.o main_functions.o menu.o
+	$(CC) -o bin/$(EXEC) $(LDFLAGS) obj/main.o obj/main_menu.o obj/main_functions.o obj/menu.o
 
 main.o: src/main.c
 	$(CC) $(CFLAGS) -o obj/main.o -c src/main.c
@@ -22,6 +22,9 @@ main_menu.o: src/main_menu.c
 
 main_functions.o: src/main_functions.c
 	$(CC) $(CFLAGS) -o obj/main_functions.o -c src/main_functions.c
+
+menu.o: src/menu.c
+	$(CC) $(CFLAGS) -o obj/menu.o -c src/menu.c
 
 clean:
 	rm -f obj/*
