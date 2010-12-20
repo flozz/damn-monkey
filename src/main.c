@@ -21,6 +21,12 @@
 ***************************************************************************/
 
 
+/**
+ * \file main.c
+ * \brief The main file.
+ */
+
+
 #include <stdio.h>
 #include <stdio.h>
 
@@ -31,6 +37,10 @@
 #include "main_menu.h"
 
 
+/**
+ * \fn int main(int argc, char *argv[])
+ * \brief The main function.
+ */
 int main(int argc, char *argv[])
 {
 	//Print informations about the software
