@@ -12,8 +12,19 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef LINUX
 #include "SDL.h"
 #include "SDL_image.h"
+#endif
+
+#ifdef MAC_OS
+#include <SDL/SDL.h>
+#include <SDL_image/SDL_image.h>
+#endif
+
+#ifdef WINDOWS
+//TODO
+#endif
 
 #include "conf.h"
 

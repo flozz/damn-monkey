@@ -23,9 +23,9 @@
 
 
 //Destination OS:
-#define LINUX
+//#define LINUX
 //#define WINDOWS
-//#define MAC_OS
+#define MAC_OS
 
 
 #endif //CONF_H_INCLUDED

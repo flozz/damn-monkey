@@ -1,24 +1,24 @@
 /***************************************************************************
-*                                                                          *
-*  This file is part of Damn Monkey                                        *
-*                                                                          *
-*  Copyright (C) 2010 - 2011  Fabien LOISON, Mathilde BOUTIGNY,            *
-*  Vincent PEYROUSE and Germain CARRÃ‰                                      *
-*                                                                          *
-*  Damn Monkey is free software: you can redistribute it and/or modify     *
-*  it under the terms of the GNU General Public License as published by    *
-*  the Free Software Foundation, either version 3 of the License, or       *
-*  (at your option) any later version.                                     *
-*                                                                          *
-*  This program is distributed in the hope that it will be useful,         *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of          *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
-*  GNU General Public License for more details.                            *
-*                                                                          *
-*  You should have received a copy of the GNU General Public License       *
-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
-*                                                                          *
-***************************************************************************/
+ *                                                                          *
+ *  This file is part of Damn Monkey                                        *
+ *                                                                          *
+ *  Copyright (C) 2010 - 2011  Fabien LOISON, Mathilde BOUTIGNY,            *
+ *  Vincent PEYROUSE and Germain CARRƒ                                      *
+ *                                                                          *
+ *  Damn Monkey is free software: you can redistribute it and/or modify     *
+ *  it under the terms of the GNU General Public License as published by    *
+ *  the Free Software Foundation, either version 3 of the License, or       *
+ *  (at your option) any later version.                                     *
+ *                                                                          *
+ *  This program is distributed in the hope that it will be useful,         *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of          *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
+ *  GNU General Public License for more details.                            *
+ *                                                                          *
+ *  You should have received a copy of the GNU General Public License       *
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
+ *                                                                          *
+ ***************************************************************************/
 
 
 /**
@@ -30,8 +30,19 @@
 #include <stdio.h>
 #include <stdio.h>
 
+#ifdef LINUX
 #include "SDL.h"
 #include "SDL_image.h"
+#endif
+
+#ifdef MAC_OS
+#include <SDL/SDL.h>
+#include <SDL_image/SDL_image.h>
+#endif
+
+#ifdef WINDOWS
+//TODO
+#endif
 
 #include "conf.h"
 #include "main_menu.h"
@@ -50,7 +61,7 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "E: Can not initialize the SDL library: %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
-
+		
 	}
 	//Register the SDL_Quit() function to be called at normal process termination
 	atexit(SDL_Quit);
@@ -60,7 +71,7 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "E: Can not set the video mode: %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
-
+		
 	}
 	SDL_WM_SetCaption(APP_PR_NAME, NULL);
 	SDL_ShowCursor(SDL_DISABLE);
