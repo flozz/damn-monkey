@@ -8,14 +8,25 @@
  */
 
 
+#include "conf.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef LINUX
 #include "SDL.h"
 #include "SDL_image.h"
+#endif
 
-#include "conf.h"
+#ifdef MAC_OS
+#include <SDL/SDL.h>
+#include <SDL_image/SDL_image.h>
+#endif
+
+#ifdef WINDOWS
+//TODO
+#endif
 
 
 SDL_Surface* load_resource(char *resource_name);

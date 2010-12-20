@@ -3,7 +3,7 @@
 *  This file is part of Damn Monkey                                        *
 *                                                                          *
 *  Copyright (C) 2010 - 2011  Fabien LOISON, Mathilde BOUTIGNY,            *
-*  Vincent PEYROUSE and Germain CARRÃ‰                                      *
+*  Vincent PEYROUSE and Germain CARRÉ                                      *
 *                                                                          *
 *  Damn Monkey is free software: you can redistribute it and/or modify     *
 *  it under the terms of the GNU General Public License as published by    *
@@ -30,10 +30,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "conf.h"
+
+#ifdef LINUX
 #include "SDL.h"
 #include "SDL_image.h"
+#endif
 
-#include "conf.h"
+#ifdef MAC_OS
+#include <SDL/SDL.h>
+#include <SDL_image/SDL_image.h>
+#endif
+
+#ifdef WINDOWS
+//TODO
+#endif
+
 #include "main_menu.h"
 
 
@@ -50,7 +62,6 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "E: Can not initialize the SDL library: %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
-
 	}
 	//Register the SDL_Quit() function to be called at normal process termination
 	atexit(SDL_Quit);
@@ -60,7 +71,6 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "E: Can not set the video mode: %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
-
 	}
 	SDL_WM_SetCaption(APP_PR_NAME, NULL);
 	SDL_ShowCursor(SDL_DISABLE);

@@ -12,7 +12,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "conf.h"
+
+#ifdef LINUX
 #include "SDL.h"
+#endif
+
+#ifdef MAC_OS
+#include <SDL/SDL.h>
+#endif
+
+#ifdef WINDOWS
+//TODO
+#endif
 
 #include "main_functions.h"
 
