@@ -12,9 +12,9 @@
 #include <stdio.h>
 
 #include "SDL.h"
-#include "SDL_image.h"
 
 #include "main_functions.h"
+#include "menu.h"
 
 
 void corp_logo(SDL_Surface *screen);
