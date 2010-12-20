@@ -43,8 +43,40 @@
 DM_Menu* new_menu(char *items, char *font_name, char *cursor)
 {
 	DM_Menu *menu = malloc(sizeof(DM_Menu));
-	//TODO
+	//Count the number of items in the menu
+	menu->numb_of_items = 1;
+	int i;
+	for (i=0 ; i<strlen(items) ; i++)
+	{
+		if (items[i] == '\n')
+		{
+			menu->numb_of_items += 1;
+		}
+	}
+	//Select the first item by default
+	menu->selected = 0;
+	//Copy the item list
+	strcpy(menu->items, items);
+	//Generate the menu image
+	menu->menu = str_to_surface(font_name, items);
+	//Load the cursor image
+	menu->cursor = load_resource(cursor);
+	//Return the menu
 	return menu;
+}
+
+
+/**
+ * \fn void free_menu(DM_Menu *menu)
+ * \brief Free the memory of a menu structure.
+ *
+ * \param menu The DM_Menu to free.
+ */
+void free_menu(DM_Menu *menu)
+{
+	SDL_FreeSurface(menu->menu);
+	SDL_FreeSurface(menu->cursor);
+	free(menu);
 }
 
 
