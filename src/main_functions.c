@@ -21,10 +21,28 @@
 ***************************************************************************/
 
 
+/**
+ * \file main_functions.c
+ * \brief Contains generic functions, like resource loading,
+ *        text generation,...
+ */
+
+
 #include "main_functions.h"
 
 
-SDL_Surface* load_ressource(char *ressource_name)
+/**
+ * \fn SDL_Surface* load_resource(char *resource_name)
+ * \brief Search and load a resource.
+ *
+ * This cross-platform function search the resource in different paths and
+ * load it. If it can not find or load the resource, it stops the program
+ * and displays an error. 
+ *
+ * \param resource_name The resource name (ex. "logo.png").
+ * \return A pointer on a SDL_Surface containing the resource.
+ */
+SDL_Surface* load_resource(char *resource_name)
 {
 	SDL_Surface *img = NULL;
 	SDL_Surface *surface = NULL;
@@ -34,7 +52,7 @@ SDL_Surface* load_ressource(char *ressource_name)
 	strcpy(filepath, "/usr/share/games/");
 	strcat(filepath, APP_NAME);
 	strcat(filepath, "/pixmaps/");
-	strcat(filepath, ressource_name);
+	strcat(filepath, resource_name);
 	img = IMG_Load(filepath);
 	#endif
 	#ifdef WINDOWS
@@ -47,19 +65,19 @@ SDL_Surface* load_ressource(char *ressource_name)
 	if (img == NULL)
 	{
 		strcpy(filepath, "./pixmaps/");
-		strcat(filepath, ressource_name);
+		strcat(filepath, resource_name);
 		img = IMG_Load(filepath);
 	}
 	if (img == NULL)
 	{
 		strcpy(filepath, "../pixmaps/");
-		strcat(filepath, ressource_name);
+		strcat(filepath, resource_name);
 		img = IMG_Load(filepath);
 	}
-	//If the ressource can not be loaded, display an error and exit
+	//If the resource can not be loaded, display an error and exit
 	if (img == NULL)
 	{
-		fprintf(stderr, "E: Can not load the ressource: %s\n", ressource_name);
+		fprintf(stderr, "E: Can not load the resource: %s\n", resource_name);
 		exit(EXIT_FAILURE);
 	}
 	//Blit img in surface
@@ -72,9 +90,21 @@ SDL_Surface* load_ressource(char *ressource_name)
 }
 
 
+/**
+ * \fn SDL_Surface* str_to_surface(char *font_name, char *str)
+ * \brief Writing texts.
+ *
+ * This function transforms a string into a SDL_Surface that can be used
+ * with the SDL.
+ *
+ * \param font_name The font resource name (ex. "font_main.png").
+ * \param str The string containing the wanted text. WARNING: only ASCII
+ *            chars can be handled.
+ * \return A pointer on a SDL_Surface containing the text.
+ */
 SDL_Surface* str_to_surface(char *font_name, char *str)
 {
-	SDL_Surface *font = load_ressource(font_name);
+	SDL_Surface *font = load_resource(font_name);
 	SDL_Surface *text = NULL;
 	int char_width = font->w / 10;
 	int char_height = font->h / 10;

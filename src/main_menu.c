@@ -21,13 +21,26 @@
 ***************************************************************************/
 
 
+/**
+ * \file main_menu.c
+ * \brief Contains all the functions for the main menu.
+ */
+
+
 #include "main_menu.h"
 
 
+/**
+ * \fn void corp_logo(SDL_Surface *screen)
+ * \brief Display the corporation logo.
+ *
+ * \param screen The main surface (called screen int the main() function)
+ *               on which to draw.
+ */
 void corp_logo(SDL_Surface *screen)
 {
 	//Load the logo
-	SDL_Surface *logo = load_ressource("corp_logo.png");
+	SDL_Surface *logo = load_resource("corp_logo.png");
 	//Calculate the position of the logo
 	SDL_Rect logo_rect;
 	logo_rect.x = (screen->w - logo->w) / 2;

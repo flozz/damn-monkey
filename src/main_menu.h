@@ -2,6 +2,12 @@
 #define MAIN_MENU_H_INCLUDED
 
 
+/**
+ * \file main_menu.h
+ * \brief The header file of main_menu.c.
+ */
+
+
 #include <stdio.h>
 #include <stdio.h>
 
