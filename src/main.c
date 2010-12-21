@@ -35,11 +35,13 @@
 #ifdef LINUX
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 #endif
 
 #ifdef MAC_OS
 #include <SDL/SDL.h>
 #include <SDL_image/SDL_image.h>
+//TODO include "SDL_mixer.h"
 #endif
 
 #ifdef WINDOWS
@@ -61,6 +63,12 @@ int main(int argc, char *argv[])
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0)
 	{
 		fprintf(stderr, "E: Can not initialize the SDL library: %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	//Initialize the SDL_mixer library
+	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096) != 0)
+	{
+		fprintf(stderr, "E: Can not initialize the SDL_mixer library: %s\n", Mix_GetError());
 		exit(EXIT_FAILURE);
 	}
 	//Register the SDL_Quit() function to be called at normal process termination

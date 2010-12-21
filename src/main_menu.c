@@ -97,10 +97,13 @@ int main_menu(SDL_Surface *screen)
 	SDL_Surface *version = str_to_surface("font_main.png", VERSION);
 	SDL_Rect version_rect = {5, screen->h - version->h - 5, 0, 0};
 	SDL_Event event;
+	int selected = -1;
+	Mix_Chunk *sound_select = load_sound_resource("menu_select.wav");
+	Mix_Chunk *sound_valid = load_sound_resource("menu_valid.wav");
 	//Disable key repeat
 	SDL_EnableKeyRepeat(0, 0);
 	//
-	while (1)
+	do
 	{
 		SDL_BlitSurface(background, NULL, screen, NULL);
 		SDL_BlitSurface(title, NULL, screen, NULL);
@@ -108,7 +111,6 @@ int main_menu(SDL_Surface *screen)
 		draw_menu(screen, menu);
 		SDL_Flip(screen);
 		SDL_WaitEvent(&event);
-		int selected;
 		if (event.type == SDL_KEYDOWN)
 		{
 			switch (event.key.keysym.sym)
@@ -118,28 +120,34 @@ int main_menu(SDL_Surface *screen)
 					break;
 				case SDLK_UP:
 					menu_change_selected(menu, -1);
+					Mix_PlayChannel(-1, sound_select, 0);
 					break;
 				case SDLK_DOWN:
 					menu_change_selected(menu, +1);
+					Mix_PlayChannel(-1, sound_select, 0);
 					break;
 				case SDLK_SPACE:
 					selected = menu->selected;
-					free_menu(menu);
-					return selected;
 					break;
 				case SDLK_RETURN:
 					selected = menu->selected;
-					free_menu(menu);
-					return selected;
 					break;
 				case SDLK_KP_ENTER:
 					selected = menu->selected;
-					free_menu(menu);
-					return selected;
 					break;
 			}
 		}
 	}
+	while (selected < 0);
+	Mix_PlayChannel(-1, sound_valid, 0);
+	SDL_Delay(500);
+	free_menu(menu);
+	SDL_FreeSurface(background);
+	SDL_FreeSurface(title);
+	SDL_FreeSurface(version);
+	Mix_FreeChunk(sound_select);
+	Mix_FreeChunk(sound_valid);
+	return selected;
 }
 
 

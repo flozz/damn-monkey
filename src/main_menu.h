@@ -15,10 +15,12 @@
 
 #ifdef LINUX
 #include "SDL.h"
+#include "SDL_mixer.h"
 #endif
 
 #ifdef MAC_OS
 #include <SDL/SDL.h>
+//TODO include "SDL_mixer.h"
 #endif
 
 #ifdef WINDOWS

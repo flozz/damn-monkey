@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT
 
 #Linker flags
-LDFLAGS = -L/usr/lib -lSDL -lSDL_image
+LDFLAGS = -L/usr/lib -lSDL -lSDL_image -lSDL_mixer
 
 #Executable name
 EXEC = damn-monkey
