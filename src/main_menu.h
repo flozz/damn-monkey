@@ -30,6 +30,7 @@
 
 
 void corp_logo(SDL_Surface *screen);
+int main_menu(SDL_Surface *screen);
 
 
 #endif //MAIN_MENU_H_INCLUDED

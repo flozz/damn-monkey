@@ -76,7 +76,24 @@ int main(int argc, char *argv[])
 	SDL_ShowCursor(SDL_DISABLE);
 	//Display the corporation logo
 	corp_logo(screen);
-	exit(EXIT_SUCCESS);
+	//Main menu
+	int selected;
+	while (1)
+	{
+		selected = main_menu(screen);
+		switch (selected)
+		{
+			case 0:
+				printf("Main menu > Play\n"); //TODO
+				break;
+			case 1:
+				printf("Main menu > Credits\n"); //TODO
+				break;
+			case 2:
+				exit(EXIT_SUCCESS);
+				break;
+		}
+	}
 }
 
 

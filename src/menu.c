@@ -70,6 +70,8 @@ DM_Menu* new_menu(char *items, char *font_name, char *cursor)
  * \fn void free_menu(DM_Menu *menu)
  * \brief Free the memory of a menu structure.
  *
+ * \param screen The main surface (called screen in the main() function)
+ *               on which to draw.
  * \param menu The DM_Menu to free.
  */
 void free_menu(DM_Menu *menu)
@@ -77,6 +79,43 @@ void free_menu(DM_Menu *menu)
 	SDL_FreeSurface(menu->menu);
 	SDL_FreeSurface(menu->cursor);
 	free(menu);
+}
+
+
+/**
+ * \fn void draw_menu(SDL_Surface *screen, DM_Menu *menu)
+ * \brief Draw the menu with its cursor.
+ *
+ * \param menu The DM_Menu to draw.
+ */
+void draw_menu(SDL_Surface *screen, DM_Menu *menu)
+{
+	int item_height = menu->menu->h / menu->numb_of_items;
+	menu->cursor_rect.x = menu->menu_rect.x - menu->cursor->w - 5;
+	menu->cursor_rect.y = menu->menu_rect.y + menu->selected * item_height;
+	SDL_BlitSurface(menu->menu, NULL, screen, &menu->menu_rect);
+	SDL_BlitSurface(menu->cursor, NULL, screen, &menu->cursor_rect);
+}
+
+
+/**
+ * \fn void menu_change_selected(DM_Menu *menu, int increment)
+ * \brief Change the selected item of a menu.
+ *
+ * \param menu The DM_Menu.
+ * \param increment The increment (+1 or -1).
+ */
+void menu_change_selected(DM_Menu *menu, int increment)
+{
+	menu->selected += increment;
+	if (menu->selected < 0)
+	{
+		menu->selected = 0;
+	}
+	else if (menu->selected >= menu->numb_of_items)
+	{
+		menu->selected = menu->numb_of_items -1;
+	}
 }
 
 

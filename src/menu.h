@@ -36,16 +36,20 @@
 typedef struct DM_Menu DM_Menu;
 struct DM_Menu
 {
-	int numb_of_items;   /*!< Number of items in the menu. */
-	int selected;        /*!< The index of the selected item. */
-	char items[250];     /*!< A string that list the menu items (separated by a '\\n'). */
-	SDL_Surface *menu;   /*!< The image of the menu. */
-	SDL_Surface *cursor; /*!< The cursor that point on the selected item. */
+	int numb_of_items;    /*!< Number of items in the menu. */
+	int selected;         /*!< The index of the selected item. */
+	char items[250];      /*!< A string that list the menu items (separated by a '\\n'). */
+	SDL_Surface *menu;    /*!< The image of the menu. */
+	SDL_Rect menu_rect;   /*!< The position of the menu */
+	SDL_Surface *cursor;  /*!< The cursor that point on the selected item. */
+	SDL_Rect cursor_rect; /*!< The position of the cursor */
 };
 
 
 DM_Menu* new_menu(char *items, char *font_name, char *cursor);
 void free_menu(DM_Menu *menu);
+void draw_menu(SDL_Surface *screen, DM_Menu *menu);
+void menu_change_selected(DM_Menu *menu, int increment);
 
 
 #endif //MENU_H_INCLUDED

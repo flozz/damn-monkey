@@ -34,7 +34,7 @@
  * \fn void corp_logo(SDL_Surface *screen)
  * \brief Display the corporation logo.
  *
- * \param screen The main surface (called screen int the main() function)
+ * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
  */
 void corp_logo(SDL_Surface *screen)
@@ -71,6 +71,70 @@ void corp_logo(SDL_Surface *screen)
 	SDL_Delay(100);
 	//Free the memory
 	SDL_FreeSurface(logo);
+}
+
+
+/**
+ * \fn int main_menu(SDL_Surface *screen)
+ * \brief The main menu.
+ *
+ * \param screen The main surface (called screen in the main() function)
+ *               on which to draw.
+ * \return The index of the selected item: 0 = Play, 1 = Credits,
+ *         2 = Quit.
+ */
+int main_menu(SDL_Surface *screen)
+{
+	DM_Menu *menu = new_menu(
+			"Play\nCredits\nQuit",
+			"font_menu.png",
+			"cursor.png"
+			);
+	menu->menu_rect.x = (screen->w - menu->menu->w) / 4;
+	menu->menu_rect.y = (screen->h - menu->menu->h - 270) / 2 + 270;
+	SDL_Surface *background = load_resource("menu_bg.png");
+	SDL_Surface *title = load_resource("main_menu_title.png");
+	SDL_Surface *version = str_to_surface("font_main.png", VERSION);
+	SDL_Rect version_rect = {5, screen->h - version->h - 5, 0, 0};
+	SDL_Event event;
+	//Disable key repeat
+	SDL_EnableKeyRepeat(0, 0);
+	//
+	while (1)
+	{
+		SDL_BlitSurface(background, NULL, screen, NULL);
+		SDL_BlitSurface(title, NULL, screen, NULL);
+		SDL_BlitSurface(version, NULL, screen, &version_rect);
+		draw_menu(screen, menu);
+		SDL_Flip(screen);
+		SDL_WaitEvent(&event);
+		if (event.type == SDL_KEYDOWN)
+		{
+			switch (event.key.keysym.sym)
+			{
+				case SDLK_ESCAPE:
+					menu->selected = menu->numb_of_items - 1;
+					break;
+				case SDLK_UP:
+					menu_change_selected(menu, -1);
+					break;
+				case SDLK_DOWN:
+					menu_change_selected(menu, +1);
+					break;
+				case SDLK_SPACE:
+					return menu->selected;
+					break;
+				case SDLK_RETURN:
+					return menu->selected;
+					break;
+				case SDLK_KP_ENTER:
+					return menu->selected;
+					break;
+			}
+		}
+	}
+	//Free the menu
+	free_menu(menu);
 }
 
 
