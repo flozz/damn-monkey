@@ -108,6 +108,7 @@ int main_menu(SDL_Surface *screen)
 		draw_menu(screen, menu);
 		SDL_Flip(screen);
 		SDL_WaitEvent(&event);
+		int selected;
 		if (event.type == SDL_KEYDOWN)
 		{
 			switch (event.key.keysym.sym)
@@ -122,19 +123,23 @@ int main_menu(SDL_Surface *screen)
 					menu_change_selected(menu, +1);
 					break;
 				case SDLK_SPACE:
-					return menu->selected;
+					selected = menu->selected;
+					free_menu(menu);
+					return selected;
 					break;
 				case SDLK_RETURN:
-					return menu->selected;
+					selected = menu->selected;
+					free_menu(menu);
+					return selected;
 					break;
 				case SDLK_KP_ENTER:
-					return menu->selected;
+					selected = menu->selected;
+					free_menu(menu);
+					return selected;
 					break;
 			}
 		}
 	}
-	//Free the menu
-	free_menu(menu);
 }
 
 
