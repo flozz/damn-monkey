@@ -41,7 +41,7 @@
 #ifdef MAC_OS
 #include <SDL/SDL.h>
 #include <SDL_image/SDL_image.h>
-//TODO include "SDL_mixer.h"
+#include <SDL_mixer/SDL_mixer.h>
 #endif
 
 #ifdef WINDOWS
