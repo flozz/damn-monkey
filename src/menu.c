@@ -34,13 +34,13 @@
  * \fn DM_Menu* new_menu(char *items, char *font_name, char *hl_font_name, char *cursor)
  * \brief Create a new menu.
  *
- * \param items a string that contain the list of the items separated by a '\\n'
+ * \param items A string that contain the list of the items separated by a '\\n'
  *        (ex. "Start\nOptions\nQuit").
  * \param font_name The font resource name (ex. "font_main.png").
  * \param hl_font_name The font to use for the selected item of the menu.
  *                     NOTE: need an image with no alpha channel ; the
  *                     black color will be transparent.
- * \param cursor the name of the resource that will be use as a cursor.
+ * \param cursor The name of the resource that will be use as a cursor.
  * \return A pointer on a DM_Menu.
  */
 DM_Menu* new_menu(char *items, char *font_name, char *hl_font_name, char *cursor)
@@ -162,7 +162,7 @@ void menu_change_selected(DM_Menu *menu, int increment)
 
 /**
  * \fn Uint32 menu_glow_effect_cb(Uint32 interval, void *arg)
- * \brief Callback function of the menu effect timer.
+ * \brief Callback function of the menu effect timer for the glow effect.
  *
  * This function must be called by a SDL_Timer only !
  *
@@ -185,6 +185,16 @@ Uint32 menu_glow_effect_cb(Uint32 interval, void *arg)
 }
 
 
+/**
+ * \fn Uint32 menu_blink_effect_cb(Uint32 interval, void *arg)
+ * \brief Callback function of the menu effect timer for the blink effect.
+ *
+ * This function must be called by a SDL_Timer only !
+ *
+ * \param interval The timer interval.
+ * \param arg A DM_Menu_effect.
+ * \return The timer interval.
+ */
 Uint32 menu_blink_effect_cb(Uint32 interval, void *arg)
 {
 	DM_Menu_effect *menu_effect = arg;

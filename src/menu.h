@@ -51,7 +51,7 @@ struct DM_Menu
 
 /**
  * \struct DM_Menu_effect
- * \brief Contain all the information for add affect and refresh a DM_Menu.
+ * \brief Contain all the informations for add effect and refresh a DM_Menu.
  */
 typedef struct DM_Menu_effect DM_Menu_effect;
 struct DM_Menu_effect
