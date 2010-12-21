@@ -35,11 +35,13 @@
 #ifdef LINUX
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 #endif
 
 #ifdef MAC_OS
 #include <SDL/SDL.h>
 #include <SDL_image/SDL_image.h>
+#include <SDL_mixer/SDL_mixer.h>
 #endif
 
 #ifdef WINDOWS
@@ -63,6 +65,12 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "E: Can not initialize the SDL library: %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
+	//Initialize the SDL_mixer library
+	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096) != 0)
+	{
+		fprintf(stderr, "E: Can not initialize the SDL_mixer library: %s\n", Mix_GetError());
+		exit(EXIT_FAILURE);
+	}
 	//Register the SDL_Quit() function to be called at normal process termination
 	atexit(SDL_Quit);
 	//Configure the window
@@ -76,7 +84,24 @@ int main(int argc, char *argv[])
 	SDL_ShowCursor(SDL_DISABLE);
 	//Display the corporation logo
 	corp_logo(screen);
-	exit(EXIT_SUCCESS);
+	//Main menu
+	int selected;
+	while (1)
+	{
+		selected = main_menu(screen);
+		switch (selected)
+		{
+			case 0:
+				printf("Main menu > Play\n"); //TODO
+				break;
+			case 1:
+				printf("Main menu > Credits\n"); //TODO
+				break;
+			case 2:
+				exit(EXIT_SUCCESS);
+				break;
+		}
+	}
 }
 
 

@@ -15,10 +15,12 @@
 
 #ifdef LINUX
 #include "SDL.h"
+#include "SDL_mixer.h"
 #endif
 
 #ifdef MAC_OS
 #include <SDL/SDL.h>
+#include <SDL_mixer/SDL_mixer.h>
 #endif
 
 #ifdef WINDOWS
@@ -30,6 +32,7 @@
 
 
 void corp_logo(SDL_Surface *screen);
+int main_menu(SDL_Surface *screen);
 
 
 #endif //MAIN_MENU_H_INCLUDED

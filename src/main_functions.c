@@ -174,3 +174,57 @@ SDL_Surface* str_to_surface(char *font_name, char *str)
 }
 
 
+/**
+ * \fn Mix_Chunk* load_sound_resource(char *resource_name)
+ * \brief Search and load a sound resource.
+ *
+ * This cross-platform function search the sound in different paths and
+ * load it. If it can not find or load the resource, it stops the program
+ * and displays an error.
+ *
+ * NOTE: Only the PCM (.wav) format is supported.
+ *
+ * \param resource_name The resource name (ex. "sound.wav").
+ * \return A pointer on a Mix_Chunk containing the sound.
+ */
+Mix_Chunk* load_sound_resource(char *resource_name)
+{
+	Mix_Chunk *sound = NULL;
+	char filepath[255];
+	//Try to load form the installation path
+	#ifdef LINUX
+	strcpy(filepath, "/usr/share/games/");
+	strcat(filepath, APP_NAME);
+	strcat(filepath, "/sounds/");
+	strcat(filepath, resource_name);
+	sound = Mix_LoadWAV(filepath);
+	#endif
+	#ifdef WINDOWS
+	//TODO
+	#endif
+	#ifdef MAC_OS
+	//TODO
+	#endif
+	//Try to load from local path (devel)
+	if (sound == NULL)
+	{
+		strcpy(filepath, "./sounds/");
+		strcat(filepath, resource_name);
+		sound = Mix_LoadWAV(filepath);
+	}
+	if (sound == NULL)
+	{
+		strcpy(filepath, "../sounds/");
+		strcat(filepath, resource_name);
+		sound = Mix_LoadWAV(filepath);
+	}
+	//If the resource can not be loaded, display an error and exit
+	if (sound == NULL)
+	{
+		fprintf(stderr, "E: Can not load the resource: %s\n", resource_name);
+		exit(EXIT_FAILURE);
+	}
+	//Return the surface
+	return sound;
+}
+
