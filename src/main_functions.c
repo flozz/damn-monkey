@@ -224,7 +224,60 @@ Mix_Chunk* load_sound_resource(char *resource_name)
 		fprintf(stderr, "E: Can not load the resource: %s\n", resource_name);
 		exit(EXIT_FAILURE);
 	}
-	//Return the surface
+	//Return the sound
 	return sound;
 }
 
+/**
+ * \fn Mix_Music* load_music_resource(char *resource_name)
+ * \brief Search and load a music resource.
+ *
+ * This cross-platform function search the music in different paths and
+ * load it. If it can not find or load the resource, it stops the program
+ * and displays an error.
+ *
+ * NOTE: OGG/Vorbis (.ogg), PCM (and MP3) formats are supported.
+ *
+ * \param resource_name The resource name (ex. "music.ogg").
+ * \return A pointer on a Mix_Music containing the music.
+ */
+Mix_Music* load_music_resource(char *resource_name)
+{
+	Mix_Music *music = NULL;
+	char filepath[255];
+	//Try to load form the installation path
+	#ifdef LINUX
+	strcpy(filepath, "/usr/share/games/");
+	strcat(filepath, APP_NAME);
+	strcat(filepath, "/musics/");
+	strcat(filepath, resource_name);
+	music = Mix_LoadMUS(filepath);
+	#endif
+	#ifdef WINDOWS
+	//TODO
+	#endif
+	#ifdef MAC_OS
+	//TODO
+	#endif
+	//Try to load from local path (devel)
+	if (music == NULL)
+	{
+		strcpy(filepath, "./musics/");
+		strcat(filepath, resource_name);
+		music = Mix_LoadMUS(filepath);
+	}
+	if (music == NULL)
+	{
+		strcpy(filepath, "../musics/");
+		strcat(filepath, resource_name);
+		music = Mix_LoadMUS(filepath);
+	}
+	//If the resource can not be loaded, display an error and exit
+	if (music == NULL)
+	{
+		fprintf(stderr, "E: Can not load the resource: %s\n", resource_name);
+		exit(EXIT_FAILURE);
+	}
+	//Return the music
+	return music;
+}

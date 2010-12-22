@@ -36,6 +36,7 @@
 SDL_Surface* load_resource(char *resource_name);
 SDL_Surface* str_to_surface(char *font_name, char *str);
 Mix_Chunk* load_sound_resource(char *resource_name);
+Mix_Music* load_music_resource(char *resource_name);
 
 
 #endif //MAIN_MENU_H_INCLUDED
