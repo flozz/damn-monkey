@@ -51,6 +51,7 @@
 #endif
 
 #include "main_menu.h"
+#include "credits.h"
 
 
 /**
@@ -60,7 +61,9 @@
 int main(int argc, char *argv[])
 {
 	//Print informations about the software
+	#ifdef LINUX
 	printf("%s, version %s\n", APP_PR_NAME, VERSION);
+	#endif
 	//Initialize the SDL library
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0)
 	{
@@ -97,7 +100,7 @@ int main(int argc, char *argv[])
 				printf("Main menu > Play\n"); //TODO
 				break;
 			case 1:
-				printf("Main menu > Credits\n"); //TODO
+				credits(screen);
 				break;
 			case 2:
 				exit(EXIT_SUCCESS);
