@@ -24,7 +24,8 @@
 #endif
 
 #ifdef WINDOWS
-//TODO
+#include <SDL.h>
+#include <SDL_mixer.h>
 #endif
 
 #include "main_functions.h"
