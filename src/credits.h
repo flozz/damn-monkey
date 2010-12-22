@@ -3,8 +3,8 @@
 
 
 /**
- * \file main_menu.h
- * \brief The header file of main_menu.c.
+ * \file credits.h
+ * \brief The header file of credits.c.
  */
 
 
@@ -32,8 +32,7 @@
 #include "menu.h"
 
 
-void corp_logo(SDL_Surface *screen);
-int main_menu(SDL_Surface *screen);
+void credits(SDL_Surface *screen);
 
 
 #endif //MAIN_MENU_H_INCLUDED

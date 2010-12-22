@@ -23,7 +23,7 @@
 #endif
 
 #ifdef WINDOWS
-//TODO
+#include <SDL.h>
 #endif
 
 #include "main_functions.h"
