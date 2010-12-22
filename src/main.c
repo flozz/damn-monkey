@@ -76,8 +76,10 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "E: Can not initialize the SDL_mixer library: %s\n", Mix_GetError());
 		exit(EXIT_FAILURE);
 	}
-	//Register the SDL_Quit() function to be called at normal process termination
+	//Register the SDL_Quit() and the Mix_CloseAudio() functions to be
+	//called at normal process termination
 	atexit(SDL_Quit);
+	atexit(Mix_CloseAudio);
 	//Configure the window
 	SDL_Surface *screen = SDL_SetVideoMode(800, 600, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
 	if (screen == NULL)
@@ -89,6 +91,9 @@ int main(int argc, char *argv[])
 	SDL_ShowCursor(SDL_DISABLE);
 	//Display the corporation logo
 	corp_logo(screen);
+	//Menus music
+	Mix_Music *menu_music = load_music_resource("menu.ogg");
+	Mix_PlayMusic(menu_music, -1);
 	//Main menu
 	int selected;
 	while (1)
@@ -97,12 +102,15 @@ int main(int argc, char *argv[])
 		switch (selected)
 		{
 			case 0:
+				Mix_HaltMusic();
 				printf("Main menu > Play\n"); //TODO
+				Mix_PlayMusic(menu_music, -1);
 				break;
 			case 1:
 				credits(screen);
 				break;
 			case 2:
+				Mix_HaltMusic();
 				exit(EXIT_SUCCESS);
 				break;
 		}
