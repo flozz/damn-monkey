@@ -30,7 +30,7 @@
 
 /**
  * \struct DM_Refresh_Layer
- * \brief TODO.
+ * \brief A Layer.
  */
 typedef struct DM_Refresh_Layer DM_Refresh_Layer;
 struct DM_Refresh_Layer
@@ -42,7 +42,7 @@ struct DM_Refresh_Layer
 
 /**
  * \struct DM_Refresh_Item
- * \brief TODO.
+ * \brief An object to refresh.
  */
 typedef struct DM_Refresh_Item DM_Refresh_Item;
 struct DM_Refresh_Item

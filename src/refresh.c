@@ -157,7 +157,11 @@ void deref_object(DM_Refresh_Layer *layer, int id)
 
 /**
  * \fn Uint32 refresh_cb(Uint32 interval, void *arg)
- * \brief TODO
+ * \brief The main timer callback (used for refresh).
+ *
+ * \param interval The timer interval.
+ * \param args Should be NULL.
+ * \return The timer interval.
  */
 Uint32 refresh_cb(Uint32 interval, void *arg)
 {

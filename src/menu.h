@@ -49,26 +49,12 @@ struct DM_Menu
 };
 
 
-/**
- * \struct DM_Menu_effect
- * \brief Contain all the informations for add effect and refresh a DM_Menu.
- */
-typedef struct DM_Menu_effect DM_Menu_effect;
-struct DM_Menu_effect
-{
-	SDL_Surface *bg;     /*!< The menu background. */
-	DM_Menu *menu;       /*!< The DM_Menu to refresh. */
-	SDL_Surface *screen; /*!< The main surface on which to draw. */
-	SDL_TimerID timer;   /*!< The SDL Timer id. (SDL_AddTimer()) */
-};
-
-
 DM_Menu* new_menu(char *items, char *font_name, char *hl_font_name, char *cursor);
 void free_menu(DM_Menu *menu);
 void draw_menu(SDL_Surface *screen, DM_Menu *menu);
 void menu_change_selected(DM_Menu *menu, int increment);
-Uint32 menu_glow_effect_cb(Uint32 interval, void *arg);
-Uint32 menu_blink_effect_cb(Uint32 interval, void *arg);
+void menu_glow_effect_cb(void *object, SDL_Surface *screen)
+void menu_blink_effect_cb(void *object, SDL_Surface *screen);
 
 
 #endif //MENU_H_INCLUDED

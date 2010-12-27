@@ -161,52 +161,40 @@ void menu_change_selected(DM_Menu *menu, int increment)
 
 
 /**
- * \fn Uint32 menu_glow_effect_cb(Uint32 interval, void *arg)
- * \brief Callback function of the menu effect timer for the glow effect.
+ * \fn void menu_glow_effect_cb(void *object, SDL_Surface *screen)
+ * \brief Callback function for the refresh of the menu with a glow effect.
  *
- * This function must be called by a SDL_Timer only !
- *
- * \param interval The timer interval.
- * \param arg A DM_Menu_effect.
- * \return The timer interval.
+ * \param screen The main SDL surface.
+ * \param object A DM_Menu.
  */
-Uint32 menu_glow_effect_cb(Uint32 interval, void *arg)
+void menu_glow_effect_cb(void *object, SDL_Surface *screen)
 {
-	DM_Menu_effect *menu_effect = arg;
-	menu_effect->menu->hl_alpha += 10;
-	if (menu_effect->menu->hl_alpha > 160)
+	DM_Menu *menu = object;
+	menu->hl_alpha += 10;
+	if (menu->hl_alpha > 160)
 	{
-		menu_effect->menu->hl_alpha = -150;
+		menu->hl_alpha = -150;
 	}
-	SDL_BlitSurface(menu_effect->bg, NULL, menu_effect->screen, NULL);
-	draw_menu(menu_effect->screen, menu_effect->menu);
-	SDL_Flip(menu_effect->screen);
-	return interval;
+	draw_menu(screen, menu);
 }
 
 
 /**
- * \fn Uint32 menu_blink_effect_cb(Uint32 interval, void *arg)
- * \brief Callback function of the menu effect timer for the blink effect.
+ * \fn void menu_blink_effect_cb(void *object, SDL_Surface *screen)
+ * \brief Callback function for the refresh of the menu with a blink effect.
  *
- * This function must be called by a SDL_Timer only !
- *
- * \param interval The timer interval.
- * \param arg A DM_Menu_effect.
- * \return The timer interval.
+ * \param screen The main SDL surface.
+ * \param object A DM_Menu.
  */
-Uint32 menu_blink_effect_cb(Uint32 interval, void *arg)
+void menu_blink_effect_cb(void *object, SDL_Surface *screen)
 {
-	DM_Menu_effect *menu_effect = arg;
-	menu_effect->menu->hl_alpha += 75;
-	if (menu_effect->menu->hl_alpha > 200)
+	DM_Menu *menu = object;
+	menu->hl_alpha += 75;
+	if (menu->hl_alpha > 200)
 	{
-		menu_effect->menu->hl_alpha = -150;
+		menu->hl_alpha = -150;
 	}
-	SDL_BlitSurface(menu_effect->bg, NULL, menu_effect->screen, NULL);
-	draw_menu(menu_effect->screen, menu_effect->menu);
-	SDL_Flip(menu_effect->screen);
-	return interval;
+	draw_menu(screen, menu);
 }
 
 
