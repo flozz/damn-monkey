@@ -38,16 +38,22 @@ SDL_TimerID main_timer;
 
 
 /**
- * \fn void refresh_init()
+ * \fn void refresh_init(SDL_Surface *screen)
  * \brief Initialize the refresh
+ *
+ * \param screen The main SDL_Surface.
  */
-void refresh_init()
+void refresh_init(SDL_Surface *screen)
 {
 	main_timer = SDL_AddTimer(20, refresh_cb, NULL);
-	layer_bg.first = NULL;
-	layer_active.first = NULL;
-	layer_fg.first = NULL;
-	layer_menu.first = NULL;
+	layer_bg.screen = screen;
+	layer_bg.next = NULL;
+	layer_active.screen = screen;
+	layer_active.next = NULL;
+	layer_fg.screen = screen;
+	layer_fg.next = NULL;
+	layer_menu.screen = screen;
+	layer_menu.next = NULL;
 }
 
 
@@ -77,17 +83,75 @@ void refresh_destroy()
  */
 int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)())
 {
+	DM_Refresh_Item *item = NULL;
+	DM_Refresh_Item *current_item = NULL;
+	//Memory allocation
+	item = malloc(sizeof(DM_Refresh_Item));
+	if (item == NULL)
+	{
+		fprintf(stderr, "E: Cannot allocate memory.");
+		exit(EXIT_FAILURE);
+	}
+	//Set field
+	item->id = get_id();
+	item->object = object;
+	item->callback = callback;
+	item->next = NULL;
 	//
+	if (layer->next == NULL)
+	{
+		layer->next = item;
+	}
+	else
+	{
+		//Search the last item of the list
+		current_item = layer->next;
+		while (current_item->next != NULL)
+		{
+			current_item = current_item->next;
+		}
+		current_item->next = item;
+	}
+	//Return the identifier
+	return item->id;
 }
 
 
 /**
- * \fn void unref_object(int id)
- * \brief TODO
+ * \fn void deref_object(DM_Refresh_Layer *layer, int id)
+ * \brief Dereference an object.
+ *
+ * \param layer The layer where is the object.
+ * \param id The identifier of the object.
  */
-void unref_object(int id)
+void deref_object(DM_Refresh_Layer *layer, int id)
 {
-	//
+	DM_Refresh_Item *current_item = NULL;
+	DM_Refresh_Item *prev_item = NULL;
+	//Search the item
+	current_item = layer->next;
+	prev_item = NULL;
+	while (current_item->next != NULL)
+	{
+		if (current_item->id == id)
+		{
+			if (prev_item != NULL)
+			{
+				prev_item->next = current_item->next;
+			}
+			else
+			{
+				layer->next = current_item->next;
+			}
+			free(current_item);
+			break;
+		}
+		else
+		{
+			prev_item = current_item;
+			current_item = current_item->next;
+		}
+	}
 }
 
 
@@ -97,7 +161,37 @@ void unref_object(int id)
  */
 void refresh_cb(Uint32 interval, void *arg)
 {
-	//
+	DM_Refresh_Item *current_item = NULL;
+	//Background layer
+	current_item = layer_bg.next;
+	while (current_item->next != NULL)
+	{
+		current_item->callback(current_item->object, layer_bg.screen);
+		current_item = current_item->next;
+	}
+	//Active layer
+	current_item = layer_active.next;
+	while (current_item->next != NULL)
+	{
+		current_item->callback(current_item->object, layer_active.screen);
+		current_item = current_item->next;
+	}
+	//Foreground layer
+	current_item = layer_fg.next;
+	while (current_item->next != NULL)
+	{
+		current_item->callback(current_item->object, layer_fg.screen);
+		current_item = current_item->next;
+	}
+	//Menu layer
+	current_item = layer_menu.next;
+	while (current_item->next != NULL)
+	{
+		current_item->callback(current_item->object, layer_menu.screen);
+		current_item = current_item->next;
+	}
+	//Refresh the screen
+	SDL_Flip(layer_bg.screen);
 }
 
 

@@ -35,7 +35,8 @@
 typedef struct DM_Refresh_Layer DM_Refresh_Layer;
 struct DM_Refresh_Layer
 {
-	struct DM_Refresh_Item *first; /*!< Pointer on the first item of the list */
+	SDL_Surface *screen;          /*!< The main SDL_Surface. */
+	struct DM_Refresh_Item *next; /*!< Pointer on the first item of the list */
 };
 
 
@@ -53,10 +54,10 @@ struct DM_Refresh_Item
 };
 
 
-void refresh_init();
+void refresh_init(SDL_Surface *screen);
 void refresh_destroy();
 int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)());
-void unref_object(int id);
+void deref_object(DM_Refresh_Layer *layer, int id);
 void refresh_cb(Uint32 interval, void *arg);
 int get_id();
 
