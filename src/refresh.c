@@ -156,42 +156,55 @@ void deref_object(DM_Refresh_Layer *layer, int id)
 
 
 /**
- * \fn void refresh_cb(Uint32 interval, void *arg)
+ * \fn Uint32 refresh_cb(Uint32 interval, void *arg)
  * \brief TODO
  */
-void refresh_cb(Uint32 interval, void *arg)
+Uint32 refresh_cb(Uint32 interval, void *arg)
 {
 	DM_Refresh_Item *current_item = NULL;
 	//Background layer
-	current_item = layer_bg.next;
-	while (current_item->next != NULL)
+	if (layer_bg.next != NULL)
 	{
-		current_item->callback(current_item->object, layer_bg.screen);
-		current_item = current_item->next;
+		current_item = layer_bg.next;
+		while (current_item->next != NULL)
+		{
+			current_item->callback(current_item->object, layer_bg.screen);
+			current_item = current_item->next;
+		}
 	}
 	//Active layer
-	current_item = layer_active.next;
-	while (current_item->next != NULL)
+	if (layer_active.next != NULL)
 	{
-		current_item->callback(current_item->object, layer_active.screen);
-		current_item = current_item->next;
+		current_item = layer_active.next;
+		while (current_item->next != NULL)
+		{
+			current_item->callback(current_item->object, layer_active.screen);
+			current_item = current_item->next;
+		}
 	}
 	//Foreground layer
-	current_item = layer_fg.next;
-	while (current_item->next != NULL)
+	if (layer_fg.next != NULL)
 	{
-		current_item->callback(current_item->object, layer_fg.screen);
-		current_item = current_item->next;
+		current_item = layer_fg.next;
+		while (current_item->next != NULL)
+		{
+			current_item->callback(current_item->object, layer_fg.screen);
+			current_item = current_item->next;
+		}
 	}
 	//Menu layer
-	current_item = layer_menu.next;
-	while (current_item->next != NULL)
+	if (layer_menu.next != NULL)
 	{
-		current_item->callback(current_item->object, layer_menu.screen);
-		current_item = current_item->next;
+		current_item = layer_menu.next;
+		while (current_item->next != NULL)
+		{
+			current_item->callback(current_item->object, layer_menu.screen);
+			current_item = current_item->next;
+		}
 	}
 	//Refresh the screen
 	SDL_Flip(layer_bg.screen);
+	return interval;
 }
 
 

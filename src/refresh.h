@@ -58,7 +58,7 @@ void refresh_init(SDL_Surface *screen);
 void refresh_destroy();
 int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)());
 void deref_object(DM_Refresh_Layer *layer, int id);
-void refresh_cb(Uint32 interval, void *arg);
+Uint32 refresh_cb(Uint32 interval, void *arg);
 int get_id();
 
 

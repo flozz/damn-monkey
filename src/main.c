@@ -50,6 +50,7 @@
 #include <SDL_mixer.h>
 #endif
 
+#include "refresh.h"
 #include "main_menu.h"
 #include "credits.h"
 
@@ -94,6 +95,8 @@ int main(int argc, char *argv[])
 	//Menus music
 	Mix_Music *menu_music = load_music_resource("menu.ogg");
 	Mix_PlayMusic(menu_music, -1);
+	//Refresh
+	refresh_init(screen);
 	//Main menu
 	int selected;
 	while (1)
