@@ -162,6 +162,9 @@ int main_menu(SDL_Surface *screen)
 	free_dm_surface(title);
 	SDL_FreeSurface(version.surface);
 	free_menu(menu);
+	//Free sounds memory
+	Mix_FreeChunk(sound_select);
+	Mix_FreeChunk(sound_valid);
 	return selected;
 }
 
