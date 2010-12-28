@@ -53,7 +53,7 @@ DM_Menu* new_menu(char *items, char *font_name, char *hl_font_name, char *cursor
 void free_menu(DM_Menu *menu);
 void draw_menu(SDL_Surface *screen, DM_Menu *menu);
 void menu_change_selected(DM_Menu *menu, int increment);
-void menu_glow_effect_cb(void *object, SDL_Surface *screen)
+void menu_glow_effect_cb(void *object, SDL_Surface *screen);
 void menu_blink_effect_cb(void *object, SDL_Surface *screen);
 
 

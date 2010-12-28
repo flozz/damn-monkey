@@ -54,13 +54,20 @@ struct DM_Refresh_Item
 };
 
 
+DM_Refresh_Layer layer_bg;
+DM_Refresh_Layer layer_active;
+DM_Refresh_Layer layer_fg;
+DM_Refresh_Layer layer_menu;
+SDL_TimerID main_timer;
+
+
 void refresh_init(SDL_Surface *screen);
 void refresh_destroy();
 int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)());
 void deref_object(DM_Refresh_Layer *layer, int id);
 Uint32 refresh_cb(Uint32 interval, void *arg);
 int get_id();
-
+void surface_refresh_cb(void *object, SDL_Surface *screen);
 
 #endif //REFRESH_H_INCLUDED
 

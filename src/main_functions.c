@@ -85,6 +85,50 @@ SDL_Surface* load_resource(char *resource_name)
 
 
 /**
+ * \fn DM_Surface* load_resource_as_dm_surface(char *resource_name)
+ * \brief Creates a DM_Surface from a resource.
+ *
+ * This function creates a DM_Surface from a image resource that can be used
+ * with the SDL and refresh-functions.
+ *
+ * \param resource_name The image resource name (ex. "font_main.png"). 
+ * \return A pointer on a DM_Surface containing the image.
+ */
+DM_Surface* load_resource_as_dm_surface(char *resource_name)
+{
+	DM_Surface *surface;
+	surface = malloc(sizeof(DM_Surface));
+	if (surface == NULL)
+	{
+		fprintf(stderr, "E: Cannot allocate memory.");
+		exit(EXIT_FAILURE);
+	}
+	surface->surface = load_resource(resource_name);
+	surface->rect.x = 0;
+	surface->rect.y = 0;
+	surface->rect.w = surface->surface->w;
+	surface->rect.h = surface->surface->h;
+	return surface;
+}
+
+
+/**
+ * \fn void free_dm_surface(DM_Surface *surface)
+ * \brief Releases the memory allowed to the DM_Surface.
+ *
+ * This function releases the memory allowed to the DM_Surface.
+ *
+ * \param surface The DM_Surface name. 
+ * \return Nothing.
+ */
+void free_dm_surface(DM_Surface *surface)
+{
+	SDL_FreeSurface(surface->surface);
+	free(surface);
+}
+
+
+/**
  * \fn SDL_Surface* str_to_surface(char *font_name, char *str)
  * \brief Writing texts.
  *
@@ -228,6 +272,7 @@ Mix_Chunk* load_sound_resource(char *resource_name)
 	return sound;
 }
 
+
 /**
  * \fn Mix_Music* load_music_resource(char *resource_name)
  * \brief Search and load a music resource.
@@ -281,3 +326,5 @@ Mix_Music* load_music_resource(char *resource_name)
 	//Return the music
 	return music;
 }
+
+

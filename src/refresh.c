@@ -30,13 +30,6 @@
 #include "refresh.h"
 
 
-DM_Refresh_Layer layer_bg;
-DM_Refresh_Layer layer_active;
-DM_Refresh_Layer layer_fg;
-DM_Refresh_Layer layer_menu;
-SDL_TimerID main_timer;
-
-
 /**
  * \fn void refresh_init(SDL_Surface *screen)
  * \brief Initialize the refresh
@@ -126,29 +119,16 @@ int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)())
  */
 void deref_object(DM_Refresh_Layer *layer, int id)
 {
-	DM_Refresh_Item *current_item = NULL;
-	DM_Refresh_Item *prev_item = NULL;
-	//Search the item
-	current_item = layer->next;
-	prev_item = NULL;
-	while (current_item->next != NULL)
+	DM_Refresh_Item *current_item = layer->next;
+	while (current_item != NULL)
 	{
 		if (current_item->id == id)
 		{
-			if (prev_item != NULL)
-			{
-				prev_item->next = current_item->next;
-			}
-			else
-			{
-				layer->next = current_item->next;
-			}
-			free(current_item);
+			current_item->callback = NULL;
 			break;
 		}
 		else
 		{
-			prev_item = current_item;
 			current_item = current_item->next;
 		}
 	}
@@ -160,54 +140,50 @@ void deref_object(DM_Refresh_Layer *layer, int id)
  * \brief The main timer callback (used for refresh).
  *
  * \param interval The timer interval.
- * \param args Should be NULL.
+ * \param args A DM_Refresh_Layer or NULL.
  * \return The timer interval.
  */
 Uint32 refresh_cb(Uint32 interval, void *arg)
 {
-	DM_Refresh_Item *current_item = NULL;
-	//Background layer
-	if (layer_bg.next != NULL)
+	if (arg == NULL)
 	{
-		current_item = layer_bg.next;
-		while (current_item->next != NULL)
+		//Clear the screen
+		SDL_FillRect(layer_bg.screen, NULL, SDL_MapRGB(layer_bg.screen->format, 0, 0, 0));
+		//Blit all layers
+		refresh_cb(interval, &layer_bg);
+		refresh_cb(interval, &layer_active);
+		refresh_cb(interval, &layer_fg);
+		refresh_cb(interval, &layer_menu);
+		//Refresh the screen
+		SDL_Flip(layer_bg.screen);
+	}
+	else
+	{
+		DM_Refresh_Layer *layer = arg;
+		DM_Refresh_Item *prev_item = NULL;
+		DM_Refresh_Item *current_item = layer->next;
+		while (current_item != NULL)
 		{
-			current_item->callback(current_item->object, layer_bg.screen);
+			if (current_item->callback != NULL)
+			{
+				current_item->callback(current_item->object, layer->screen);
+				prev_item = current_item;
+			}
+			else //Remove the item
+			{
+				if (prev_item != NULL)
+				{
+					prev_item->next = current_item->next;
+				}
+				else
+				{
+					layer->next = current_item->next;
+				}
+				free(current_item);
+			}
 			current_item = current_item->next;
 		}
 	}
-	//Active layer
-	if (layer_active.next != NULL)
-	{
-		current_item = layer_active.next;
-		while (current_item->next != NULL)
-		{
-			current_item->callback(current_item->object, layer_active.screen);
-			current_item = current_item->next;
-		}
-	}
-	//Foreground layer
-	if (layer_fg.next != NULL)
-	{
-		current_item = layer_fg.next;
-		while (current_item->next != NULL)
-		{
-			current_item->callback(current_item->object, layer_fg.screen);
-			current_item = current_item->next;
-		}
-	}
-	//Menu layer
-	if (layer_menu.next != NULL)
-	{
-		current_item = layer_menu.next;
-		while (current_item->next != NULL)
-		{
-			current_item->callback(current_item->object, layer_menu.screen);
-			current_item = current_item->next;
-		}
-	}
-	//Refresh the screen
-	SDL_Flip(layer_bg.screen);
 	return interval;
 }
 
@@ -223,6 +199,20 @@ int get_id()
 	static int id = 0;
 	id++;
 	return id;
+}
+
+
+/**
+ * \fn surface_refresh_cb(void *object, SDL_Surface *screen)
+ * \brief Blit a DM_Surface.
+ *
+ * \param object The DM_Surface to blit.
+ * \param screen The main surface.
+ */
+void surface_refresh_cb(void *object, SDL_Surface *screen)
+{
+	DM_Surface *surface = object;
+	SDL_BlitSurface(surface->surface, NULL, screen, &surface->rect);
 }
 
 

@@ -1,5 +1,5 @@
-#ifndef MAIN_MENU_H_INCLUDED
-#define MAIN_MENU_H_INCLUDED
+#ifndef MAIN_FUNCTIONS_H_INCLUDED
+#define MAIN_FUNCTIONS_H_INCLUDED
 
 
 /**
@@ -33,11 +33,25 @@
 #endif
 
 
+/**
+ * \struct DM_Surface
+ * \brief Descends from SDL_Surface.
+ */
+typedef struct DM_Surface DM_Surface;
+struct DM_Surface
+{
+	SDL_Surface *surface;
+	SDL_Rect rect;
+};
+
+
 SDL_Surface* load_resource(char *resource_name);
+DM_Surface* load_resource_as_dm_surface(char *resource_name);
+void free_dm_surface(DM_Surface *surface);
 SDL_Surface* str_to_surface(char *font_name, char *str);
 Mix_Chunk* load_sound_resource(char *resource_name);
 Mix_Music* load_music_resource(char *resource_name);
 
 
-#endif //MAIN_MENU_H_INCLUDED
+#endif //MAIN_FUNCTIONS_H_INCLUDED
 
