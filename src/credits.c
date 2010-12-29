@@ -74,7 +74,7 @@ void credits_cb(void *object, SDL_Surface *screen)
 		credits->title_rect.y = 400;
 		credits->speed = 20;
 	}
-	//blint
+	//Blit
 	if (credits->page_rect.x < 0)
 	{
 		credits->page_rect.x = -800;
@@ -83,23 +83,18 @@ void credits_cb(void *object, SDL_Surface *screen)
 	SDL_BlitSurface(credits->titles[credits->current_page-1], NULL, screen, &credits->title_rect);
 	//Move
 	credits->page_rect.x -= credits->speed;
-	credits->title_rect.x += credits->speed / 2 + 1;
+	credits->title_rect.x += credits->speed / 2.5 + 1;
 	//Change speed
-	if (credits->page_rect.x < 17 * screen->w / 20) credits->speed = 15 ;
-	if (credits->page_rect.x < 16 * screen->w / 20) credits->speed = 11 ;
-	if (credits->page_rect.x < 15 * screen->w / 20) credits->speed =  8 ;
-	if (credits->page_rect.x < 14 * screen->w / 20) credits->speed =  6 ;
-	if (credits->page_rect.x < 13 * screen->w / 20) credits->speed =  3 ;
-	if (credits->page_rect.x < 12 * screen->w / 20) credits->speed =  2 ;
-	if (credits->page_rect.x < 11 * screen->w / 20) credits->speed =  1 ;
-	if (credits->page_rect.x <  6 * screen->w / 20) credits->speed =  2 ;
-	if (credits->page_rect.x <  5 * screen->w / 20) credits->speed =  5 ;
-	if (credits->page_rect.x <  4 * screen->w / 20) credits->speed = 10 ;
-	if (credits->page_rect.x <  3 * screen->w / 20) credits->speed = 15 ;
-	if (credits->page_rect.x <  2 * screen->w / 20) credits->speed = 20 ;
-	if (credits->page_rect.x <  1 * screen->w / 20) credits->speed = 30 ;
+	if (credits->page_rect.x > screen->w / 3)
+	{
+		credits->speed = (credits->page_rect.x - screen->w / 3) * 30 / (2 * screen->w / 2) + 1;
+	}
+	if (credits->page_rect.x < screen->w / 4)
+	{
+		credits->speed = (3* screen->w / 4 - credits->page_rect.x) * 20 / (screen->w / 2) + 1;
+	}
 	//Change of layer
-	if (credits->title_rect.x > screen->w)
+	if (credits->title_rect.x > screen->w - 50)
 	{
 		credits->current_page += 1;
 		if (credits->current_page > credits->numb_pages)
