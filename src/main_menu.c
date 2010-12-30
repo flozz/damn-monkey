@@ -85,37 +85,33 @@ void corp_logo(SDL_Surface *screen)
  */
 int main_menu(SDL_Surface *screen)
 {
-	//Create the menu
-	DM_Menu *menu = new_menu(
-			"Play\nCredits\nQuit",
-			"font_menu.png",
-			"font_menu_hl.png",
-			"cursor.png"
-			);
-	menu->menu_rect.x = (screen->w - menu->menu->w) / 4;
-	menu->menu_rect.y = (screen->h - menu->menu->h - 270) / 2 + 270;
-	//Create the menu background
-	SDL_Surface *background_tmp = load_resource("menu_bg.png");
-	SDL_Surface *background = SDL_ConvertSurface(background_tmp, screen->format, NULL);
-	SDL_FreeSurface(background_tmp);
-	SDL_Surface *title = load_resource("main_menu_title.png");
-	SDL_BlitSurface(title, NULL, background, NULL);
-	SDL_FreeSurface(title);
-	SDL_Surface *version = str_to_surface("font_main.png", VERSION);
-	SDL_Rect version_rect = {5, screen->h - version->h - 5, 0, 0};
-	SDL_BlitSurface(version, NULL, background, &version_rect);
-	SDL_FreeSurface(version);
-	//Sounds
-	Mix_Chunk *sound_select = load_sound_resource("menu_select.wav");
-	Mix_Chunk *sound_valid = load_sound_resource("menu_valid.wav");
-	//Menu refresh and effects
-	DM_Menu_effect menu_effect;
-	menu_effect.bg = background;
-	menu_effect.menu = menu;
-	menu_effect.screen = screen;
-	menu_effect.timer = SDL_AddTimer(20, menu_glow_effect_cb, &menu_effect);
 	//Disable key repeat
 	SDL_EnableKeyRepeat(0, 0);
+	//Load sounds
+	Mix_Chunk *sound_select = load_sound_resource("menu_select.wav");
+	Mix_Chunk *sound_valid = load_sound_resource("menu_valid.wav");
+	//Background
+	DM_Surface *bg = load_resource_as_dm_surface("menu_bg.png");
+	int bg_refresh = ref_object(&layer_bg, bg, surface_refresh_cb);
+	//Title
+	DM_Surface *title = load_resource_as_dm_surface("main_menu_title.png");
+	int title_refresh = ref_object(&layer_bg, title, surface_refresh_cb);
+	//version
+	DM_Surface version;
+	version.surface = str_to_surface("font_main.png", VERSION);
+	version.rect.x = 5;
+	version.rect.y = screen->h - version.surface->h - 5;
+	int version_refresh = ref_object(&layer_bg, &version, surface_refresh_cb);
+	//Create the menu
+	DM_Menu *menu = new_menu(
+							 "Play\nCredits\nQuit",
+							 "font_menu.png",
+							 "font_menu_hl.png",
+							 "cursor.png"
+							 );
+	menu->menu_rect.x = (screen->w - menu->menu->w) / 4;
+	menu->menu_rect.y = (screen->h - menu->menu->h - 270) / 2 + 270;
+	int menu_refresh = ref_object(&layer_menu, menu, menu_glow_effect_cb);
 	//Main loop
 	SDL_Event event;
 	int selected = -1;
@@ -151,17 +147,22 @@ int main_menu(SDL_Surface *screen)
 		}
 	}
 	while (selected < 0);
-	//Change the menu_effect (blink)
-	SDL_RemoveTimer(menu_effect.timer);
-	menu_effect.timer = SDL_AddTimer(20, menu_blink_effect_cb, &menu_effect);
-	//Play the validation sound
+	//Play a confirmation sound and change the menu effect
 	Mix_PlayChannel(-1, sound_valid, 0);
+	deref_object(&layer_menu, menu_refresh);
+	menu_refresh = ref_object(&layer_menu, menu, menu_blink_effect_cb);
 	SDL_Delay(500);
-	//Stop the menu_effect
-	SDL_RemoveTimer(menu_effect.timer);
-	//Free the memory
+	//Dereference objects and free the memory
+	deref_object(&layer_bg, bg_refresh);
+	deref_object(&layer_bg, title_refresh);
+	deref_object(&layer_bg, version_refresh);
+	deref_object(&layer_menu, menu_refresh);
+	SDL_Delay(20);
+	free_dm_surface(bg);
+	free_dm_surface(title);
+	SDL_FreeSurface(version.surface);
 	free_menu(menu);
-	SDL_FreeSurface(background);
+	//Free sounds memory
 	Mix_FreeChunk(sound_select);
 	Mix_FreeChunk(sound_valid);
 	return selected;

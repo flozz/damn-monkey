@@ -28,6 +28,7 @@
 #include <SDL_mixer.h>
 #endif
 
+#include "refresh.h"
 #include "main_functions.h"
 #include "menu.h"
 

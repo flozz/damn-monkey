@@ -11,8 +11,8 @@ LDFLAGS = -L/usr/lib -lSDL -lSDL_image -lSDL_mixer
 EXEC = damn-monkey
 
 
-$(EXEC): main.o main_menu.o main_functions.o menu.o credits.o
-	$(CC) -o bin/$(EXEC) $(LDFLAGS) obj/main.o obj/main_menu.o obj/main_functions.o obj/menu.o obj/credits.o
+$(EXEC): main.o main_menu.o main_functions.o menu.o credits.o refresh.o
+	$(CC) -o bin/$(EXEC) $(LDFLAGS) obj/main.o obj/main_menu.o obj/main_functions.o obj/menu.o obj/credits.o obj/refresh.o
 
 main.o: src/main.c
 	$(CC) $(CFLAGS) -o obj/main.o -c src/main.c
@@ -29,10 +29,13 @@ menu.o: src/menu.c
 credits.o: src/credits.c
 	$(CC) $(CFLAGS) -o obj/credits.o -c src/credits.c
 
+refresh.o: src/refresh.c
+	$(CC) $(CFLAGS) -o obj/refresh.o -c src/refresh.c
+
+
 clean:
 	rm -f obj/*
 	rm -f bin/*
-
 
 all: clean $(EXEC)
 
