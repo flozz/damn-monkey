@@ -35,13 +35,13 @@
 
 /**
  * \struct DM_Surface
- * \brief Descends from SDL_Surface.
+ * \brief Structure for refreshing SDL_Surface.
  */
 typedef struct DM_Surface DM_Surface;
 struct DM_Surface
 {
-	SDL_Surface *surface;
-	SDL_Rect rect;
+	SDL_Surface *surface; /*!< The surface. */
+	SDL_Rect rect;        /*!< The rectangle. */
 };
 
 

@@ -33,16 +33,20 @@
 #include "menu.h"
 
 
+/**
+ * \struct DM_Credits
+ * \brief Contain all the informations needed for displaying credits.
+ */
 typedef struct DM_Credits DM_Credits;
 struct DM_Credits
 {
-	int numb_pages;
-	int current_page;
-	int speed;
-	SDL_Surface **titles;
-	SDL_Rect title_rect;
-	SDL_Surface **pages;
-	SDL_Rect page_rect;
+	int numb_pages;       /*!< Number of pages. */
+	int current_page;     /*!< Index of the current page (1..numb_page). */
+	int speed;            /*!< The speed of the translation effect. */
+	SDL_Surface **titles; /*!< Contain the SDL_Surface of all titles. */
+	SDL_Rect title_rect;  /*!< Contain placement information of the title. */
+	SDL_Surface **pages;  /*!< Contain the SDL_Surface of all pages. */
+	SDL_Rect page_rect;   /*!< Contain placement information of the page. */
 };
 
 

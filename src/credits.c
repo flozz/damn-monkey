@@ -30,6 +30,13 @@
 #include "credits.h"
 
 
+/**
+ * \fn DM_Credits* new_credits(int numb_pages)
+ * \brief Create a new DM_Credits.
+ *
+ * \param numb_page The number of pages.
+ * \return A pointer on the new DM_Credits.
+ */
 DM_Credits* new_credits(int numb_pages)
 {
 	DM_Credits *credits = malloc(sizeof(DM_Credits));
@@ -47,6 +54,12 @@ DM_Credits* new_credits(int numb_pages)
 }
 
 
+/**
+ * \fn void free_credits(DM_Credits *credits)
+ * \brief Free the memory of a DM_Credits.
+ *
+ * \param credits The DM_Credits to free.
+ */
 void free_credits(DM_Credits *credits)
 {
 	int i;
@@ -61,6 +74,14 @@ void free_credits(DM_Credits *credits)
 }
 
 
+/**
+ * \fn void credits_cb(void *object, SDL_Surface *screen)
+ * \brief Refresh callback for the DM_Credits.
+ *
+ * \param object The DM_Credits to refresh.
+ * \param screen The main surface (called screen in the main() function)
+ *               on which to draw.
+ */
 void credits_cb(void *object, SDL_Surface *screen)
 {
 	DM_Credits *credits = object;
@@ -204,7 +225,7 @@ void credits(SDL_Surface *screen)
 	free_dm_surface(title);
 	free_menu(menu);
 	free_credits(credits);
-	//Free sounds memory
+	//Free sound memory
 	Mix_FreeChunk(sound_valid);
 }
 
