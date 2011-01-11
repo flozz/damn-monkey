@@ -208,6 +208,11 @@ void credits(SDL_Surface *screen)
 					break;
 			}
 		}
+		else if (event.type == SDL_QUIT)
+		{
+			menu->selected = menu->numb_of_items - 1;
+			selected = menu->selected;
+		}
 	}
 	while (selected < 0);
 	//Play a confirmation sound and change the menu effect
