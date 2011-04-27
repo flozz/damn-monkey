@@ -58,7 +58,9 @@ SDL_Surface* load_resource(char *resource_name)
 	//TODO
 	#endif
 	#ifdef MAC_OS
-	//TODO
+	strcpy(filepath, "./Damn Monkey.app/Contents/Resources/pixmaps/");
+	strcat(filepath, resource_name);
+	img = IMG_Load(filepath);
 	#endif
 	//Try to load from local path (devel)
 	if (img == NULL)
@@ -247,7 +249,9 @@ Mix_Chunk* load_sound_resource(char *resource_name)
 	//TODO
 	#endif
 	#ifdef MAC_OS
-	//TODO
+	strcpy(filepath, "./Damn Monkey.app/Contents/Resources/sounds/");
+	strcat(filepath, resource_name);
+	sound = Mix_LoadWAV(filepath);
 	#endif
 	//Try to load from local path (devel)
 	if (sound == NULL)
@@ -302,7 +306,9 @@ Mix_Music* load_music_resource(char *resource_name)
 	//TODO
 	#endif
 	#ifdef MAC_OS
-	//TODO
+	strcpy(filepath, "./Damn Monkey.app/Contents/Resources/musics/");
+	strcat(filepath, resource_name);
+	music = Mix_LoadMUS(filepath);
 	#endif
 	//Try to load from local path (devel)
 	if (music == NULL)

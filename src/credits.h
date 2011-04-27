@@ -1,5 +1,5 @@
-#ifndef MAIN_MENU_H_INCLUDED
-#define MAIN_MENU_H_INCLUDED
+#ifndef CREDITS_H_INCLUDED
+#define CREDITS_H_INCLUDED
 
 
 /**
@@ -56,5 +56,5 @@ void credits_cb(void *object, SDL_Surface *screen);
 void credits(SDL_Surface *screen);
 
 
-#endif //MAIN_MENU_H_INCLUDED
+#endif //CREDITS_H_INCLUDED
 
