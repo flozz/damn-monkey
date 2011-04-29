@@ -334,3 +334,109 @@ Mix_Music* load_music_resource(char *resource_name)
 }
 
 
+/**
+ * \fn DM_Splited* split(char* string, char separator)
+ * \brief Parse the line considered and return an array of string.
+ *
+ * This function read the string in order to create an array of string
+ *
+ * \param string The string to split.
+ * \param separator The separator char (ex : ';').
+ * \return A DM_Splited containing the array.
+ */
+DM_Splited* split(char *string, char separator)
+{
+	//Future return initialization
+	DM_Splited *splited = malloc(sizeof(splited));
+	if (splited == NULL)
+	{
+		fprintf(stderr, "E: Cannot allocate memory.");
+		exit(EXIT_FAILURE);
+	}
+	//Some variables initialization
+	int counter = 0;
+	int items_int = 0;
+	char buffer_c;
+	//String buffer initialization
+	char *buffer = malloc(strlen(string) * sizeof(char));
+	if (buffer == NULL)
+	{
+		fprintf(stderr, "E: Cannot allocate memory.");
+		exit(EXIT_FAILURE);
+	}
+	//First loop allowing the counting of items for allocations operations
+	for (counter=0 ; counter<strlen(string) ; counter++)
+	{
+		if (string[counter] == separator)
+		{
+			items_int++;
+		}
+		else if (string[counter] == ' ' || string[counter] == '\t' || string[counter] == '\r' || string[counter] == '\n')
+		{
+			continue;
+		}
+		else
+		{
+			continue;
+		}
+	}
+	
+	//Allocation of the first dimension of the parameters array
+	splited->parameters = malloc(items_int * sizeof(char*));
+	if (splited->parameters == NULL)
+	{
+		fprintf(stderr, "E: Cannot allocate memory.");
+		exit(EXIT_FAILURE);
+	}
+	//Assignation of the parameters_int thanks to the first loop
+	splited->parameters_int = items_int;
+	
+	items_int = 0;
+	
+	//Second loop allowing the buffering and the creation of the second dimension of the parameters array
+	buffer_c = string[0];
+	//Detects if we have a common char and start buffering -> We got a new item
+	if (buffer_c != ' ' && buffer_c != '\t' && buffer_c != '\r' && buffer_c != '\n' && buffer_c != separator)
+	{
+		strcpy(buffer, &buffer_c);	
+	}
+	for (counter=1 ; counter<strlen(string) ; counter++)
+	{
+		if (string[counter-1] == separator)
+		{
+			//Detects if we have an "uncommon" char just after the separator
+			if (string[counter] == ' ' || string[counter] == '\t' || string[counter] == '\r' || string[counter] == '\n')
+			{
+				continue;
+			}
+			//Start of a new buffering -> We got a new item
+			buffer_c = string[counter];
+			strcpy(buffer, &buffer_c);
+			continue;
+		}
+		if (string[counter] == separator) //Separator found
+		{
+			splited->parameters[items_int] = malloc(strlen(buffer) * sizeof(char)); //Allocatation of a new item in the array
+			if (splited->parameters[items_int] == NULL)
+			{
+				fprintf(stderr, "E: Cannot allocate memory.");
+				exit(EXIT_FAILURE);
+			}
+			strcpy(splited->parameters[items_int], buffer); //Assignation of the new item
+			memset(buffer, '\0', strlen(buffer)); //Empty the buffer
+			items_int++; //Incrementation of the parameters array "counter"
+		}
+		else if (string[counter] == ' ' || string[counter] == '\t' || string[counter] == '\r' || string[counter] == '\n') // Detects if we have an "uncommon" char -> Next turn
+		{
+			continue;
+		}
+		else //"Common" char found -> Buffering
+		{
+			buffer_c = string[counter];
+			strcat(buffer, &buffer_c);
+		}
+	}
+	
+	return splited;
+}
+
