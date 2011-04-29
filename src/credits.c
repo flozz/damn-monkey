@@ -207,6 +207,8 @@ void credits(SDL_Surface *screen)
 				case SDLK_KP_ENTER:
 					selected = menu->selected;
 					break;
+				default:
+					break;
 			}
 		}
 		else if (event.type == SDL_QUIT)
