@@ -3,7 +3,7 @@
 *  This file is part of Damn Monkey                                        *
 *                                                                          *
 *  Copyright (C) 2010 - 2011  Fabien LOISON, Mathilde BOUTIGNY,            *
-*  Vincent PEYROUSE and Germain CARRÉ                                      *
+*  Vincent PEYROUSE, Germain CARRÉ and Matthis FRENAY                      *
 *                                                                          *
 *  Damn Monkey is free software: you can redistribute it and/or modify     *
 *  it under the terms of the GNU General Public License as published by    *
@@ -164,7 +164,8 @@ void credits(SDL_Surface *screen)
 			"Fabien LOISON\n\
 			Mathilde BOUTIGNY\n\
 			Vincent PEYROUSE\n\
-			Germain CARRE"
+			Germain CARRE\n\
+			Matthis FRENAY"
 			);
 	credits->titles[1] = str_to_surface("font_main.png", "- GRAPHISTS -");
 	credits->pages[1] = str_to_surface(
@@ -207,6 +208,11 @@ void credits(SDL_Surface *screen)
 					selected = menu->selected;
 					break;
 			}
+		}
+		else if (event.type == SDL_QUIT)
+		{
+			menu->selected = menu->numb_of_items - 1;
+			selected = menu->selected;
 		}
 	}
 	while (selected < 0);
