@@ -23,14 +23,19 @@
 
 /**
  * \file sprite.c
- * \brief TODO.
+ * \brief This file contain the code that deal with the (animated) sprites.
  */
 
 
 #include "sprite.h"
 
 
-//TODO DOXY
+/**
+ * \fn DM_Sprite* new_sprite(char *sprite_name)
+ * \brief Create a new DM_Sprite
+ *
+ * \param sprite_name The name of the sprite file
+ */
 DM_Sprite* new_sprite(char *sprite_name)
 {
 	DM_Sprite *sprite = NULL;
@@ -91,7 +96,12 @@ DM_Sprite* new_sprite(char *sprite_name)
 }
 
 
-//TODO DOXY
+/**
+ * \fn void free_sprite(DM_Sprite *sprite)
+ * \brief Free the memory of a DM_Sprite
+ *
+ * \param sprite The DM_Sprite to free
+ */
 void free_sprite(DM_Sprite *sprite)
 {
 	SDL_FreeSurface(sprite->sprite);
@@ -99,7 +109,13 @@ void free_sprite(DM_Sprite *sprite)
 }
 
 
-//TODO
+/**
+ * \fn void sprite_cb(void *object, SDL_Surface *screen)
+ * \brief Callback function for blitting DM_Sprite
+ *
+ * \param object The DM_Sprite to blit
+ * \param screen The main surface.
+ */
 void sprite_cb(void *object, SDL_Surface *screen)
 {
 	DM_Sprite *sprite = object;
