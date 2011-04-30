@@ -44,17 +44,6 @@ struct DM_Surface
 	SDL_Rect rect;        /*!< The rectangle. */
 };
 
-/**
- * \struct DM_Splited
- * \brief Structure for parsing files.
- */
-typedef struct DM_Splited DM_Splited;
-struct DM_Splited
-{
-	int parameters_int;   /*!< The number of strings in the array */
-	char **parameters;    /*!< The array of strings */
-};
-
 
 SDL_Surface* load_resource(char *resource_name);
 DM_Surface* load_resource_as_dm_surface(char *resource_name);
@@ -62,7 +51,7 @@ void free_dm_surface(DM_Surface *surface);
 SDL_Surface* str_to_surface(char *font_name, char *str);
 Mix_Chunk* load_sound_resource(char *resource_name);
 Mix_Music* load_music_resource(char *resource_name);
-DM_Splited* split(char *string, char separator);
+
 
 #endif //MAIN_FUNCTIONS_H_INCLUDED
 
