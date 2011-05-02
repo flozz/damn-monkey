@@ -30,8 +30,20 @@
 #include "parser.h"
 
 
+int is_white_char(char c) {
+	if (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\0')
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
 /**
- * \fn DM_Line_Splited* split(char *string, char separator)
+ * \fn DM_Line_Splited* split(char *str, char separator)
  * \brief Parse the line considered and return an array of string.
  *
  * This function read the string in order to create an array of string
@@ -40,103 +52,71 @@
  * \param separator The separator char (ex : ';').
  * \return A DM_Line_Splited containing the array.
  */
-DM_Line_Splited* split(char *string, char separator)
+DM_Line_Splited* split(char *str, char separator)
 {
-	//Future return initialization
-	DM_Line_Splited *splited = malloc(sizeof(DM_Line_Splited));
-	if (splited == NULL)
+	//Variables declaration
+	char *buffer = malloc(sizeof(char) * strlen(str));
+	DM_Line_Splited *splited_line = malloc(sizeof(DM_Line_Splited));
+	if (splited_line == NULL)
 	{
 		fprintf(stderr, "E: Cannot allocate memory.");
 		exit(EXIT_FAILURE);
 	}
-	//Some variables initialization
-	int counter = 0;
-	int items_int = 0;
-	char buffer_c;
-	//String buffer initialization
-	char *buffer = malloc(strlen(string) * sizeof(char));
-	if (buffer == NULL)
+	int numb_fields = 0;
+	int field_size = 0;
+	int field = 0;
+	//Count the number of fields
+	int i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == separator)
+		{
+			numb_fields++;
+		}
+		i++;
+	}
+	//Allocate the memory in the DM_Line_Splited struct
+	splited_line->parameters_int = numb_fields;
+	splited_line->parameters = malloc(numb_fields * sizeof(char*));
+	if (splited_line->parameters == NULL)
 	{
 		fprintf(stderr, "E: Cannot allocate memory.");
 		exit(EXIT_FAILURE);
 	}
-	//First loop allowing the counting of items for allocations operations
-	for (counter=0 ; counter<strlen(string) ; counter++)
+	//Get the fields content
+	i = 0;
+	while (str[i] != '\0')
 	{
-		if (string[counter] == separator)
+		field_size = 0;
+		while (str[i] != '\0')
 		{
-			items_int++;
-		}
-		else if (string[counter] == ' ' || string[counter] == '\t' || string[counter] == '\r' || string[counter] == '\n')
-		{
-			continue;
-		}
-		else
-		{
-			continue;
-		}
-	}
-	
-	//Allocation of the first dimension of the parameters array
-	splited->parameters = malloc(items_int * sizeof(char*));
-	if (splited->parameters == NULL)
-	{
-		fprintf(stderr, "E: Cannot allocate memory.");
-		exit(EXIT_FAILURE);
-	}
-	//Assignation of the parameters_int thanks to the first loop
-	splited->parameters_int = items_int;
-	
-	items_int = 0;
-	
-	//Second loop allowing the buffering and the creation of the second dimension of the parameters array
-	buffer_c = string[0];
-	//Detects if we have a common char and start buffering -> We got a new item
-	if (buffer_c != ' ' && buffer_c != '\t' && buffer_c != '\r' && buffer_c != '\n' && buffer_c != separator)
-	{
-		strcpy(buffer, &buffer_c);	
-	}
-	for (counter=1 ; counter<strlen(string) ; counter++)
-	{
-		if (string[counter-1] == separator)
-		{
-			//Detects if we have an "uncommon" char just after the separator
-			if (string[counter] == ' ' || string[counter] == '\t' || string[counter] == '\r' || string[counter] == '\n')
+			if (str[i] != separator)
 			{
-				continue;
+				if (!is_white_char(str[i]))
+				{
+					buffer[field_size] = str[i];
+					field_size++;
+				}
 			}
-			//Start of a new buffering -> We got a new item
-			buffer_c = string[counter];
-			strcpy(buffer, &buffer_c);
-			continue;
-		}
-		//Separator found
-		if (string[counter] == separator)
-		{
-			splited->parameters[items_int] = malloc(strlen(buffer) * sizeof(char)); //Allocatation of a new item in the array
-			if (splited->parameters[items_int] == NULL)
+			else
 			{
-				fprintf(stderr, "E: Cannot allocate memory.");
-				exit(EXIT_FAILURE);
+				buffer[field_size] = '\0';
+				field_size++;
+				splited_line->parameters[field] = malloc(field_size * sizeof(char));
+				if (splited_line->parameters[field] == NULL)
+				{
+					fprintf(stderr, "E: Cannot allocate memory.");
+					exit(EXIT_FAILURE);
+				}
+				strcpy(splited_line->parameters[field], buffer);
+				break;
 			}
-			strcpy(splited->parameters[items_int], buffer); //Assignation of the new item
-			memset(buffer, '\0', strlen(buffer)); //Empty the buffer
-			items_int++; //Incrementation of the parameters array "counter"
+			i++;
 		}
-		//Skip white spaces
-		else if (string[counter] == ' ' || string[counter] == '\t' || string[counter] == '\r' || string[counter] == '\n')
-		{
-			continue;
-		}
-		//Buffer the char
-		else
-		{
-			buffer_c = string[counter];
-			strcat(buffer, &buffer_c);
-		}
+		i++;
+		field++;
 	}
-	
-	return splited;
+	return splited_line;
 }
 
 
@@ -172,16 +152,22 @@ void free_dm_line_splited(DM_Line_Splited *line_splited)
  */
 DM_Splited* read_file(char *resource_path)
 {
-	char *buffer = malloc(1000 * sizeof(char));
-	memset(buffer, '\0', strlen(buffer));
-	char filepath[255];
-	char *buffer_c = malloc(sizeof(char));
-	int items_int = 0;
+	char buffer[1024];
+	DM_Splited *splited = malloc(sizeof(DM_Splited));
+	if (splited == NULL)
+	{
+		fprintf(stderr, "E: Cannot allocate memory.");
+		exit(EXIT_FAILURE);
+	}
 	FILE *file = NULL;
-	
+	int numb_lines = 0;
+	int line = 0;
+	char filepath[128];
+	//Open the file
 	#ifdef LINUX
 	strcpy(filepath, "/usr/share/games/");
 	strcat(filepath, APP_NAME);
+	strcat(filepath, "/");
 	strcat(filepath, resource_path);
 	#endif
 	#ifdef WINDOWS
@@ -197,11 +183,13 @@ DM_Splited* read_file(char *resource_path)
 	{
 		strcpy(filepath, "./");
 		strcat(filepath, resource_path);
+		file = fopen(filepath,"r");
 	}
 	if (file == NULL)
 	{
 		strcpy(filepath, "../");
 		strcat(filepath, resource_path);
+		file = fopen(filepath,"r");
 	}
 	//If the resource can not be loaded, display an error and exit
 	if (file == NULL)
@@ -209,84 +197,29 @@ DM_Splited* read_file(char *resource_path)
 		fprintf(stderr, "E: Can not load the resource: %s\n", resource_path);
 		exit(EXIT_FAILURE);
 	}
-	else
+	//Count the number of interresting lines
+	while (fgets(buffer, 1024, file) != NULL)
 	{
-		*buffer_c = fgetc(file);
-		while (*buffer_c != EOF)
+		if (buffer[0] != '#' && buffer[0] != '\r' && buffer[0] != '\n')
 		{
-			if (*buffer_c == '#') //We got a comment
-			{
-				while (*buffer_c != '\n' && *buffer_c != '\r') //We read the entire line
-				{
-					*buffer_c = fgetc(file);
-					
-				}
-				*buffer_c = fgetc(file);
-				continue;
-			}
-			else if (*buffer_c == '\n' || *buffer_c == '\r') //We got a blank line
-			{
-				*buffer_c = fgetc(file);
-			}
-			else //Valid line
-			{
-				while (*buffer_c != '\n' && *buffer_c != '\r')
-				{
-					*buffer_c = fgetc(file);
-				}
-				items_int++;
-				*buffer_c = fgetc(file);
-			}
+			numb_lines++;
 		}
 	}
-	
+	//Allocate the memory of the DM_Splited
+	splited->items_int = numb_lines;
+	splited->lines_array = malloc(numb_lines * sizeof(DM_Line_Splited*));
+	//Let's go ! (get the lines)
 	rewind(file);
-	
-	DM_Splited *splited = malloc(sizeof(DM_Splited));
-	if (splited == NULL)
+	while (fgets(buffer, 1024, file) != NULL)
 	{
-		fprintf(stderr, "E: Can not load the resource: %s\n", resource_path);
-		exit(EXIT_FAILURE);
-	}
-	splited->items_int = items_int;
-	splited->lines_array = malloc(items_int * sizeof(DM_Line_Splited));
-	items_int = 0;
-	
-	*buffer_c = fgetc(file);
-	while (*buffer_c != EOF)
-	{
-		if (*buffer_c == '#') //We got a comment
+		if (buffer[0] != '#' && buffer[0] != '\r' && buffer[0] != '\n')
 		{
-			while (*buffer_c != '\n' && *buffer_c != '\r') //We read the entire line
-			{
-				*buffer_c = fgetc(file);
-			}
-			*buffer_c = fgetc(file);
-			continue;
-		}
-		else if (*buffer_c == '\n' || *buffer_c == '\r') //We got a blank line
-		{
-			*buffer_c = fgetc(file);
-			continue;
-		}
-		else //Valid line
-		{
-			strcpy(buffer, buffer_c);
-			*buffer_c = fgetc(file);
-			while (*buffer_c != '\n' && *buffer_c != '\r')
-			{
-				strcat(buffer, buffer_c);
-				*buffer_c = fgetc(file);
-			}
-			splited->lines_array[items_int] = split(buffer, ';');
-			items_int++;
-			memset(buffer, '\0', strlen(buffer));
-			*buffer_c = fgetc(file);
+			splited->lines_array[line] = split(buffer, ';');
+			line++;
 		}
 	}
-	
+	//Close the file
 	fclose(file);
-	
 	return splited;
 }
 
@@ -310,4 +243,5 @@ void free_dm_splited(DM_Splited *splited)
 	free(splited->lines_array);	
 	free(splited);
 }
+
 
