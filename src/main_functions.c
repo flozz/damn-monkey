@@ -333,4 +333,3 @@ Mix_Music* load_music_resource(char *resource_name)
 	return music;
 }
 
-
