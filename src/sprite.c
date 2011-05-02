@@ -131,6 +131,8 @@ DM_Sprite* new_sprite(char *sprite_name)
 			}
 		}
 	}
+	//Free the memory
+	free_dm_splited(sprite_infos);
 	//Return the DM_Sprite
 	return sprite;
 }
