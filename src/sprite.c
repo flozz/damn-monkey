@@ -62,35 +62,75 @@ DM_Sprite* new_sprite(char *sprite_name)
 	strcat(file_name, ".png");
 	sprite->sprite = load_resource(file_name);
 	//Load the sprite informations
-	//TODO: parser
-	//FIXME /!\ Hardcoded values !
-	sprite->items[SPRITE_LOOK_RIGHT].x = 0;
-	sprite->items[SPRITE_LOOK_RIGHT].y = 0;
-	sprite->items[SPRITE_LOOK_RIGHT].w = 60;
-	sprite->items[SPRITE_LOOK_RIGHT].h = 60;
-	sprite->items[SPRITE_LOOK_RIGHT].n = 1;
-	sprite->items[SPRITE_LOOK_RIGHT].d = 0;
+	char path[42] = "";
+	int action;
+	sprintf(path, "pixmaps/%s.sprite", sprite_name);
+	DM_Splited *sprite_infos = read_file(path);
+	for (i=0 ; i<sprite_infos->items_int ; i++)
+	{
+		action = -1;
+		if (sprite_infos->lines_array[i]->parameters_int == 7)
+		{
+			if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "look-right"))
+			{
+				action = SPRITE_LOOK_RIGHT;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "walk-right"))
+			{
+				action = SPRITE_WALK_RIGHT;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "look-left"))
+			{
+				action = SPRITE_LOOK_LEFT;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "walk-left"))
+			{
+				action = SPRITE_WALK_LEFT;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "jump-right"))
+			{
+				action = SPRITE_JUMP_RIGHT;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "jump-left"))
+			{
+				action = SPRITE_JUMP_LEFT;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "ladder"))
+			{
+				action = SPRITE_LADDER;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "walk-ladder"))
+			{
+				action = SPRITE_WALK_LADDER;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "dead"))
+			{
+				action = SPRITE_DEAD;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "throw-barrel"))
+			{
+				action = SPRITE_THROW_BARREL;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "ask-help"))
+			{
+				action = SPRITE_ASK_HELP;
+			}
+			else if (!strcmp(sprite_infos->lines_array[i]->parameters[0], "custom"))
+			{
+				action = SPRITE_CUSTOM;
+			}
 
-	sprite->items[SPRITE_WALK_RIGHT].x = 60;
-	sprite->items[SPRITE_WALK_RIGHT].y = 0;
-	sprite->items[SPRITE_WALK_RIGHT].w = 60;
-	sprite->items[SPRITE_WALK_RIGHT].h = 60;
-	sprite->items[SPRITE_WALK_RIGHT].n = 8;
-	sprite->items[SPRITE_WALK_RIGHT].d = 60;
-
-	sprite->items[SPRITE_LOOK_LEFT].x = 0;
-	sprite->items[SPRITE_LOOK_LEFT].y = 60;
-	sprite->items[SPRITE_LOOK_LEFT].w = 60;
-	sprite->items[SPRITE_LOOK_LEFT].h = 60;
-	sprite->items[SPRITE_LOOK_LEFT].n = 1;
-	sprite->items[SPRITE_LOOK_LEFT].d = 0;
-
-	sprite->items[SPRITE_WALK_LEFT].x = 60;
-	sprite->items[SPRITE_WALK_LEFT].y = 60;
-	sprite->items[SPRITE_WALK_LEFT].w = 60;
-	sprite->items[SPRITE_WALK_LEFT].h = 60;
-	sprite->items[SPRITE_WALK_LEFT].n = 8;
-	sprite->items[SPRITE_WALK_LEFT].d = 60;
+			if (action >= 0)
+			{
+				sprite->items[action].x = atoi(sprite_infos->lines_array[i]->parameters[1]);
+				sprite->items[action].y = atoi(sprite_infos->lines_array[i]->parameters[2]);
+				sprite->items[action].w = atoi(sprite_infos->lines_array[i]->parameters[3]);
+				sprite->items[action].h = atoi(sprite_infos->lines_array[i]->parameters[4]);
+				sprite->items[action].n = atoi(sprite_infos->lines_array[i]->parameters[5]);
+				sprite->items[action].d = atoi(sprite_infos->lines_array[i]->parameters[6]);
+			}
+		}
+	}
 	//Return the DM_Sprite
 	return sprite;
 }
@@ -146,53 +186,6 @@ void sprite_cb(void *object, SDL_Surface *screen)
 		}
 		sprite->last_step_change = SDL_GetTicks();
 	}
-}
-
-
-//FIXME: to remove
-void sprite_test()
-{
-	DM_Sprite *jumpman = new_sprite("jumpman");
-	int jumpman_refresh = ref_object(&layer_active, jumpman, sprite_cb);
-	int stop = 0;
-	SDL_Event event;
-	SDL_EnableKeyRepeat(3, 3);
-	while (!stop)
-	{
-		SDL_WaitEvent(&event);
-		if (event.type == SDL_KEYDOWN)
-		{
-			switch (event.key.keysym.sym)
-			{
-				case SDLK_ESCAPE:
-					stop = 1;
-					break;
-				case SDLK_LEFT:
-					jumpman->current_mov = SPRITE_WALK_LEFT;
-					jumpman->screen_pos.x -=1;
-					break;
-				case SDLK_RIGHT:
-					jumpman->current_mov = SPRITE_WALK_RIGHT;
-					jumpman->screen_pos.x +=1;
-					break;
-			}
-		}
-		else if (event.type == SDL_KEYUP)
-		{
-			switch (event.key.keysym.sym)
-			{
-				case SDLK_LEFT:
-					jumpman->current_mov = SPRITE_LOOK_LEFT;
-					break;
-				case SDLK_RIGHT:
-					jumpman->current_mov = SPRITE_LOOK_RIGHT;
-					break;
-			}
-		}
-	}
-	deref_object(&layer_active, jumpman_refresh);
-	SDL_Delay(20);
-	free_sprite(jumpman);
 }
 
 

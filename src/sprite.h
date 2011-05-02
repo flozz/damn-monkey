@@ -26,20 +26,29 @@
 #include <SDL.h>
 #endif
 
-#include "refresh.h" //FIXME
 #include "main_functions.h"
+#include "parser.h"
 
 
 #define NUMB_SPRITE_ITEMS 4
-#define SPRITE_LOOK_RIGHT 0
-#define SPRITE_WALK_RIGHT 1
-#define SPRITE_LOOK_LEFT  2
-#define SPRITE_WALK_LEFT  3
+
+#define SPRITE_LOOK_RIGHT    0 //look-right   (jumpman, barrel)
+#define SPRITE_WALK_RIGHT    1 //walk-right   (jumpman, barrel)
+#define SPRITE_LOOK_LEFT     2 //look-left    (jumpman)
+#define SPRITE_WALK_LEFT     3 //walk-left    (jumpman)
+#define SPRITE_JUMP_RIGHT    4 //jump-right   (jumpman)
+#define SPRITE_JUMP_LEFT     5 //jump-left    (jumpman)
+#define SPRITE_LADDER        6 //ladder       (jumpman)
+#define SPRITE_WALK_LADDER   7 //walk-ladder  (jumpman)
+#define SPRITE_DEAD          8 //dead         (jumpman)
+#define SPRITE_THROW_BARREL  9 //throw-barrel (dk)
+#define SPRITE_ASK_HELP     10 //ask-help     (lady)
+#define SPRITE_CUSTOM       11 //custom       (any animated object)
 
 
 /**
  * \struct DM_Sprite_item
- * \brief TODO.
+ * \brief This structure contain all the informations about a single animation.
  */
 typedef struct DM_Sprite_item DM_Sprite_item;
 struct DM_Sprite_item
@@ -55,7 +64,7 @@ struct DM_Sprite_item
 
 /**
  * \struct DM_Sprite
- * \brief TODO.
+ * \brief Contain all the animations of a sprite file.
  */
 typedef struct DM_Sprite DM_Sprite;
 struct DM_Sprite
@@ -68,14 +77,12 @@ struct DM_Sprite
 	int prev_mov;
 	int step;
 	int last_step_change;
-	//TODO : jump, lader, death
 };
 
 
 DM_Sprite* new_sprite(char *sprite_name);
 void free_sprite(DM_Sprite *sprite);
 void sprite_cb(void *object, SDL_Surface *screen);
-void sprite_test(); //FIXME
 
 
 #endif //SPRITE_H_INCLUDED
