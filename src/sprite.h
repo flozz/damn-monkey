@@ -30,7 +30,7 @@
 #include "parser.h"
 
 
-#define NUMB_SPRITE_ITEMS 4
+#define NUMB_SPRITE_ITEMS 12
 
 #define SPRITE_LOOK_RIGHT    0 //look-right   (jumpman, barrel)
 #define SPRITE_WALK_RIGHT    1 //walk-right   (jumpman, barrel)

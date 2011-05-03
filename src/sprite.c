@@ -122,8 +122,8 @@ DM_Sprite* new_sprite(char *sprite_name)
 
 			if (action >= 0)
 			{
-				sprite->items[action].x = atoi(sprite_infos->lines_array[i]->parameters[1]);
-				sprite->items[action].y = atoi(sprite_infos->lines_array[i]->parameters[2]);
+				sprite->items[action].x = atoi(sprite_infos->lines_array[i]->parameters[1]) + 1;
+				sprite->items[action].y = atoi(sprite_infos->lines_array[i]->parameters[2]) + 1;
 				sprite->items[action].w = atoi(sprite_infos->lines_array[i]->parameters[3]);
 				sprite->items[action].h = atoi(sprite_infos->lines_array[i]->parameters[4]);
 				sprite->items[action].n = atoi(sprite_infos->lines_array[i]->parameters[5]);
