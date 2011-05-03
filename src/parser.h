@@ -39,7 +39,8 @@ struct DM_Splited
 };
 
 
-DM_Line_Splited* split(char *string, char separator);
+int is_white_char(char c);
+DM_Line_Splited* split(char *str, char separator);
 void free_dm_line_splited(DM_Line_Splited *line_splited);
 DM_Splited* read_file(char *resource_path);
 void free_dm_splited(DM_Splited *splited);
