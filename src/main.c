@@ -53,6 +53,7 @@
 #include "refresh.h"
 #include "main_menu.h"
 #include "credits.h"
+#include "level_01.h"
 
 
 /**
@@ -106,7 +107,7 @@ int main(int argc, char *argv[])
 		{
 			case 0:
 				Mix_HaltMusic();
-				printf("Main menu > Play\n"); //TODO
+				level_01(); //FIXME
 				Mix_PlayMusic(menu_music, -1);
 				break;
 			case 1:
