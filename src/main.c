@@ -53,6 +53,7 @@
 #include "refresh.h"
 #include "main_menu.h"
 #include "credits.h"
+#include "game.h"
 
 
 /**
@@ -95,8 +96,10 @@ int main(int argc, char *argv[])
 	//Menus music
 	Mix_Music *menu_music = load_music_resource("menu.ogg");
 	Mix_PlayMusic(menu_music, -1);
-	//Refresh
+	//Init refresh
 	refresh_init(screen);
+	//Init game
+	init_game();
 	//Main menu
 	int selected;
 	while (1)
