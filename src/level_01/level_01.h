@@ -10,6 +10,7 @@
 
 #include "main_functions.h"
 #include "refresh.h"
+#include "game.h"
 
 
 void level_01();

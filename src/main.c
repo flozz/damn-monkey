@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 		{
 			case 0:
 				Mix_HaltMusic();
-				level_01(); //FIXME
+				level_01();
 				Mix_PlayMusic(menu_music, -1);
 				break;
 			case 1:

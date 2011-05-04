@@ -39,12 +39,12 @@
 void level_01()
 {
 	DM_Surface *level_surface = load_resource_as_dm_surface("level_01.png");
-	int level_surface_refresh = ref_object(&layer_fg, level_surface, surface_refresh_cb);
+	int level_surface_refresh = ref_object(&layer_bg, level_surface, surface_refresh_cb);
 	
-	//TODO : EVERYTHING
+	lets_play_yeah();
 	
 	//Dereference objects and free the memory
-	deref_object(&layer_fg, level_surface_refresh);
+	deref_object(&layer_bg, level_surface_refresh);
 	SDL_Delay(20);
 	free_dm_surface(level_surface);
 }
