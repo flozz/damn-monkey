@@ -260,7 +260,7 @@ DM_Map* load_map_infos(char *level_name)
 		exit(EXIT_FAILURE);
 	}
 	char path[42] = "";
-	sprintf("levels/%s.map", level_name);
+	sprintf(path, "levels/%s.map", level_name);
 	DM_Splited *map_infos = read_file(path);
 	//Count the platforms and the ladders
 	int i;
@@ -317,14 +317,14 @@ DM_Map* load_map_infos(char *level_name)
 			else if (strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-right"))
 			{
 				map->start_look = SPRITE_LOOK_RIGHT;
-				map->start_point_x = map_infos->lines_array[i]->parameters[1];
-				map->start_point_y = map_infos->lines_array[i]->parameters[2];
+				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
+				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 			}
 			else if (strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-left"))
 			{
 				map->start_look = SPRITE_LOOK_LEFT;
-				map->start_point_x = map_infos->lines_array[i]->parameters[1];
-				map->start_point_y = map_infos->lines_array[i]->parameters[2];
+				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
+				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 			}
 			else if (strcmp(map_infos->lines_array[i]->parameters[0], "finish-collide"))
 			{
@@ -378,6 +378,7 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	else
 	{
 		printf("W: Collide between shape %i and shape %i not implemented.", collide1->shape, collide2->shape);
+		return 0;
 	}
 }
 
