@@ -34,6 +34,7 @@
 
 #include "sprite.h"
 #include "refresh.h"
+#include "parser.h"
 
 
 #define COLLIDE_RECT  0
@@ -52,6 +53,10 @@
 #define HORIZ_MOVE_LEFT    2
 #define HORIZ_MOVE_RIGHT   3
 
+#define JUMP_NONE 0
+#define JUMP_UP   1
+#define JUMP_DOWN 2
+
 
 /**
  * \struct DM_Collide
@@ -65,6 +70,24 @@ struct DM_Collide
 	int y1;    /*!< y1 point */
 	int x2;    /*!< x2 point */
 	int y2;    /*!< y2 point */
+};
+
+
+/**
+ * \struct DM_Collide
+ * \brief Contain all collisions of the map.
+ */
+typedef struct DM_Map DM_Map;
+struct DM_Map
+{
+	DM_Collide *platforms; /*!< Platfoms collides. */
+	int platform_count;    /*!< The number of platforms. */
+	DM_Collide *ladders;   /*!< Ladders collides. */
+	int ladder_count;      /*!< The number of ladders. */
+	DM_Collide finish;     /*!< Finish area collide. */
+	int start_point_x;     /*!< Jumpman start point (x). */
+	int start_point_y;     /*!< Jumpman start point (y). */
+	int start_look;        /*!< Where Jumpman look at the start. */
 };
 
 
@@ -95,7 +118,10 @@ int GAME_STATE;
 void init_game();
 void update_jumpman();
 void lets_play_yeah();
-
+DM_Map* load_map_infos(char *level_name);
+void free_dm_map(DM_Map *map);
+int collide(DM_Collide *collide1, DM_Collide *collide2);
+int _collide_line_point(DM_Collide *collide1, DM_Collide *collide2);
 
 #endif //GAME_H_INCLUDED
 
