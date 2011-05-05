@@ -1,0 +1,17 @@
+jumpman-start-left ; 762 ; 558 ;   0 ;   0 ;
+finish-collide     ; 462 ;  88 ; 491 ;  91 ;
+platform-collide   ; 799 ; 558 ; 661 ; 558 ;
+platform-collide   ; 661 ; 558 ;  13 ; 542 ;
+platform-collide   ; 135 ; 467 ; 587 ; 451 ;
+platform-collide   ; 665 ; 382 ;  13 ; 366 ;
+platform-collide   ; 135 ; 291 ; 787 ; 275 ;
+platform-collide   ; 667 ; 206 ; 297 ; 175 ;
+platform-collide   ; 297 ; 175 ;   8 ; 175 ;
+platform-collide   ; 297 ; 175 ; 297 ; 117 ;
+ladder-collide     ; 156 ; 465 ; 185 ; 547 ;
+ladder-collide     ; 394 ; 374 ; 423 ; 462 ;
+ladder-collide     ; 600 ; 379 ; 629 ; 457 ;
+ladder-collide     ; 275 ; 286 ; 304 ; 374 ;
+ladder-collide     ; 149 ; 289 ; 178 ; 371 ;
+ladder-collide     ; 604 ; 200 ; 633 ; 280 ;
+ladder-collide     ; 462 ;  90 ; 491 ; 192 ;

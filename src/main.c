@@ -54,6 +54,8 @@
 #include "main_menu.h"
 #include "credits.h"
 #include "game.h"
+#include "levels/level_01.h"
+
 
 
 /**
@@ -109,7 +111,7 @@ int main(int argc, char *argv[])
 		{
 			case 0:
 				Mix_HaltMusic();
-				printf("Main menu > Play\n"); //TODO
+				level_01();
 				Mix_PlayMusic(menu_music, -1);
 				break;
 			case 1:

@@ -174,7 +174,7 @@ DM_Splited* read_file(char *resource_path)
  	//TODO
 	#endif
 	#ifdef MAC_OS
-	strcpy(filepath, "./Damn Monkey.app/Contents/Resources");
+	strcpy(filepath, "./Damn Monkey.app/Contents/Resources/");
 	strcat(filepath, resource_path);
 	#endif
 	file = fopen(filepath,"r");
