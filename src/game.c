@@ -40,11 +40,8 @@ void init_game()
 	GAME_SPEED = 1;
 	GAME_STATE = GAME_STATE_NONE;
 	//Init jumpman
-	JUMPMAN.start_pos_x = 42;
-	JUMPMAN.start_pos_y = 42;
-	JUMPMAN.start_move = SPRITE_LOOK_RIGHT;
-	JUMPMAN.pos_x = 0;
-	JUMPMAN.pos_y = 0;
+	JUMPMAN.pos_x = 42;
+	JUMPMAN.pos_y = 42;
 	JUMPMAN.movement = SPRITE_LOOK_RIGHT;
 	JUMPMAN.sprite = new_sprite("jumpman");
 	JUMPMAN.platform_collide.shape = COLLIDE_POINT;
@@ -109,22 +106,29 @@ void update_jumpman()
 }
 
 
-//TODO
-void lets_play_yeah() {
+/**
+ * \fn int lets_play_yeah(DM_Map *map)
+ * \brief This is the main function of the game. It control jumpman,...
+ *
+ * \param map The DM_Map that contain collides for the level.
+ *
+ * \return Returns the game status (GAME_STATE_LEVEL_COMPLETED, GAME_STATE_LIFE_LOST).
+ */
+int lets_play_yeah(DM_Map *map) {
 	//Enable the key repetition
 	SDL_EnableKeyRepeat(0, 0);
 	//Initialize the GAME_STATE variable
 	GAME_STATE = GAME_STATE_PLAYING;
 	//Set the start position of jumpman
-	JUMPMAN.movement = JUMPMAN.start_move;
-	JUMPMAN.pos_x = JUMPMAN.start_pos_x + JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
-	JUMPMAN.pos_y = JUMPMAN.start_pos_y + JUMPMAN.sprite->items[JUMPMAN.movement].h;
+	JUMPMAN.movement = map->start_look;
+	JUMPMAN.pos_x = map->start_point_x + JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
+	JUMPMAN.pos_y = map->start_point_y - JUMPMAN.sprite->items[JUMPMAN.movement].h;
 	update_jumpman();
 	//Reference Jumman in the global refresh
 	int jumpman_refresh = ref_object(&layer_active, JUMPMAN.sprite, sprite_cb);
 	//some vars
 	int horiz_move;
-	if (JUMPMAN.start_move == SPRITE_LOOK_LEFT)
+	if (JUMPMAN.movement == SPRITE_LOOK_LEFT)
 	{
 		horiz_move = HORIZ_MOVE_NONE_L;
 	}
@@ -238,6 +242,7 @@ void lets_play_yeah() {
 
 	//Dereference Jumpman
 	deref_object(&layer_active, jumpman_refresh);
+	return 0; //FIXME
 }
 
 
@@ -298,7 +303,7 @@ DM_Map* load_map_infos(char *level_name)
 	{
 		if (map_infos->lines_array[i]->parameters_int == 5)
 		{
-			if (strcmp(map_infos->lines_array[i]->parameters[0], "platform-collide"))
+			if (!strcmp(map_infos->lines_array[i]->parameters[0], "platform-collide"))
 			{
 				map->platforms[platform_count].x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->platforms[platform_count].y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
@@ -306,7 +311,7 @@ DM_Map* load_map_infos(char *level_name)
 				map->platforms[platform_count].y2 = atoi(map_infos->lines_array[i]->parameters[4]) + 1;
 				platform_count--;
 			}
-			else if (strcmp(map_infos->lines_array[i]->parameters[0], "ladder-collide"))
+			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "ladder-collide"))
 			{
 				map->ladders[ladder_count].x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->ladders[ladder_count].y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
@@ -314,19 +319,19 @@ DM_Map* load_map_infos(char *level_name)
 				map->ladders[ladder_count].y2 = atoi(map_infos->lines_array[i]->parameters[4]) + 1;
 				ladder_count--;
 			}
-			else if (strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-right"))
+			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-right"))
 			{
 				map->start_look = SPRITE_LOOK_RIGHT;
 				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 			}
-			else if (strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-left"))
+			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-left"))
 			{
 				map->start_look = SPRITE_LOOK_LEFT;
 				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 			}
-			else if (strcmp(map_infos->lines_array[i]->parameters[0], "finish-collide"))
+			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "finish-collide"))
 			{
 				map->finish.x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->finish.y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;

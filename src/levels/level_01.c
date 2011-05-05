@@ -38,10 +38,14 @@
  */
 void level_01()
 {
+	//Load the background
 	DM_Surface *level_surface = load_resource_as_dm_surface("level_01.png");
 	int level_surface_refresh = ref_object(&layer_bg, level_surface, surface_refresh_cb);
 	
-	lets_play_yeah();
+	//Load the level infos (collides,...)
+	DM_Map *map = load_map_infos("level_01");
+	lets_play_yeah(map);
+	//FIXME: free dm_map
 	
 	//Dereference objects and free the memory
 	deref_object(&layer_bg, level_surface_refresh);

@@ -104,9 +104,6 @@ struct DM_Jumpman
 	int pos_x;                   /*!< The position of Jumpman (x). */
 	int pos_y;                   /*!< The position of Jumpman (y). */
 	int movement;                /*!< The current movement for animation (SPRITE_*). */
-	int start_pos_x;             /*!< The start point of Jumpman (x). */
-	int start_pos_y;             /*!< The start point of Jumpman (y). */
-	int start_move;              /*!< The start movement of Jumpman (SPRITE_LOOK_RIGHT or SPRITE_LOOK_LEFT). */
 };
 
 
@@ -117,7 +114,7 @@ int GAME_STATE;
 
 void init_game();
 void update_jumpman();
-void lets_play_yeah();
+int lets_play_yeah(DM_Map *map);
 DM_Map* load_map_infos(char *level_name);
 void free_dm_map(DM_Map *map);
 int collide(DM_Collide *collide1, DM_Collide *collide2);
