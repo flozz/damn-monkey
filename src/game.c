@@ -127,7 +127,8 @@ int lets_play_yeah(DM_Map *map) {
 	//Reference Jumman in the global refresh
 	int jumpman_refresh = ref_object(&layer_active, JUMPMAN.sprite, sprite_cb);
 	//some vars
-	int horiz_move;
+	int horiz_move = HORIZ_MOVE_NONE_R;
+	int vert_move = VERT_MOVE_NONE;
 	if (JUMPMAN.movement == SPRITE_LOOK_LEFT)
 	{
 		horiz_move = HORIZ_MOVE_NONE_L;
@@ -399,7 +400,7 @@ DM_Map* load_map_infos(char *level_name)
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "ladder-collide"))
 			{
-				map->platforms[platform_count].shape = COLLIDE_RECT;
+				map->ladders[ladder_count].shape = COLLIDE_RECT;
 				map->ladders[ladder_count].x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->ladders[ladder_count].y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 				map->ladders[ladder_count].x2 = atoi(map_infos->lines_array[i]->parameters[3]) + 1;
@@ -408,21 +409,19 @@ DM_Map* load_map_infos(char *level_name)
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-right"))
 			{
-				map->platforms[platform_count].shape = COLLIDE_POINT;
 				map->start_look = SPRITE_LOOK_RIGHT;
 				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-left"))
 			{
-				map->platforms[platform_count].shape = COLLIDE_POINT;
 				map->start_look = SPRITE_LOOK_LEFT;
 				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "finish-collide"))
 			{
-				map->platforms[platform_count].shape = COLLIDE_RECT;
+				map->finish.shape = COLLIDE_RECT;
 				map->finish.x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->finish.y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 				map->finish.x2 = atoi(map_infos->lines_array[i]->parameters[3]) + 1;
@@ -465,6 +464,76 @@ int check_platform_collides(DM_Collide *collide_point, DM_Map *map)
 	return 0;
 }
 
+//TODO
+int check_ladder_collides(DM_Collide *collide_point, DM_Map *map)
+{
+	int i;
+	for (i=0 ; i<map->ladder_count ; i++)
+	{
+		if (collide(collide_point, &map->ladders[i]))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//TODO
+int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
+{
+	DM_Collide crect;
+	crect.shape = COLLIDE_RECT;
+	int i;
+	for (i=0 ; i<map->ladder_count ; i++)
+	{
+		crect.x1 = map->ladders[i].x1;
+		crect.x2 = map->ladders[i].x2;
+		if (map->ladders[i].y1 > map->ladders[i].y2)
+		{
+			crect.y1 = map->ladders[i].y1;
+			crect.y2 = map->ladders[i].y1 + 5;
+		}
+		else
+		{
+			crect.y1 = map->ladders[i].y2;
+			crect.y2 = map->ladders[i].y2 + 5;
+		}
+		if (collide(collide_point, &crect))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
+int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
+{
+	DM_Collide crect;
+	crect.shape = COLLIDE_RECT;
+	int i;
+	for (i=0 ; i<map->ladder_count ; i++)
+	{
+		crect.x1 = map->ladders[i].x1;
+		crect.x2 = map->ladders[i].x2;
+		if (map->ladders[i].y1 > map->ladders[i].y2)
+		{
+			crect.y1 = map->ladders[i].y2 - 5;
+			crect.y2 = map->ladders[i].y2;
+		}
+		else
+		{
+			crect.y1 = map->ladders[i].y1 - 5;
+			crect.y2 = map->ladders[i].y1;
+		}
+		if (collide(collide_point, &crect))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
 
 /**
  * \fn collide(DM_Collide *collide1, DM_Collide *collide2)
@@ -484,6 +553,14 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	else if (collide1->shape == COLLIDE_POINT && collide2->shape == COLLIDE_LINE)
 	{
 		return _collide_line_point(collide2, collide1);
+	}
+	if (collide1->shape == COLLIDE_RECT && collide2->shape == COLLIDE_POINT)
+	{
+		return _collide_rect_point(collide1, collide2);
+	}
+	else if (collide1->shape == COLLIDE_POINT && collide2->shape == COLLIDE_RECT)
+	{
+		return _collide_rect_point(collide2, collide1);
 	}
 	else
 	{
