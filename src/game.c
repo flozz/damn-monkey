@@ -137,6 +137,7 @@ int lets_play_yeah(DM_Map *map) {
 		horiz_move = HORIZ_MOVE_NONE_R;
 	}
 	int jump = JUMP_NONE;
+	int jump_y_start = 0;
 	SDL_Event event;
 
 	//The main loop of the game
@@ -161,6 +162,7 @@ int lets_play_yeah(DM_Map *map) {
 						if (!jump) 
 						{
 							jump = JUMP_UP;
+							jump_y_start = JUMPMAN.pos_y;
 						}
 						break;
 					default:
@@ -210,6 +212,8 @@ int lets_play_yeah(DM_Map *map) {
 			}
 			else if (horiz_move == HORIZ_MOVE_NONE_L) {
 				JUMPMAN.movement = SPRITE_LOOK_LEFT;
+				//XXX
+				JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2; 
 			}
 			else if (horiz_move == HORIZ_MOVE_RIGHT) {
 				JUMPMAN.movement = SPRITE_WALK_RIGHT;
@@ -230,20 +234,48 @@ int lets_play_yeah(DM_Map *map) {
 			}
 			else if (horiz_move == HORIZ_MOVE_NONE_R) {
 				JUMPMAN.movement = SPRITE_LOOK_RIGHT;
+				//XXX
+				JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 			}
 		}
 		else
 		{
 			if (horiz_move == HORIZ_MOVE_LEFT) {
 				JUMPMAN.movement = SPRITE_JUMP_LEFT;
-				JUMPMAN.pos_x -= 1;
+				JUMPMAN.platform_collide.x1--;
+				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+				{
+					JUMPMAN.pos_x -= 1;
+				}
+				else
+				{
+					JUMPMAN.platform_collide.y1--;
+					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+					{
+						JUMPMAN.pos_x -= 1;
+						JUMPMAN.pos_y -= 1;
+					}
+				}
 			}
 			else if (horiz_move == HORIZ_MOVE_NONE_L) {
 				JUMPMAN.movement = SPRITE_JUMP_LEFT;
 			}
 			else if (horiz_move == HORIZ_MOVE_RIGHT) {
 				JUMPMAN.movement = SPRITE_JUMP_RIGHT;
-				JUMPMAN.pos_x += 1;
+				JUMPMAN.platform_collide.x1++;
+				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+				{
+					JUMPMAN.pos_x += 1;
+				}
+				else
+				{
+					JUMPMAN.platform_collide.y1--;
+					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+					{
+						JUMPMAN.pos_x += 1;
+						JUMPMAN.pos_y -= 1;
+					}
+				}
 			}
 			else if (horiz_move == HORIZ_MOVE_NONE_R) {
 				JUMPMAN.movement = SPRITE_JUMP_RIGHT;
@@ -251,19 +283,41 @@ int lets_play_yeah(DM_Map *map) {
 
 			if (jump == JUMP_UP)
 			{
-				//TODO
+				if (jump_y_start - JUMPMAN.pos_y < 10)
+				{
+					JUMPMAN.pos_y -= 3;
+				}
+				else if (jump_y_start - JUMPMAN.pos_y < 25)
+				{
+					JUMPMAN.pos_y -= 2;
+				}
+				else if (jump_y_start - JUMPMAN.pos_y < 35)
+				{
+					JUMPMAN.pos_y -= 1;
+				}
+				else
+				{
+					jump = JUMP_DOWN;
+				}
 			}
 			else
 			{
-				//TODO
+				JUMPMAN.platform_collide.y1++;
+				if (check_platform_collides(&JUMPMAN.platform_collide, map))
+				{
+					jump = JUMP_NONE;
+				}
 			}
 		}
 		update_jumpman();
 		//Gravity
-		JUMPMAN.platform_collide.y1++;
-		if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+		if (jump != JUMP_UP)
 		{
-			JUMPMAN.pos_y++;
+			JUMPMAN.platform_collide.y1++;
+			if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+			{
+				JUMPMAN.pos_y++;
+			}
 		}
 		update_jumpman();
 		SDL_Delay(5);
