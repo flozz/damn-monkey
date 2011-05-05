@@ -159,8 +159,38 @@ int lets_play_yeah(DM_Map *map) {
 					case SDLK_RIGHT:
 						horiz_move = HORIZ_MOVE_RIGHT;
 						break;
+					case SDLK_UP:
+						if (vert_move == VERT_MOVE_NONE) {
+							if (check_ladder_bottom_collides(&JUMPMAN.platform_collide, map))
+							{
+								vert_move = VERT_MOVE_UP;
+							}
+						}
+						else
+						{
+							if (check_ladder_collides(&JUMPMAN.platform_collide, map))
+							{
+								vert_move = VERT_MOVE_UP;
+							}
+						}
+						break;
+					case SDLK_DOWN:
+						if (vert_move == VERT_MOVE_NONE) {
+							if (check_ladder_top_collides(&JUMPMAN.platform_collide, map))
+							{
+								vert_move = VERT_MOVE_DOWN;
+							}
+						}
+						else
+						{
+							if (check_ladder_collides(&JUMPMAN.platform_collide, map))
+							{
+								vert_move = VERT_MOVE_DOWN;
+							}
+						}
+						break;
 					case SDLK_SPACE:
-						if (!jump) 
+						if (!jump && vert_move == VERT_MOVE_NONE) 
 						{
 							jump = JUMP_UP;
 							jump_y_start = JUMPMAN.pos_y;
@@ -186,6 +216,18 @@ int lets_play_yeah(DM_Map *map) {
 							horiz_move = HORIZ_MOVE_NONE_R;
 						}
 						break;
+					case SDLK_UP:
+						if (vert_move == VERT_MOVE_UP)
+						{
+							vert_move = VERT_MOVE_IM;
+						}
+						break;
+					case SDLK_DOWN:
+						if (vert_move == VERT_MOVE_DOWN)
+						{
+							vert_move = VERT_MOVE_IM;
+						}
+						break;
 					default:
 						break;
 				}
@@ -194,49 +236,99 @@ int lets_play_yeah(DM_Map *map) {
 		//Update jumpman position
 		if (!jump)
 		{
-			if (horiz_move == HORIZ_MOVE_LEFT) {
-				JUMPMAN.movement = SPRITE_WALK_LEFT;
-				JUMPMAN.platform_collide.x1--;
-				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
-				{
-					JUMPMAN.pos_x -= 1;
-				}
-				else
-				{
-					JUMPMAN.platform_collide.y1--;
+			//HORIZ
+			if (!check_ladder_collides(&JUMPMAN.platform_collide, map) || 
+					(
+					 check_ladder_collides(&JUMPMAN.platform_collide, map) &&
+					 check_ladder_top_collides(&JUMPMAN.platform_collide, map)
+					) || (
+					 check_ladder_collides(&JUMPMAN.platform_collide, map) &&
+					 check_ladder_bottom_collides(&JUMPMAN.platform_collide, map)
+					)
+				)
+			{
+				if (horiz_move == HORIZ_MOVE_LEFT) {
+					JUMPMAN.movement = SPRITE_WALK_LEFT;
+					JUMPMAN.platform_collide.x1--;
 					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
 					{
 						JUMPMAN.pos_x -= 1;
-						JUMPMAN.pos_y -= 1;
+					}
+					else
+					{
+						JUMPMAN.platform_collide.y1--;
+						if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+						{
+							JUMPMAN.pos_x -= 1;
+							JUMPMAN.pos_y -= 1;
+						}
 					}
 				}
-			}
-			else if (horiz_move == HORIZ_MOVE_NONE_L) {
-				JUMPMAN.movement = SPRITE_LOOK_LEFT;
-				//XXX
-				JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2; 
-			}
-			else if (horiz_move == HORIZ_MOVE_RIGHT) {
-				JUMPMAN.movement = SPRITE_WALK_RIGHT;
-				JUMPMAN.platform_collide.x1++;
-				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
-				{
-					JUMPMAN.pos_x += 1;
+				else if (horiz_move == HORIZ_MOVE_NONE_L) {
+					JUMPMAN.movement = SPRITE_LOOK_LEFT;
+					JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2; 
 				}
-				else
-				{
-					JUMPMAN.platform_collide.y1--;
+				else if (horiz_move == HORIZ_MOVE_RIGHT) {
+					JUMPMAN.movement = SPRITE_WALK_RIGHT;
+					JUMPMAN.platform_collide.x1++;
 					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
 					{
 						JUMPMAN.pos_x += 1;
-						JUMPMAN.pos_y -= 1;
+					}
+					else
+					{
+						JUMPMAN.platform_collide.y1--;
+						if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+						{
+							JUMPMAN.pos_x += 1;
+							JUMPMAN.pos_y -= 1;
+						}
 					}
 				}
+				else if (horiz_move == HORIZ_MOVE_NONE_R) {
+					JUMPMAN.movement = SPRITE_LOOK_RIGHT;
+					JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
+				}
 			}
-			else if (horiz_move == HORIZ_MOVE_NONE_R) {
-				JUMPMAN.movement = SPRITE_LOOK_RIGHT;
-				//XXX
-				JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
+			//VERT 
+			if (vert_move == VERT_MOVE_UP)
+			{
+				if (check_ladder_collides(&JUMPMAN.platform_collide, map))
+				{
+					if (check_ladder_top_collides(&JUMPMAN.platform_collide, map))
+					{
+						JUMPMAN.pos_y -= 5;
+						vert_move = VERT_MOVE_NONE;
+					}
+					else
+					{
+						JUMPMAN.pos_y--;
+					}
+				}
+				else
+				{
+					vert_move = VERT_MOVE_NONE;
+				}
+			}
+			else if (vert_move == VERT_MOVE_DOWN)
+			{
+				if (check_ladder_collides(&JUMPMAN.platform_collide, map))
+				{
+					JUMPMAN.platform_collide.y1++;
+					if(!check_ladder_bottom_collides(&JUMPMAN.platform_collide, map))
+					{
+						JUMPMAN.pos_y++;
+					}
+					else
+					{
+						vert_move = VERT_MOVE_NONE;
+						JUMPMAN.pos_y--;
+					}
+				}
+				else
+				{
+					vert_move = VERT_MOVE_NONE;
+				}
 			}
 		}
 		else
@@ -312,7 +404,7 @@ int lets_play_yeah(DM_Map *map) {
 		}
 		update_jumpman();
 		//Gravity
-		if (jump != JUMP_UP)
+		if (jump != JUMP_UP && vert_move == VERT_MOVE_NONE)
 		{
 			JUMPMAN.platform_collide.y1++;
 			if (!check_platform_collides(&JUMPMAN.platform_collide, map))
@@ -488,7 +580,7 @@ int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
 	{
 		crect.x1 = map->ladders[i].x1;
 		crect.x2 = map->ladders[i].x2;
-		if (map->ladders[i].y1 > map->ladders[i].y2)
+		if (map->ladders[i].y1 < map->ladders[i].y2)
 		{
 			crect.y1 = map->ladders[i].y1;
 			crect.y2 = map->ladders[i].y1 + 5;
@@ -516,14 +608,14 @@ int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
 	{
 		crect.x1 = map->ladders[i].x1;
 		crect.x2 = map->ladders[i].x2;
-		if (map->ladders[i].y1 > map->ladders[i].y2)
+		if (map->ladders[i].y1 < map->ladders[i].y2)
 		{
-			crect.y1 = map->ladders[i].y2 - 5;
+			crect.y1 = map->ladders[i].y2 - 10;
 			crect.y2 = map->ladders[i].y2;
 		}
 		else
 		{
-			crect.y1 = map->ladders[i].y1 - 5;
+			crect.y1 = map->ladders[i].y1 - 10;
 			crect.y2 = map->ladders[i].y1;
 		}
 		if (collide(collide_point, &crect))
@@ -564,7 +656,7 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	}
 	else
 	{
-		printf("W: Collide between shape %i and shape %i not implemented.\n", collide1->shape, collide2->shape);
+/*		printf("W: Collide between shape %i and shape %i not implemented.\n", collide1->shape, collide2->shape);*/
 		return 0;
 	}
 }

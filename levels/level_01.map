@@ -2,7 +2,7 @@ jumpman-start-left ; 762 ; 557 ;   0 ;   0 ;
 finish-collide     ; 462 ;  88 ; 491 ;  91 ;
 platform-collide   ; 799 ; 558 ; 661 ; 558 ;
 platform-collide   ; 661 ; 558 ;  13 ; 542 ;
-platform-collide   ; 135 ; 467 ; 587 ; 451 ;
+platform-collide   ; 135 ; 467 ; 787 ; 451 ;
 platform-collide   ; 665 ; 382 ;  13 ; 366 ;
 platform-collide   ; 135 ; 291 ; 787 ; 275 ;
 platform-collide   ; 667 ; 206 ; 297 ; 175 ;

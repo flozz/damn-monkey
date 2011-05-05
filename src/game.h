@@ -56,7 +56,7 @@
 #define VERT_MOVE_NONE     0
 #define VERT_MOVE_IM       1
 #define VERT_MOVE_UP       2
-#define VERT_MOVE_BOTTOM   3
+#define VERT_MOVE_DOWN     3
 
 #define JUMP_NONE 0
 #define JUMP_UP   1
