@@ -1,4 +1,4 @@
-jumpman-start-left ; 762 ; 558 ;   0 ;   0 ;
+jumpman-start-left ; 762 ; 557 ;   0 ;   0 ;
 finish-collide     ; 462 ;  88 ; 491 ;  91 ;
 platform-collide   ; 799 ; 558 ; 661 ; 558 ;
 platform-collide   ; 661 ; 558 ;  13 ; 542 ;

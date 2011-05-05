@@ -117,8 +117,11 @@ void update_jumpman();
 int lets_play_yeah(DM_Map *map);
 DM_Map* load_map_infos(char *level_name);
 void free_dm_map(DM_Map *map);
+int check_platform_collides(DM_Collide *collide_point, DM_Map *map);
 int collide(DM_Collide *collide1, DM_Collide *collide2);
 int _collide_line_point(DM_Collide *collide1, DM_Collide *collide2);
+int _collide_rect_point(DM_Collide *crect, DM_Collide *cpoint);
+
 
 #endif //GAME_H_INCLUDED
 

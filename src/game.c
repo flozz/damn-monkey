@@ -121,7 +121,7 @@ int lets_play_yeah(DM_Map *map) {
 	GAME_STATE = GAME_STATE_PLAYING;
 	//Set the start position of jumpman
 	JUMPMAN.movement = map->start_look;
-	JUMPMAN.pos_x = map->start_point_x + JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
+	JUMPMAN.pos_x = map->start_point_x - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 	JUMPMAN.pos_y = map->start_point_y - JUMPMAN.sprite->items[JUMPMAN.movement].h;
 	update_jumpman();
 	//Reference Jumman in the global refresh
@@ -193,14 +193,40 @@ int lets_play_yeah(DM_Map *map) {
 		{
 			if (horiz_move == HORIZ_MOVE_LEFT) {
 				JUMPMAN.movement = SPRITE_WALK_LEFT;
-				JUMPMAN.pos_x -= 1;
+				JUMPMAN.platform_collide.x1--;
+				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+				{
+					JUMPMAN.pos_x -= 1;
+				}
+				else
+				{
+					JUMPMAN.platform_collide.y1--;
+					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+					{
+						JUMPMAN.pos_x -= 1;
+						JUMPMAN.pos_y -= 1;
+					}
+				}
 			}
 			else if (horiz_move == HORIZ_MOVE_NONE_L) {
 				JUMPMAN.movement = SPRITE_LOOK_LEFT;
 			}
 			else if (horiz_move == HORIZ_MOVE_RIGHT) {
 				JUMPMAN.movement = SPRITE_WALK_RIGHT;
-				JUMPMAN.pos_x += 1;
+				JUMPMAN.platform_collide.x1++;
+				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+				{
+					JUMPMAN.pos_x += 1;
+				}
+				else
+				{
+					JUMPMAN.platform_collide.y1--;
+					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+					{
+						JUMPMAN.pos_x += 1;
+						JUMPMAN.pos_y -= 1;
+					}
+				}
 			}
 			else if (horiz_move == HORIZ_MOVE_NONE_R) {
 				JUMPMAN.movement = SPRITE_LOOK_RIGHT;
@@ -232,8 +258,13 @@ int lets_play_yeah(DM_Map *map) {
 				//TODO
 			}
 		}
-		//TODO gravity
-		//Update Jumpman
+		update_jumpman();
+		//Gravity
+		JUMPMAN.platform_collide.y1++;
+		if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+		{
+			JUMPMAN.pos_y++;
+		}
 		update_jumpman();
 		SDL_Delay(5);
 	}
@@ -305,6 +336,7 @@ DM_Map* load_map_infos(char *level_name)
 		{
 			if (!strcmp(map_infos->lines_array[i]->parameters[0], "platform-collide"))
 			{
+				map->platforms[platform_count].shape = COLLIDE_LINE;
 				map->platforms[platform_count].x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->platforms[platform_count].y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 				map->platforms[platform_count].x2 = atoi(map_infos->lines_array[i]->parameters[3]) + 1;
@@ -313,6 +345,7 @@ DM_Map* load_map_infos(char *level_name)
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "ladder-collide"))
 			{
+				map->platforms[platform_count].shape = COLLIDE_RECT;
 				map->ladders[ladder_count].x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->ladders[ladder_count].y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 				map->ladders[ladder_count].x2 = atoi(map_infos->lines_array[i]->parameters[3]) + 1;
@@ -321,18 +354,21 @@ DM_Map* load_map_infos(char *level_name)
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-right"))
 			{
+				map->platforms[platform_count].shape = COLLIDE_POINT;
 				map->start_look = SPRITE_LOOK_RIGHT;
 				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-left"))
 			{
+				map->platforms[platform_count].shape = COLLIDE_POINT;
 				map->start_look = SPRITE_LOOK_LEFT;
 				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "finish-collide"))
 			{
+				map->platforms[platform_count].shape = COLLIDE_RECT;
 				map->finish.x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
 				map->finish.y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
 				map->finish.x2 = atoi(map_infos->lines_array[i]->parameters[3]) + 1;
@@ -361,6 +397,21 @@ void free_dm_map(DM_Map *map)
 }
 
 
+//TODO
+int check_platform_collides(DM_Collide *collide_point, DM_Map *map)
+{
+	int i;
+	for (i=0 ; i<map->platform_count ; i++)
+	{
+		if (collide(collide_point, &map->platforms[i]))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
 /**
  * \fn collide(DM_Collide *collide1, DM_Collide *collide2)
  * \brief Check for collision between two DM_Collide.
@@ -382,7 +433,7 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	}
 	else
 	{
-		printf("W: Collide between shape %i and shape %i not implemented.", collide1->shape, collide2->shape);
+		printf("W: Collide between shape %i and shape %i not implemented.\n", collide1->shape, collide2->shape);
 		return 0;
 	}
 }
@@ -390,6 +441,12 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 
 int _collide_line_point(DM_Collide *cline, DM_Collide *cpoint)
 {
+	//Check the rect
+	if (!_collide_rect_point(cline, cpoint))
+	{
+		return 0;
+	}
+	//Check the line
 	float dx1 = cline->x1;
 	float dy1 = cline->y1;
 	float dx2 = cline->x2;
@@ -413,6 +470,40 @@ int _collide_line_point(DM_Collide *cline, DM_Collide *cpoint)
 	else
 	{
 		return 0;
+	}
+}
+
+
+int _collide_rect_point(DM_Collide *crect, DM_Collide *cpoint)
+{
+	int x1, x2, y1, y2;
+	if (crect->x1 < crect->x2)
+	{
+		x1 = crect->x1;
+		x2 = crect->x2;
+	}
+	else
+	{
+		x1 = crect->x2;
+		x2 = crect->x1;
+	}
+	if (crect->y1 < crect->y2)
+	{
+		y1 = crect->y1;
+		y2 = crect->y2;
+	}
+	else
+	{
+		y1 = crect->y2;
+		y2 = crect->y1;
+	}
+	if (cpoint->x1 <  x1 || cpoint->x1 > x2 || cpoint->y1 < y1 || cpoint->y1 > y2)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
 	}
 }
 
