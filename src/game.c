@@ -692,6 +692,24 @@ int _collide_line_point(DM_Collide *cline, DM_Collide *cpoint)
 	}
 	else
 	{
+		//An other test for fiability
+		dy1 += 1;
+		dy2 += 1;
+
+		delta = dx1 - dx2;
+		delta_a = dy1 - dy2;
+		delta_b = dx1 * dy2 - dx2 * dy1;
+
+		a = delta_a / delta;
+		b = delta_b / delta;
+
+		result = a * ptx + b;
+
+		if (pty == result)
+		{
+			return 1;
+		}
+
 		return 0;
 	}
 }
