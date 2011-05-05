@@ -303,6 +303,7 @@ int lets_play_yeah(DM_Map *map) {
 					else
 					{
 						JUMPMAN.pos_y--;
+						JUMPMAN.movement = SPRITE_WALK_LADDER;
 					}
 				}
 				else
@@ -318,6 +319,7 @@ int lets_play_yeah(DM_Map *map) {
 					if(!check_ladder_bottom_collides(&JUMPMAN.platform_collide, map))
 					{
 						JUMPMAN.pos_y++;
+						JUMPMAN.movement = SPRITE_WALK_LADDER;
 					}
 					else
 					{
@@ -329,6 +331,10 @@ int lets_play_yeah(DM_Map *map) {
 				{
 					vert_move = VERT_MOVE_NONE;
 				}
+			}
+			else if (vert_move == VERT_MOVE_IM)
+			{
+				JUMPMAN.movement = SPRITE_LADDER;
 			}
 		}
 		else
@@ -583,12 +589,12 @@ int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
 		if (map->ladders[i].y1 < map->ladders[i].y2)
 		{
 			crect.y1 = map->ladders[i].y1;
-			crect.y2 = map->ladders[i].y1 + 5;
+			crect.y2 = map->ladders[i].y1 + 3;
 		}
 		else
 		{
 			crect.y1 = map->ladders[i].y2;
-			crect.y2 = map->ladders[i].y2 + 5;
+			crect.y2 = map->ladders[i].y2 + 3;
 		}
 		if (collide(collide_point, &crect))
 		{
