@@ -419,14 +419,25 @@ int lets_play_yeah(DM_Map *map) {
 			}
 		}
 		update_jumpman();
+		//Finish area
+		if (collide(&map->finish, &JUMPMAN.platform_collide))
+		{
+			GAME_STATE = GAME_STATE_LEVEL_COMPLETED;
+		}
 		SDL_Delay(5);
 	}
 
-	//TODO Make something for every GAME_STATE
+	//If the player die
+	if (GAME_STATE == GAME_STATE_LIFE_LOST)
+	{
+		JUMPMAN.movement = SPRITE_DEAD;
+		update_jumpman();
+		SDL_Delay(1500);
+	}
 
 	//Dereference Jumpman
 	deref_object(&layer_active, jumpman_refresh);
-	return 0; //FIXME
+	return GAME_STATE;
 }
 
 
