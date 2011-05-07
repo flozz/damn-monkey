@@ -304,6 +304,9 @@ int lets_play_yeah(DM_Map *map) {
 			{
 				if (check_ladder_collides(&JUMPMAN.platform_collide, map))
 				{
+					//Center Jumpman on the ladder
+					JUMPMAN.pos_x = get_collide_ladder_center(&JUMPMAN.platform_collide, map) - \
+									JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 					if (check_ladder_top_collides(&JUMPMAN.platform_collide, map))
 					{
 						JUMPMAN.pos_y -= 5;
@@ -322,6 +325,9 @@ int lets_play_yeah(DM_Map *map) {
 			}
 			else if (vert_move == VERT_MOVE_DOWN) //MOVE DOWN (ladders)
 			{
+				//Center Jumpman on the ladder
+					JUMPMAN.pos_x = get_collide_ladder_center(&JUMPMAN.platform_collide, map) - \
+									JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 				if (check_ladder_collides(&JUMPMAN.platform_collide, map))
 				{
 					JUMPMAN.platform_collide.y1++;
@@ -581,7 +587,7 @@ void free_dm_map(DM_Map *map)
  * \param collide_point The point that we have to check.
  * \param map the DM_Map that contain the list of all platforms.
  *
- * \return Return true if there is a collide, false else.
+ * \return Returns true if there is a collide, false else.
  */
 int check_platform_collides(DM_Collide *collide_point, DM_Map *map)
 {
@@ -627,7 +633,7 @@ int check_ladder_collides(DM_Collide *collide_point, DM_Map *map)
  * \param collide_point The point that we have to check.
  * \param map the DM_Map that contain the list of all ladders.
  *
- * \return Return true if there is a collide, false else.
+ * \return Returns true if there is a collide, false else.
  */
 int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
 {
@@ -664,7 +670,7 @@ int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
  * \param collide_point The point that we have to check.
  * \param map the DM_Map that contain the list of all ladders.
  *
- * \return Return true if there is a collide, false else.
+ * \return Returns true if there is a collide, false else.
  */
 int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
 {
@@ -691,6 +697,29 @@ int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
 		}
 	}
 	return 0;
+}
+
+
+/**
+ * \fn int get_collide_ladder_center(DM_Collide *collide_point, DM_Map *map)
+ * \brief Get the center (x point) of the ladder in collide with a point.
+ *
+ * \param collide_point The point that is in collide with a ladder.
+ * \param map the DM_Map that contain the list of all ladders.
+ *
+ * \return Returns the x point of the center of the ladder, or -1;
+ */
+int get_collide_ladder_center(DM_Collide *collide_point, DM_Map *map)
+{
+	int i;
+	for (i=0 ; i<map->ladder_count ; i++)
+	{
+		if (collide(collide_point, &map->ladders[i]))
+		{
+			return (map->ladders[i].x1 + map->ladders[i].x2) / 2;
+		}
+	}
+	return -1;
 }
 
 

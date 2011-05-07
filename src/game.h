@@ -127,6 +127,7 @@ int check_platform_collides(DM_Collide *collide_point, DM_Map *map);
 int check_ladder_collides(DM_Collide *collide_point, DM_Map *map);
 int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map);
 int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map);	
+int get_collide_ladder_center(DM_Collide *collide_point, DM_Map *map);
 int collide(DM_Collide *collide1, DM_Collide *collide2);
 int _collide_line_point(DM_Collide *collide1, DM_Collide *collide2);
 int _collide_rect_point(DM_Collide *crect, DM_Collide *cpoint);
