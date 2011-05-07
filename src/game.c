@@ -769,6 +769,11 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	{
 		return _collide_rect_point(collide2, collide1);
 	}
+	//Collide between two rectangles
+	if (collide1->shape == COLLIDE_RECT && collide2->shape == COLLIDE_RECT)
+	{
+		return _collide_rect_rect(collide1, collide2);
+	}
 	//Collide not implemented
 	else
 	{
@@ -873,6 +878,68 @@ int _collide_rect_point(DM_Collide *crect, DM_Collide *cpoint)
 	{
 		return 1;
 	}
+}
+
+
+//This is a "private" function that check a collide between two rectangles
+//Please use the collide() function instead of this one.
+int _collide_rect_rect(DM_Collide *crect1, DM_Collide *crect2)
+{
+	//NOTE: This is a very basic rectangle collision detection.
+	//      It does not works for every cases, but it is sufficient
+	//      for our use.
+	DM_Collide cpoint;
+	//Test all the corners of the rect 1
+	cpoint.x1 = crect1->x1;
+	cpoint.y1 = crect1->y1;
+	if (_collide_rect_point(crect2, &cpoint))
+	{
+		return 1;
+	}
+	cpoint.x1 = crect1->x1;
+	cpoint.y1 = crect1->y2;
+	if (_collide_rect_point(crect2, &cpoint))
+	{
+		return 1;
+	}
+	cpoint.x1 = crect1->x2;
+	cpoint.y1 = crect1->y2;
+	if (_collide_rect_point(crect2, &cpoint))
+	{
+		return 1;
+	}
+	cpoint.x1 = crect1->x2;
+	cpoint.y1 = crect1->y1;
+	if (_collide_rect_point(crect2, &cpoint))
+	{
+		return 1;
+	}
+	//Test all the corners of the rect 2
+	cpoint.x1 = crect2->x1;
+	cpoint.y1 = crect2->y1;
+	if (_collide_rect_point(crect1, &cpoint))
+	{
+		return 1;
+	}
+	cpoint.x1 = crect2->x1;
+	cpoint.y1 = crect2->y2;
+	if (_collide_rect_point(crect1, &cpoint))
+	{
+		return 1;
+	}
+	cpoint.x1 = crect2->x2;
+	cpoint.y1 = crect2->y2;
+	if (_collide_rect_point(crect1, &cpoint))
+	{
+		return 1;
+	}
+	cpoint.x1 = crect2->x2;
+	cpoint.y1 = crect2->y1;
+	if (_collide_rect_point(crect1, &cpoint))
+	{
+		return 1;
+	}
+	return 0;
 }
 
 

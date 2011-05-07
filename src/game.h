@@ -132,6 +132,7 @@ int get_collide_ladder_center(DM_Collide *collide_point, DM_Map *map);
 int collide(DM_Collide *collide1, DM_Collide *collide2);
 int _collide_line_point(DM_Collide *collide1, DM_Collide *collide2);
 int _collide_rect_point(DM_Collide *crect, DM_Collide *cpoint);
+int _collide_rect_rect(DM_Collide *crect1, DM_Collide *crect2);
 
 
 #endif //GAME_H_INCLUDED
