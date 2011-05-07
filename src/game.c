@@ -23,7 +23,7 @@
 
 /**
  * \file game.c
- * \brief TODO
+ * \brief Contain all the principal mechanism of the game (Jumpan moves,...)
  */
 
 
@@ -32,14 +32,16 @@
 
 /**
  * \fn void init_game()
- * \brief Initialize the game. Must be called only one time in the program.
+ * \brief Initialize the game.
+ *
+ * This function Initialize the game and must be called only once. 
  */
 void init_game()
 {
 	//Init game vars
 	GAME_SPEED = 1;
 	GAME_STATE = GAME_STATE_NONE;
-	//Init jumpman
+	//Init Jumpman
 	JUMPMAN.pos_x = 42;
 	JUMPMAN.pos_y = 42;
 	JUMPMAN.movement = SPRITE_LOOK_RIGHT;
@@ -55,11 +57,12 @@ void init_game()
 
 /**
  * \fn void update_jumpman()
- * \brief Update all the informations about Jumman (collides points, position,...)
+ * \brief Update all the informations about Jumman (collides points, position,...).
+ *        This function must be called after each modifications made on Jumpman.
  */
 void update_jumpman()
 {
-	//Check the Jumpman posision
+	//Check the Jumpman position (Jumpman must stay in the screen area).
 	if (JUMPMAN.pos_x <= 0)
 	{
 		JUMPMAN.pos_x = 1;
@@ -108,25 +111,29 @@ void update_jumpman()
 
 /**
  * \fn int lets_play_yeah(DM_Map *map)
- * \brief This is the main function of the game. It control jumpman,...
+ * \brief This is the main loop of the game.
  *
- * \param map The DM_Map that contain collides for the level.
+ * This function control the Jumpman moves, its collides with platforms,
+ * the game status (Playing ? Paused ? Died ?...).
+ *
+ * \param map The DM_Map that contain collides and other informations about the
+ *        current level.
  *
  * \return Returns the game status (GAME_STATE_LEVEL_COMPLETED, GAME_STATE_LIFE_LOST).
  */
 int lets_play_yeah(DM_Map *map) {
-	//Enable the key repetition
+	//Disable the key repetition
 	SDL_EnableKeyRepeat(0, 0);
 	//Initialize the GAME_STATE variable
 	GAME_STATE = GAME_STATE_PLAYING;
-	//Set the start position of jumpman
+	//Set the start position of Jumpman
 	JUMPMAN.movement = map->start_look;
 	JUMPMAN.pos_x = map->start_point_x - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 	JUMPMAN.pos_y = map->start_point_y - JUMPMAN.sprite->items[JUMPMAN.movement].h;
 	update_jumpman();
 	//Reference Jumman in the global refresh
 	int jumpman_refresh = ref_object(&layer_active, JUMPMAN.sprite, sprite_cb);
-	//some vars
+	//Declaration of some variables
 	int horiz_move = HORIZ_MOVE_NONE_R;
 	int vert_move = VERT_MOVE_NONE;
 	if (JUMPMAN.movement == SPRITE_LOOK_LEFT)
@@ -140,12 +147,13 @@ int lets_play_yeah(DM_Map *map) {
 	int jump = JUMP_NONE;
 	int jump_y_start = 0;
 	SDL_Event event;
-
-	//The main loop of the game
+	//The main loop of the game... LET'S GO ! :)
 	while (GAME_STATE == GAME_STATE_PLAYING || GAME_STATE == GAME_STATE_PAUSED)
 	{
+		//Handle key events
 		if (SDL_PollEvent(&event) && GAME_STATE == GAME_STATE_PLAYING)
 		{
+			//Key pressed
 			if (event.type == SDL_KEYDOWN)
 			{
 				switch (event.key.keysym.sym)
@@ -200,6 +208,7 @@ int lets_play_yeah(DM_Map *map) {
 						break;
 				}
 			}
+			//Key released
 			else if (event.type == SDL_KEYUP)
 			{
 				switch (event.key.keysym.sym)
@@ -233,10 +242,10 @@ int lets_play_yeah(DM_Map *map) {
 				}
 			}
 		}
-		//Update jumpman position
-		if (!jump)
+		//Update the Jumpman position
+		if (!jump) // NOT JUMPING //
 		{
-			//HORIZ
+			//Handle horizontal moves
 			if (!check_ladder_collides(&JUMPMAN.platform_collide, map) || 
 					(
 					 check_ladder_collides(&JUMPMAN.platform_collide, map) &&
@@ -290,8 +299,8 @@ int lets_play_yeah(DM_Map *map) {
 					JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 				}
 			}
-			//VERT 
-			if (vert_move == VERT_MOVE_UP)
+			//Handle vertical moves
+			if (vert_move == VERT_MOVE_UP) //MOVE UP (ladders)
 			{
 				if (check_ladder_collides(&JUMPMAN.platform_collide, map))
 				{
@@ -311,7 +320,7 @@ int lets_play_yeah(DM_Map *map) {
 					vert_move = VERT_MOVE_NONE;
 				}
 			}
-			else if (vert_move == VERT_MOVE_DOWN)
+			else if (vert_move == VERT_MOVE_DOWN) //MOVE DOWN (ladders)
 			{
 				if (check_ladder_collides(&JUMPMAN.platform_collide, map))
 				{
@@ -337,7 +346,7 @@ int lets_play_yeah(DM_Map *map) {
 				JUMPMAN.movement = SPRITE_LADDER;
 			}
 		}
-		else
+		else // JUMPING //
 		{
 			if (horiz_move == HORIZ_MOVE_LEFT) {
 				JUMPMAN.movement = SPRITE_JUMP_LEFT;
@@ -425,7 +434,7 @@ int lets_play_yeah(DM_Map *map) {
 			GAME_STATE = GAME_STATE_LEVEL_COMPLETED;
 		}
 		SDL_Delay(5);
-	}
+	} //-- End of the main loop --
 
 	//If the player die
 	if (GAME_STATE == GAME_STATE_LIFE_LOST)
@@ -435,8 +444,11 @@ int lets_play_yeah(DM_Map *map) {
 		SDL_Delay(1500);
 	}
 
+	//TODO if the player win, play a music,...
+
 	//Dereference Jumpman
 	deref_object(&layer_active, jumpman_refresh);
+	//Return the game state
 	return GAME_STATE;
 }
 
@@ -445,12 +457,13 @@ int lets_play_yeah(DM_Map *map) {
  * \fn DM_Map* load_map_infos(char *level_name)
  * \brief Load the level informations from a .map file.
  *
- * \param level_name The name of the level (e.g. "level_01")
+ * \param level_name The name of the level (e.g. "level_01").
  *
- * \return Returns the DM_Map.
+ * \return Returns a pointer on a DM_Map that contain all level informations.
  */
 DM_Map* load_map_infos(char *level_name)
 {
+	//Some variable declaration/initialisation
 	int ladder_count = 0;
 	int platform_count = 0;
 	DM_Map *map = malloc(sizeof(DM_Map));
@@ -459,8 +472,10 @@ DM_Map* load_map_infos(char *level_name)
 		fprintf(stderr, "E: Cannot allocate memory.");
 		exit(EXIT_FAILURE);
 	}
+	//Make the level file path
 	char path[42] = "";
 	sprintf(path, "levels/%s.map", level_name);
+	//Parse the map file
 	DM_Splited *map_infos = read_file(path);
 	//Count the platforms and the ladders
 	int i;
@@ -538,7 +553,7 @@ DM_Map* load_map_infos(char *level_name)
 			}
 		}
 	}
-	//free
+	//Free the parser's struct
 	free_dm_splited(map_infos);
 	//Return the DM_Map
 	return map;
@@ -547,9 +562,9 @@ DM_Map* load_map_infos(char *level_name)
 
 /**
  * \fn void free_dm_map(DM_Map *map)
- * \brief Free the memory of a DM_Map
+ * \brief Free the memory of a DM_Map.
  *
- * \param map The DM_Map to free
+ * \param map The DM_Map to free.
  */
 void free_dm_map(DM_Map *map)
 {
@@ -559,7 +574,15 @@ void free_dm_map(DM_Map *map)
 }
 
 
-//TODO
+/**
+ * \fn int check_platform_collides(DM_Collide *collide_point, DM_Map *map)
+ * \brief Check if a point is in collision with any platform.
+ *
+ * \param collide_point The point that we have to check.
+ * \param map the DM_Map that contain the list of all platforms.
+ *
+ * \return Return true if there is a collide, false else.
+ */
 int check_platform_collides(DM_Collide *collide_point, DM_Map *map)
 {
 	int i;
@@ -573,7 +596,16 @@ int check_platform_collides(DM_Collide *collide_point, DM_Map *map)
 	return 0;
 }
 
-//TODO
+
+/**
+ * \fn int check_ladder_collides(DM_Collide *collide_point, DM_Map *map)
+ * \brief Check if a point is in collision with any ladder.
+ *
+ * \param collide_point The point that we have to check.
+ * \param map the DM_Map that contain the list of all ladders.
+ *
+ * \return Return true if there is a collide, false else.
+ */
 int check_ladder_collides(DM_Collide *collide_point, DM_Map *map)
 {
 	int i;
@@ -587,7 +619,16 @@ int check_ladder_collides(DM_Collide *collide_point, DM_Map *map)
 	return 0;
 }
 
-//TODO
+
+/**
+ * \fn int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
+ * \brief Check if a point is in collision with the top of any ladder.
+ *
+ * \param collide_point The point that we have to check.
+ * \param map the DM_Map that contain the list of all ladders.
+ *
+ * \return Return true if there is a collide, false else.
+ */
 int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
 {
 	DM_Collide crect;
@@ -616,6 +657,15 @@ int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
 }
 
 
+/**
+ * \fn int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
+ * \brief Check if a point is in collision with the bottom of any ladder.
+ *
+ * \param collide_point The point that we have to check.
+ * \param map the DM_Map that contain the list of all ladders.
+ *
+ * \return Return true if there is a collide, false else.
+ */
 int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
 {
 	DM_Collide crect;
@@ -646,15 +696,16 @@ int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
 
 /**
  * \fn collide(DM_Collide *collide1, DM_Collide *collide2)
- * \brief Check for collision between two DM_Collide.
+ * \brief Check for collision between two collide area.
  *
- * \param collide1 The first DM_Collide;
- * \param collide2 The second DM_Collide;
+ * \param collide1 The first collide area.
+ * \param collide2 The second collide area.
  *
- * \return Returns 1 if there is a collision, 0 else.
+ * \return Returns true if there is a collide, false else.
  */
 int collide(DM_Collide *collide1, DM_Collide *collide2)
 {
+	//Collide between a point and a line
 	if (collide1->shape == COLLIDE_LINE && collide2->shape == COLLIDE_POINT)
 	{
 		return _collide_line_point(collide1, collide2);
@@ -663,6 +714,7 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	{
 		return _collide_line_point(collide2, collide1);
 	}
+	//Collide between a point and a rect
 	if (collide1->shape == COLLIDE_RECT && collide2->shape == COLLIDE_POINT)
 	{
 		return _collide_rect_point(collide1, collide2);
@@ -671,22 +723,31 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	{
 		return _collide_rect_point(collide2, collide1);
 	}
+	//Collide not implemented
 	else
 	{
-/*		printf("W: Collide between shape %i and shape %i not implemented.\n", collide1->shape, collide2->shape);*/
+		//FIXME Hide this annoying warning while we don't know why there is
+		//abnormal collide shape that arrive in the DM_Map... (because it
+		//floods my console !)
+		//printf("W: Collide between shape %i and shape %i not implemented.\n",
+		//         collide1->shape,
+		//         collide2->shape
+		//         );
 		return 0;
 	}
 }
 
 
+//This is a "private" function that check a collide between a line and
+//a point. Please use the collide() function instead of this one.
 int _collide_line_point(DM_Collide *cline, DM_Collide *cpoint)
 {
-	//Check the rect
+	//Check if the point is in the rectangle
 	if (!_collide_rect_point(cline, cpoint))
 	{
 		return 0;
 	}
-	//Check the line
+	//Check if the point is on the line
 	float dx1 = cline->x1;
 	float dy1 = cline->y1;
 	float dx2 = cline->x2;
@@ -709,7 +770,8 @@ int _collide_line_point(DM_Collide *cline, DM_Collide *cpoint)
 	}
 	else
 	{
-		//An other test for fiability
+		//Check again with a line just bellow the first one.
+		//This is done for avoiding false negative result.
 		dy1 += 1;
 		dy2 += 1;
 
@@ -732,6 +794,8 @@ int _collide_line_point(DM_Collide *cline, DM_Collide *cpoint)
 }
 
 
+//This is a "private" function that check a collide between a rectangle
+//and a point. Please use the collide() function instead of this one.
 int _collide_rect_point(DM_Collide *crect, DM_Collide *cpoint)
 {
 	int x1, x2, y1, y2;

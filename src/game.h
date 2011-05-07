@@ -112,6 +112,7 @@ struct DM_Jumpman
 };
 
 
+//Some global vars
 DM_Jumpman JUMPMAN;
 int GAME_SPEED;
 int GAME_STATE;
