@@ -110,18 +110,19 @@ void update_jumpman()
 
 
 /**
- * \fn int lets_play_yeah(DM_Map *map)
+ * \fn int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
  * \brief This is the main loop of the game.
  *
  * This function control the Jumpman moves, its collides with platforms,
  * the game status (Playing ? Paused ? Died ?...).
  *
+ * \param screen The main surface.
  * \param map The DM_Map that contain collides and other informations about the
  *        current level.
  *
  * \return Returns the game status (GAME_STATE_LEVEL_COMPLETED, GAME_STATE_LIFE_LOST).
  */
-int lets_play_yeah(DM_Map *map) {
+int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 	//Disable the key repetition
 	SDL_EnableKeyRepeat(0, 0);
 	//Initialize the GAME_STATE variable
@@ -158,8 +159,24 @@ int lets_play_yeah(DM_Map *map) {
 			{
 				switch (event.key.keysym.sym)
 				{
-					case SDLK_ESCAPE: //FIXME call the pause menu
-						GAME_STATE = GAME_STATE_NONE; //STOP
+					case SDLK_ESCAPE:
+						GAME_STATE = GAME_STATE_PAUSED;
+						switch (pause_menu(screen))
+						{
+							case 0:
+								GAME_STATE = GAME_STATE_PLAYING; //Continue
+								break;
+							case 1:
+								GAME_STATE = GAME_STATE_NONE; //Stop
+								break;
+							case 2:
+								exit(EXIT_SUCCESS); //Quit
+								break;
+							default:
+								GAME_STATE = GAME_STATE_PLAYING;
+								printf("W: Unhandled item for pause menu.\n");
+								break;
+						}
 						break;
 					case SDLK_LEFT:
 						horiz_move = HORIZ_MOVE_LEFT;

@@ -120,7 +120,7 @@ int GAME_STATE;
 
 void init_game();
 void update_jumpman();
-int lets_play_yeah(DM_Map *map);
+int lets_play_yeah(SDL_Surface *screen, DM_Map *map);
 DM_Map* load_map_infos(char *level_name);
 void free_dm_map(DM_Map *map);
 int check_platform_collides(DM_Collide *collide_point, DM_Map *map);

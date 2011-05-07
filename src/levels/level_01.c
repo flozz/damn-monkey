@@ -34,9 +34,11 @@
  * \fn void level_01()
  * \brief Draw the first level.
  *
+ * \param screen The main surface.
+ *
  * \return Nothing.
  */
-void level_01()
+void level_01(SDL_Surface *screen)
 {
 	//Load the background
 	DM_Surface *level_surface = load_resource_as_dm_surface("level_01.png");
@@ -44,7 +46,7 @@ void level_01()
 	
 	//Load the level infos (collides,...)
 	DM_Map *map = load_map_infos("level_01");
-	lets_play_yeah(map);
+	lets_play_yeah(screen, map);
 	//FIXME: free dm_map
 	
 	//Dereference objects and free the memory

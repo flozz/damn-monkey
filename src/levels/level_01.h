@@ -13,7 +13,7 @@
 #include "../game.h"
 
 
-void level_01();
+void level_01(SDL_Surface *screen);
 
 
 #endif //LEVEL_01_H_INCLUDED
