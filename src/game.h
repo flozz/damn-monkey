@@ -35,6 +35,7 @@
 #include "sprite.h"
 #include "refresh.h"
 #include "parser.h"
+#include "pause_menu.h"
 
 
 #define COLLIDE_RECT  0
