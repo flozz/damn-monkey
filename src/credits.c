@@ -171,7 +171,8 @@ void credits(SDL_Surface *screen)
 	credits->pages[1] = str_to_surface(
 			"font_main.png",
 			"Fabien LOISON\n\
-			Mathilde BOUTIGNY"
+			Mathilde BOUTIGNY\n\
+			Matthis FRENAY"
 			);
 	credits->titles[2] = str_to_surface("font_main.png", "- SOUNDS -");
 	credits->pages[2] = str_to_surface(
