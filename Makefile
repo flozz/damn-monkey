@@ -11,8 +11,8 @@ LDFLAGS = -L/usr/lib -lSDL -lSDL_image -lSDL_mixer
 EXEC = damn-monkey
 
 
-$(EXEC): main.o main_menu.o main_functions.o menu.o credits.o refresh.o parser.o sprite.o pause_menu.o
-	$(CC) -o bin/$(EXEC) $(LDFLAGS) obj/main.o obj/main_menu.o obj/main_functions.o obj/menu.o obj/credits.o obj/refresh.o obj/parser.o obj/sprite.o obj/pause_menu.o
+$(EXEC): main.o main_menu.o main_functions.o menu.o credits.o refresh.o parser.o sprite.o game.o level_01.o pause_menu.o
+	$(CC) -o bin/$(EXEC) $(LDFLAGS) obj/main.o obj/main_menu.o obj/main_functions.o obj/menu.o obj/credits.o obj/refresh.o obj/parser.o obj/sprite.o obj/game.o obj/level_01.o obj/pause_menu.o
 
 main.o: src/main.c
 	$(CC) $(CFLAGS) -o obj/main.o -c src/main.c
@@ -38,8 +38,15 @@ parser.o: src/parser.c
 sprite.o: src/sprite.c
 	$(CC) $(CFLAGS) -o obj/sprite.o -c src/sprite.c
 
+game.o: src/game.c
+	$(CC) $(CFLAGS) -o obj/game.o -c src/game.c
+
+level_01.o: src/levels/level_01.c
+	$(CC) $(CFLAGS) -o obj/level_01.o -c src/levels/level_01.c
+
 pause_menu.o: src/pause_menu.c
 	$(CC) $(CFLAGS) -o obj/pause_menu.o -c src/pause_menu.c
+
 
 clean:
 	rm -f obj/*

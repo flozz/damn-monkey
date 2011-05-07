@@ -53,6 +53,9 @@
 #include "refresh.h"
 #include "main_menu.h"
 #include "credits.h"
+#include "game.h"
+#include "levels/level_01.h"
+
 
 
 /**
@@ -95,8 +98,10 @@ int main(int argc, char *argv[])
 	//Menus music
 	Mix_Music *menu_music = load_music_resource("menu.ogg");
 	Mix_PlayMusic(menu_music, -1);
-	//Refresh
+	//Init refresh
 	refresh_init(screen);
+	//Init game
+	init_game();
 	//Main menu
 	int selected;
 	while (1)
@@ -106,7 +111,7 @@ int main(int argc, char *argv[])
 		{
 			case 0:
 				Mix_HaltMusic();
-				printf("Main menu > Play\n"); //TODO
+				level_01(screen);
 				Mix_PlayMusic(menu_music, -1);
 				break;
 			case 1:
