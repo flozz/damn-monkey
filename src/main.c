@@ -84,6 +84,16 @@ int main(int argc, char *argv[])
 	//called at normal process termination
 	atexit(SDL_Quit);
 	atexit(Mix_CloseAudio);
+	//Add icon
+	#ifdef LINUX
+	SDL_WM_SetIcon(load_resource("icon16.png"),NULL);
+	#endif
+	#ifdef WINDOWS
+	SDL_WM_SetIcon(load_resource("icon32.png"),NULL);
+	#endif
+	#ifdef MAC_OS
+	SDL_WM_SetIcon(load_resource("icon64.png"),NULL);
+	#endif
 	//Configure the window
 	SDL_Surface *screen = SDL_SetVideoMode(800, 600, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
 	if (screen == NULL)
