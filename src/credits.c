@@ -23,7 +23,7 @@
 
 /**
  * \file credits.c
- * \brief Contains all the functions for credits page.
+ * \brief Contains all the functions for the credits page.
  */
 
 
@@ -35,6 +35,7 @@
  * \brief Create a new DM_Credits.
  *
  * \param numb_page The number of pages.
+ *
  * \return A pointer on the new DM_Credits.
  */
 DM_Credits* new_credits(int numb_pages)
@@ -100,19 +101,31 @@ void credits_cb(void *object, SDL_Surface *screen)
 	{
 		credits->page_rect.x = -800;
 	}
-	SDL_BlitSurface(credits->pages[credits->current_page-1], NULL, screen, &credits->page_rect);
-	SDL_BlitSurface(credits->titles[credits->current_page-1], NULL, screen, &credits->title_rect);
+	SDL_BlitSurface(
+			credits->pages[credits->current_page-1],
+			NULL,
+			screen,
+			&credits->page_rect
+			);
+	SDL_BlitSurface(
+			credits->titles[credits->current_page-1],
+			NULL,
+			screen,
+			&credits->title_rect
+			);
 	//Move
 	credits->page_rect.x -= credits->speed;
 	credits->title_rect.x += credits->speed / 2.5 + 1;
 	//Change speed
 	if (credits->page_rect.x > screen->w / 3)
 	{
-		credits->speed = (credits->page_rect.x - screen->w / 3) * 30 / (2 * screen->w / 2) + 1;
+		credits->speed = (credits->page_rect.x - screen->w / 3) \
+						 * 30 / (2 * screen->w / 2) + 1;
 	}
 	if (credits->page_rect.x < screen->w / 4)
 	{
-		credits->speed = (3* screen->w / 4 - credits->page_rect.x) * 20 / (screen->w / 2) + 1;
+		credits->speed = (3* screen->w / 4 - credits->page_rect.x) \
+						 * 20 / (screen->w / 2) + 1;
 	}
 	//Change of layer
 	if (credits->title_rect.x > screen->w - 50)
@@ -129,7 +142,7 @@ void credits_cb(void *object, SDL_Surface *screen)
 
 /**
  * \fn void credits(SDL_Surface *screen)
- * \brief Display the credits.
+ * \brief Display the credits page.
  *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
@@ -149,10 +162,10 @@ void credits(SDL_Surface *screen)
 	//Create the menu
 	DM_Menu *menu = new_menu(
 			"Back",
-			 "font_menu.png",
-			 "font_menu_hl.png",
-			 "cursor.png"
-			 );
+			"font_menu.png",
+			"font_menu_hl.png",
+			"cursor.png"
+			);
 	menu->menu_rect.x = screen->w - menu->menu->w - 20;
 	menu->menu_rect.y = screen->h - menu->menu->h - 15;
 	int menu_refresh = ref_object(&layer_menu, menu, menu_glow_effect_cb);
@@ -182,8 +195,7 @@ void credits(SDL_Surface *screen)
 	credits->titles[3] = str_to_surface("font_main.png", "- MUSICS -");
 	credits->pages[3] = str_to_surface(
 			"font_main.png",
-			"Core Wizard\n\
-			Dark Master"
+			"Andrey Avkhimovich"
 			);
 	int credits_refresh = ref_object(&layer_active, credits, credits_cb);
 	//Main loop
@@ -229,7 +241,7 @@ void credits(SDL_Surface *screen)
 	deref_object(&layer_bg, title_refresh);
 	deref_object(&layer_menu, menu_refresh);
 	deref_object(&layer_active, credits_refresh);
-	SDL_Delay(20);
+	SDL_Delay(50);
 	free_dm_surface(bg);
 	free_dm_surface(title);
 	free_menu(menu);
