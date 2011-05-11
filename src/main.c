@@ -71,13 +71,21 @@ int main(int argc, char *argv[])
 	//Initialize the SDL library
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0)
 	{
-		fprintf(stderr, "E: Can not initialize the SDL library: %s\n", SDL_GetError());
+		fprintf(
+				stderr,
+				"E: Can not initialize the SDL library: %s\n",
+				SDL_GetError()
+				);
 		exit(EXIT_FAILURE);
 	}
 	//Initialize the SDL_mixer library
-	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096) != 0)
+	if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 512) != 0)
 	{
-		fprintf(stderr, "E: Can not initialize the SDL_mixer library: %s\n", Mix_GetError());
+		fprintf(
+				stderr,
+				"E: Can not initialize the SDL_mixer library: %s\n",
+				Mix_GetError()
+				);
 		exit(EXIT_FAILURE);
 	}
 	//Register the SDL_Quit() and the Mix_CloseAudio() functions to be
@@ -95,7 +103,12 @@ int main(int argc, char *argv[])
 	SDL_WM_SetIcon(load_resource("icon64.png"),NULL);
 	#endif
 	//Configure the window
-	SDL_Surface *screen = SDL_SetVideoMode(800, 600, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	SDL_Surface *screen = SDL_SetVideoMode(
+			800, //Witdh
+			600, //Height
+			32,  //Depth
+			SDL_HWSURFACE | SDL_DOUBLEBUF
+			);
 	if (screen == NULL)
 	{
 		fprintf(stderr, "E: Can not set the video mode: %s\n", SDL_GetError());
@@ -131,8 +144,11 @@ int main(int argc, char *argv[])
 				Mix_HaltMusic();
 				exit(EXIT_SUCCESS);
 				break;
+			default:
+				break;
 		}
 	}
+	return EXIT_SUCCESS;
 }
 
 

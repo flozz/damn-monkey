@@ -12,20 +12,33 @@
  */
 
 
-//Application printable name
+/**
+ * \def APP_PR_NAME
+ * \brief Application printable name.
+ */
 #define APP_PR_NAME "Damn Monkey"
 
-//Application name (lower case, no spaces or other special chars)
+/**
+ * \def APP_NAME
+ * \brief Application name (lower case, no spaces or other special chars).
+ */
 #define APP_NAME "damn-monkey"
 
-//Version
+/**
+ * \def VERSION
+ * \brief The version of the game.
+ */
 #define VERSION "0.1"
 
+
+/** \cond */
 
 //Destination OS:
 #define LINUX
 //#define WINDOWS
 //#define MAC_OS
+
+/** \endcond */
 
 
 #endif //CONF_H_INCLUDED
