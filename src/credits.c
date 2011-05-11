@@ -32,7 +32,7 @@
 
 /**
  * \fn DM_Credits* new_credits(int numb_pages)
- * \brief Create a new DM_Credits.
+ * \brief Creates a new DM_Credits.
  *
  * \param numb_page The number of pages.
  *
@@ -57,7 +57,7 @@ DM_Credits* new_credits(int numb_pages)
 
 /**
  * \fn void free_credits(DM_Credits *credits)
- * \brief Free the memory of a DM_Credits.
+ * \brief Frees the memory of a DM_Credits.
  *
  * \param credits The DM_Credits to free.
  */
@@ -77,7 +77,7 @@ void free_credits(DM_Credits *credits)
 
 /**
  * \fn void credits_cb(void *object, SDL_Surface *screen)
- * \brief Refresh callback for the DM_Credits.
+ * \brief Refreshes callback for the DM_Credits.
  *
  * \param object The DM_Credits to refresh.
  * \param screen The main surface (called screen in the main() function)
@@ -142,7 +142,7 @@ void credits_cb(void *object, SDL_Surface *screen)
 
 /**
  * \fn void credits(SDL_Surface *screen)
- * \brief Display the credits page.
+ * \brief Displays the credits page.
  *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.

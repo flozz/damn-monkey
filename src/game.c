@@ -23,7 +23,10 @@
 
 /**
  * \file game.c
- * \brief Contain all the principal mechanism of the game (Jumpan moves,...)
+ * \brief Contains all the principal mechanism of the game.
+ *
+ * Contains all the principal mechanism of the game, like the Jumpman moves,
+ * placements, game states and game flow control.
  */
 
 
@@ -34,7 +37,8 @@
  * \fn void init_game()
  * \brief Initialize the game.
  *
- * This function Initialize the game and must be called only once. 
+ * Initializes the game state, Jumpman,... This function must be called
+ * only once.
  */
 void init_game()
 {
@@ -57,8 +61,11 @@ void init_game()
 
 /**
  * \fn void update_jumpman()
- * \brief Update all the informations about Jumman (collides points, position,...).
- *        This function must be called after each modifications made on Jumpman.
+ * \brief Update the informations about Jumpman.
+ *
+ * Updates the Jumpman collide point and rect, updates the sprite animation,
+ * and avoids Jumpman to be out of the screen. This function must be called
+ * after each modifications made on the JUMPMAN global variable.
  */
 void update_jumpman()
 {
@@ -85,15 +92,19 @@ void update_jumpman()
 	JUMPMAN.sprite->current_mov = JUMPMAN.movement;
 	//Update the collide point and rect
 	if (JUMPMAN.sprite->items[JUMPMAN.movement].n > 0)
-	{ 
+	{
 		//Platform collide point
-		JUMPMAN.platform_collide.x1 = JUMPMAN.pos_x + JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
-		JUMPMAN.platform_collide.y1 = JUMPMAN.pos_y + JUMPMAN.sprite->items[JUMPMAN.movement].h;
+		JUMPMAN.platform_collide.x1 = JUMPMAN.pos_x + \
+								JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
+		JUMPMAN.platform_collide.y1 = JUMPMAN.pos_y + \
+								JUMPMAN.sprite->items[JUMPMAN.movement].h;
 		//Enemies collide rect
 		JUMPMAN.enemy_collide.x1 = JUMPMAN.pos_x;
 		JUMPMAN.enemy_collide.y1 = JUMPMAN.pos_y;
-		JUMPMAN.enemy_collide.x2 = JUMPMAN.pos_x + JUMPMAN.sprite->items[JUMPMAN.movement].w;
-		JUMPMAN.enemy_collide.y2 = JUMPMAN.pos_y + JUMPMAN.sprite->items[JUMPMAN.movement].h;
+		JUMPMAN.enemy_collide.x2 = JUMPMAN.pos_x + \
+								   JUMPMAN.sprite->items[JUMPMAN.movement].w;
+		JUMPMAN.enemy_collide.y2 = JUMPMAN.pos_y + \
+								   JUMPMAN.sprite->items[JUMPMAN.movement].h;
 	}
 	else
 	{
@@ -111,18 +122,20 @@ void update_jumpman()
 
 /**
  * \fn int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
- * \brief This is the main loop of the game.
+ * \brief The main loop of the game.
  *
- * This function control the Jumpman moves, its collides with platforms,
- * the game status (Playing ? Paused ? Died ?...).
+ * Controls the Jumpman moves, its collides with platforms, the game status
+ * (Playing ? Paused ? Died ?),...
  *
- * \param screen The main surface.
+ * \param screen The main surface (called screen in the main() function).
  * \param map The DM_Map that contain collides and other informations about the
  *        current level.
  *
- * \return Returns the game status (GAME_STATE_LEVEL_COMPLETED, GAME_STATE_LIFE_LOST).
+ * \return Returns the game status (GAME_STATE_LEVEL_COMPLETED or
+ *         GAME_STATE_LIFE_LOST).
  */
-int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
+int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
+{
 	//Disable the key repetition
 	SDL_EnableKeyRepeat(0, 0);
 	//Initialize the GAME_STATE variable
@@ -185,7 +198,8 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 						horiz_move = HORIZ_MOVE_RIGHT;
 						break;
 					case SDLK_UP:
-						if (vert_move == VERT_MOVE_NONE) {
+						if (vert_move == VERT_MOVE_NONE)
+						{
 							if (check_ladder_bottom_collides(&JUMPMAN.platform_collide, map))
 							{
 								vert_move = VERT_MOVE_UP;
@@ -263,7 +277,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 		if (!jump) // NOT JUMPING //
 		{
 			//Handle horizontal moves
-			if (!check_ladder_collides(&JUMPMAN.platform_collide, map) || 
+			if (!check_ladder_collides(&JUMPMAN.platform_collide, map) ||
 					(
 					 check_ladder_collides(&JUMPMAN.platform_collide, map) &&
 					 check_ladder_top_collides(&JUMPMAN.platform_collide, map)
@@ -273,7 +287,8 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 					)
 				)
 			{
-				if (horiz_move == HORIZ_MOVE_LEFT) {
+				if (horiz_move == HORIZ_MOVE_LEFT)
+				{
 					JUMPMAN.movement = SPRITE_WALK_LEFT;
 					JUMPMAN.platform_collide.x1--;
 					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
@@ -290,11 +305,14 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 						}
 					}
 				}
-				else if (horiz_move == HORIZ_MOVE_NONE_L) {
+				else if (horiz_move == HORIZ_MOVE_NONE_L)
+				{
 					JUMPMAN.movement = SPRITE_LOOK_LEFT;
-					JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2; 
+					JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - \
+									JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 				}
-				else if (horiz_move == HORIZ_MOVE_RIGHT) {
+				else if (horiz_move == HORIZ_MOVE_RIGHT)
+				{
 					JUMPMAN.movement = SPRITE_WALK_RIGHT;
 					JUMPMAN.platform_collide.x1++;
 					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
@@ -311,9 +329,11 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 						}
 					}
 				}
-				else if (horiz_move == HORIZ_MOVE_NONE_R) {
+				else if (horiz_move == HORIZ_MOVE_NONE_R)
+				{
 					JUMPMAN.movement = SPRITE_LOOK_RIGHT;
-					JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
+					JUMPMAN.pos_x = JUMPMAN.platform_collide.x1 - \
+									JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 				}
 			}
 			//Handle vertical moves
@@ -371,7 +391,8 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 		}
 		else // JUMPING //
 		{
-			if (horiz_move == HORIZ_MOVE_LEFT) {
+			if (horiz_move == HORIZ_MOVE_LEFT)
+			{
 				JUMPMAN.movement = SPRITE_JUMP_LEFT;
 				JUMPMAN.platform_collide.x1--;
 				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
@@ -388,10 +409,12 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 					}
 				}
 			}
-			else if (horiz_move == HORIZ_MOVE_NONE_L) {
+			else if (horiz_move == HORIZ_MOVE_NONE_L)
+			{
 				JUMPMAN.movement = SPRITE_JUMP_LEFT;
 			}
-			else if (horiz_move == HORIZ_MOVE_RIGHT) {
+			else if (horiz_move == HORIZ_MOVE_RIGHT)
+			{
 				JUMPMAN.movement = SPRITE_JUMP_RIGHT;
 				JUMPMAN.platform_collide.x1++;
 				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
@@ -478,7 +501,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map) {
 
 /**
  * \fn DM_Map* load_map_infos(char *level_name)
- * \brief Load the level informations from a .map file.
+ * \brief Loads the level informations from a .map file.
  *
  * \param level_name The name of the level (e.g. "level_01").
  *
@@ -539,40 +562,56 @@ DM_Map* load_map_infos(char *level_name)
 			if (!strcmp(map_infos->lines_array[i]->parameters[0], "platform-collide"))
 			{
 				map->platforms[platform_count].shape = COLLIDE_LINE;
-				map->platforms[platform_count].x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
-				map->platforms[platform_count].y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
-				map->platforms[platform_count].x2 = atoi(map_infos->lines_array[i]->parameters[3]) + 1;
-				map->platforms[platform_count].y2 = atoi(map_infos->lines_array[i]->parameters[4]) + 1;
+				map->platforms[platform_count].x1 = atoi(
+						map_infos->lines_array[i]->parameters[1]) + 1;
+				map->platforms[platform_count].y1 = atoi(
+						map_infos->lines_array[i]->parameters[2]) + 1;
+				map->platforms[platform_count].x2 = atoi(
+						map_infos->lines_array[i]->parameters[3]) + 1;
+				map->platforms[platform_count].y2 = atoi(
+						map_infos->lines_array[i]->parameters[4]) + 1;
 				platform_count--;
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "ladder-collide"))
 			{
 				map->ladders[ladder_count].shape = COLLIDE_RECT;
-				map->ladders[ladder_count].x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
-				map->ladders[ladder_count].y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
-				map->ladders[ladder_count].x2 = atoi(map_infos->lines_array[i]->parameters[3]) + 1;
-				map->ladders[ladder_count].y2 = atoi(map_infos->lines_array[i]->parameters[4]) + 1;
+				map->ladders[ladder_count].x1 = atoi(
+						map_infos->lines_array[i]->parameters[1]) + 1;
+				map->ladders[ladder_count].y1 = atoi(
+						map_infos->lines_array[i]->parameters[2]) + 1;
+				map->ladders[ladder_count].x2 = atoi(
+						map_infos->lines_array[i]->parameters[3]) + 1;
+				map->ladders[ladder_count].y2 = atoi(
+						map_infos->lines_array[i]->parameters[4]) + 1;
 				ladder_count--;
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-right"))
 			{
 				map->start_look = SPRITE_LOOK_RIGHT;
-				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
-				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
+				map->start_point_x = atoi(
+						map_infos->lines_array[i]->parameters[1]) + 1;
+				map->start_point_y = atoi(
+						map_infos->lines_array[i]->parameters[2]) + 1;
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "jumpman-start-left"))
 			{
 				map->start_look = SPRITE_LOOK_LEFT;
-				map->start_point_x = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
-				map->start_point_y = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
+				map->start_point_x = atoi(
+						map_infos->lines_array[i]->parameters[1]) + 1;
+				map->start_point_y = atoi(
+						map_infos->lines_array[i]->parameters[2]) + 1;
 			}
 			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "finish-collide"))
 			{
 				map->finish.shape = COLLIDE_RECT;
-				map->finish.x1 = atoi(map_infos->lines_array[i]->parameters[1]) + 1;
-				map->finish.y1 = atoi(map_infos->lines_array[i]->parameters[2]) + 1;
-				map->finish.x2 = atoi(map_infos->lines_array[i]->parameters[3]) + 1;
-				map->finish.y2 = atoi(map_infos->lines_array[i]->parameters[4]) + 1;
+				map->finish.x1 = atoi(
+						map_infos->lines_array[i]->parameters[1]) + 1;
+				map->finish.y1 = atoi(
+						map_infos->lines_array[i]->parameters[2]) + 1;
+				map->finish.x2 = atoi(
+						map_infos->lines_array[i]->parameters[3]) + 1;
+				map->finish.y2 = atoi(
+						map_infos->lines_array[i]->parameters[4]) + 1;
 			}
 		}
 	}
@@ -585,7 +624,7 @@ DM_Map* load_map_infos(char *level_name)
 
 /**
  * \fn void free_dm_map(DM_Map *map)
- * \brief Free the memory of a DM_Map.
+ * \brief Frees the memory of a DM_Map.
  *
  * \param map The DM_Map to free.
  */
@@ -599,10 +638,10 @@ void free_dm_map(DM_Map *map)
 
 /**
  * \fn int check_platform_collides(DM_Collide *collide_point, DM_Map *map)
- * \brief Check if a point is in collision with any platform.
+ * \brief Checks if a point is in collision with any platform of the level.
  *
- * \param collide_point The point that we have to check.
- * \param map the DM_Map that contain the list of all platforms.
+ * \param collide_point The point to check.
+ * \param map the DM_Map that contains the list of all platforms.
  *
  * \return Returns true if there is a collide, false else.
  */
@@ -622,10 +661,10 @@ int check_platform_collides(DM_Collide *collide_point, DM_Map *map)
 
 /**
  * \fn int check_ladder_collides(DM_Collide *collide_point, DM_Map *map)
- * \brief Check if a point is in collision with any ladder.
+ * \brief Checks if a point is in collision with any ladder.
  *
- * \param collide_point The point that we have to check.
- * \param map the DM_Map that contain the list of all ladders.
+ * \param collide_point The point to check.
+ * \param map the DM_Map that contains the list of all ladders.
  *
  * \return Return true if there is a collide, false else.
  */
@@ -645,10 +684,10 @@ int check_ladder_collides(DM_Collide *collide_point, DM_Map *map)
 
 /**
  * \fn int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
- * \brief Check if a point is in collision with the top of any ladder.
+ * \brief Checks if a point is in collision with the top of any ladder.
  *
- * \param collide_point The point that we have to check.
- * \param map the DM_Map that contain the list of all ladders.
+ * \param collide_point The point to check.
+ * \param map the DM_Map that contains the list of all ladders.
  *
  * \return Returns true if there is a collide, false else.
  */
@@ -682,10 +721,10 @@ int check_ladder_top_collides(DM_Collide *collide_point, DM_Map *map)
 
 /**
  * \fn int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
- * \brief Check if a point is in collision with the bottom of any ladder.
+ * \brief Checks if a point is in collision with the bottom of any ladder.
  *
- * \param collide_point The point that we have to check.
- * \param map the DM_Map that contain the list of all ladders.
+ * \param collide_point The point to check.
+ * \param map the DM_Map that contains the list of all ladders.
  *
  * \return Returns true if there is a collide, false else.
  */
@@ -722,9 +761,10 @@ int check_ladder_bottom_collides(DM_Collide *collide_point, DM_Map *map)
  * \brief Get the center (x point) of the ladder in collide with a point.
  *
  * \param collide_point The point that is in collide with a ladder.
- * \param map the DM_Map that contain the list of all ladders.
+ * \param map the DM_Map that contains the list of all ladders.
  *
- * \return Returns the x point of the center of the ladder, or -1;
+ * \return Returns the x point that is the center of the ladder (or -1 if there
+ *         is no collide).
  */
 int get_collide_ladder_center(DM_Collide *collide_point, DM_Map *map)
 {
@@ -742,7 +782,7 @@ int get_collide_ladder_center(DM_Collide *collide_point, DM_Map *map)
 
 /**
  * \fn collide(DM_Collide *collide1, DM_Collide *collide2)
- * \brief Check for collision between two collide area.
+ * \brief Checks for collision between two collide area.
  *
  * \param collide1 The first collide area.
  * \param collide2 The second collide area.
@@ -760,7 +800,7 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	{
 		return _collide_line_point(collide2, collide1);
 	}
-	//Collide between a point and a rect
+	//Collide between a point and a rectangles
 	if (collide1->shape == COLLIDE_RECT && collide2->shape == COLLIDE_POINT)
 	{
 		return _collide_rect_point(collide1, collide2);
@@ -788,6 +828,8 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	}
 }
 
+
+/** \cond */ //Hide the "privates" functions for Doxygen
 
 //This is a "private" function that check a collide between a line and
 //a point. Please use the collide() function instead of this one.
@@ -886,7 +928,7 @@ int _collide_rect_point(DM_Collide *crect, DM_Collide *cpoint)
 int _collide_rect_rect(DM_Collide *crect1, DM_Collide *crect2)
 {
 	//NOTE: This is a very basic rectangle collision detection.
-	//      It does not works for every cases, but it is sufficient
+	//      It does not works in every cases, but it is sufficient
 	//      for our use.
 	DM_Collide cpoint;
 	//Test all the corners of the rect 1
@@ -941,5 +983,7 @@ int _collide_rect_rect(DM_Collide *crect1, DM_Collide *crect2)
 	}
 	return 0;
 }
+
+/** \endcond */
 
 
