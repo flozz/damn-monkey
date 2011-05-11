@@ -529,11 +529,11 @@ DM_Map* load_map_infos(char *level_name)
 	{
 		if (map_infos->lines_array[i]->parameters_int == 5)
 		{
-			if (strcmp(map_infos->lines_array[i]->parameters[0], "platform-collide"))
+			if (!strcmp(map_infos->lines_array[i]->parameters[0], "platform-collide"))
 			{
 				platform_count++;
 			}
-			else if (strcmp(map_infos->lines_array[i]->parameters[0], "ladder-collide"))
+			else if (!strcmp(map_infos->lines_array[i]->parameters[0], "ladder-collide"))
 			{
 				ladder_count++;
 			}
@@ -817,13 +817,10 @@ int collide(DM_Collide *collide1, DM_Collide *collide2)
 	//Collide not implemented
 	else
 	{
-		//FIXME Hide this annoying warning while we don't know why there is
-		//abnormal collide shape that arrive in the DM_Map... (because it
-		//floods my console !)
-		//printf("W: Collide between shape %i and shape %i not implemented.\n",
-		//         collide1->shape,
-		//         collide2->shape
-		//         );
+		printf("W: Collide between shape %i and shape %i not implemented.\n",
+		         collide1->shape,
+		         collide2->shape
+		         );
 		return 0;
 	}
 }

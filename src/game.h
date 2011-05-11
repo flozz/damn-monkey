@@ -145,7 +145,7 @@ struct DM_Collide
 
 
 /**
- * \struct DM_Collide
+ * \struct DM_Map
  * \brief Contains all collisions of the map.
  */
 typedef struct DM_Map DM_Map;
