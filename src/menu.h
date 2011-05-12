@@ -31,12 +31,12 @@
 
 /**
  * \struct DM_Menu
- * \brief Contain all the informations needed for building a menu.
+ * \brief Contains all the informations needed for building a menu.
  */
 typedef struct DM_Menu DM_Menu;
 struct DM_Menu
 {
-	int numb_of_items;     /*!< Number of items in the menu. */
+	int numb_of_items;     /*!< The number of items in the menu. */
 	int selected;          /*!< The index of the selected item. */
 	char items[250];       /*!< A string that list the menu items (separated by a '\\n'). */
 	SDL_Surface *menu;     /*!< The image of the menu. */

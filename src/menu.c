@@ -32,16 +32,17 @@
 
 /**
  * \fn DM_Menu* new_menu(char *items, char *font_name, char *hl_font_name, char *cursor)
- * \brief Create a new menu.
+ * \brief Creates a new menu.
  *
- * \param items A string that contain the list of the items separated by a '\\n'
- *        (ex. "Start\nOptions\nQuit").
- * \param font_name The font resource name (ex. "font_main.png").
- * \param hl_font_name The font to use for the selected item of the menu.
+ * \param items A string that contain the list of the items separated by a
+ *        new line ('\\n').\n(e.g. "Start\nOptions\nQuit").
+ * \param font_name The font resource name (e.g. "font_main.png").
+ * \param hl_font_name The font to use for the selected item of the menu.\n
  *                     NOTE: need an image with no alpha channel ; the
  *                     black color will be transparent.
  * \param cursor The name of the resource that will be use as a cursor.
- * \return A pointer on a DM_Menu.
+ *
+ * \return Returns a pointer on a DM_Menu.
  */
 DM_Menu* new_menu(char *items, char *font_name, char *hl_font_name, char *cursor)
 {
@@ -102,7 +103,7 @@ void free_menu(DM_Menu *menu)
 
 /**
  * \fn void draw_menu(SDL_Surface *screen, DM_Menu *menu)
- * \brief Draw the menu with its cursor.
+ * \brief Draws the menu with its cursor.
  *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
@@ -140,7 +141,7 @@ void draw_menu(SDL_Surface *screen, DM_Menu *menu)
 
 /**
  * \fn void menu_change_selected(DM_Menu *menu, int increment)
- * \brief Change the selected item of a menu.
+ * \brief Changes the selected item of a menu.
  *
  * \param menu The DM_Menu.
  * \param increment The increment (+1 or -1).
@@ -164,7 +165,7 @@ void menu_change_selected(DM_Menu *menu, int increment)
  * \fn void menu_glow_effect_cb(void *object, SDL_Surface *screen)
  * \brief Callback function for the refresh of the menu with a glow effect.
  *
- * \param screen The main SDL surface.
+ * \param screen The main SDL surface (called screen in the main() function).
  * \param object A DM_Menu.
  */
 void menu_glow_effect_cb(void *object, SDL_Surface *screen)
@@ -183,7 +184,7 @@ void menu_glow_effect_cb(void *object, SDL_Surface *screen)
  * \fn void menu_blink_effect_cb(void *object, SDL_Surface *screen)
  * \brief Callback function for the refresh of the menu with a blink effect.
  *
- * \param screen The main SDL surface.
+ * \param screen The main SDL surface (called screen in the main() function).
  * \param object A DM_Menu.
  */
 void menu_blink_effect_cb(void *object, SDL_Surface *screen)
@@ -196,6 +197,5 @@ void menu_blink_effect_cb(void *object, SDL_Surface *screen)
 	}
 	draw_menu(screen, menu);
 }
-
 
 
