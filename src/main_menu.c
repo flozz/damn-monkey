@@ -128,7 +128,7 @@ int main_menu(SDL_Surface *screen)
 			switch (event.key.keysym.sym)
 			{
 				case SDLK_ESCAPE:
-					menu->selected = menu->numb_of_items - 1;
+					menu->selected = MAIN_MENU_QUIT;
 					selected = menu->selected;
 					break;
 				case SDLK_UP:
@@ -154,7 +154,7 @@ int main_menu(SDL_Surface *screen)
 		}
 		else if (event.type == SDL_QUIT)
 		{
-			menu->selected = menu->numb_of_items - 1;
+			menu->selected = MAIN_MENU_QUIT;
 			selected = menu->selected;
 		}
 	}

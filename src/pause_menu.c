@@ -23,7 +23,7 @@
 
 /**
  * \file pause_menu.c
- * \brief Contain the code for the pause menu
+ * \brief Contains the code for the pause menu.
  */
 
 
@@ -32,31 +32,36 @@
 
 /**
  * \fn int pause_menu(SDL_Surface *screen)
- * \brief Display the pause menu.
+ * \brief Displays the pause menu.
  *
- * \param screen The main surface.
- * \return The selected item id(0 = continue, 1 = return to main menu, 2 = quit the game).
+ * \param screen The main surface (called screen in the main() function).
+ *
+ * \return Returns the selected item (PAUSE_MENU_CONTINUE,
+ *         PAUSE_MENU_MAIN_MENU or PAUSE_MENU_QUIT).
  */
 int pause_menu(SDL_Surface *screen)
 {
+	//Initialize variables
 	DM_Surface *shading_bg = load_resource_as_dm_surface("pause_menu.png");
-	int shading_refresh = ref_object(&layer_menu, shading_bg, surface_refresh_cb);
-	
+	int shading_refresh = ref_object(
+			&layer_menu,
+			shading_bg,
+			surface_refresh_cb
+			);
 	//Disable key repeat
 	SDL_EnableKeyRepeat(0, 0);
 	//Load sounds
 	Mix_Chunk *sound_select = load_sound_resource("menu_select.wav");
 	Mix_Chunk *sound_valid = load_sound_resource("menu_valid.wav");
-		
-
+	//Make the menu
 	DM_Menu *menu = new_menu(
-			 "Continue\nMain Menu\nQuit",
-			 "font_menu.png",
-			 "font_menu_hl.png",
-			 "cursor.png"
-			 );
-	menu->menu_rect.x = screen->w /2.8;
-	menu->menu_rect.y = screen->h /2.15;
+			"Continue\nMain Menu\nQuit",
+			"font_menu.png",
+			"font_menu_hl.png",
+			"cursor.png"
+			);
+	menu->menu_rect.x = screen->w / 2.8;
+	menu->menu_rect.y = screen->h / 2.15;
 	int menu_refresh = ref_object(&layer_menu, menu, menu_glow_effect_cb);
 	//Main loop
 	SDL_Event event;
@@ -69,7 +74,7 @@ int pause_menu(SDL_Surface *screen)
 			switch (event.key.keysym.sym)
 			{
 				case SDLK_ESCAPE:
-					menu->selected = 0;
+					menu->selected = PAUSE_MENU_CONTINUE;
 					selected = menu->selected;
 					break;
 				case SDLK_UP:
@@ -93,7 +98,7 @@ int pause_menu(SDL_Surface *screen)
 		}
 		else if (event.type == SDL_QUIT)
 		{
-			menu->selected = menu->numb_of_items - 1;
+			menu->selected = PAUSE_MENU_QUIT;
 			selected = menu->selected;
 		}
 	}
@@ -103,13 +108,15 @@ int pause_menu(SDL_Surface *screen)
 	deref_object(&layer_menu, menu_refresh);
 	menu_refresh = ref_object(&layer_menu, menu, menu_blink_effect_cb);
 	SDL_Delay(500);
-
+	//Clear the ressources
 	deref_object(&layer_menu, menu_refresh);
 	deref_object(&layer_menu, shading_refresh);
-	SDL_Delay(20);
+	SDL_Delay(50);
 	free_dm_surface(shading_bg);
 	free_menu(menu);
-
+	Mix_FreeChunk(sound_select);
+	Mix_FreeChunk(sound_valid);
+	//Returns the selected items
 	return selected;
 }
 

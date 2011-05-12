@@ -176,13 +176,13 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 						GAME_STATE = GAME_STATE_PAUSED;
 						switch (pause_menu(screen))
 						{
-							case 0:
+							case PAUSE_MENU_CONTINUE:
 								GAME_STATE = GAME_STATE_PLAYING; //Continue
 								break;
-							case 1:
+							case PAUSE_MENU_MAIN_MENU:
 								GAME_STATE = GAME_STATE_NONE; //Stop
 								break;
-							case 2:
+							case PAUSE_MENU_QUIT:
 								exit(EXIT_SUCCESS); //Quit
 								break;
 							default:
