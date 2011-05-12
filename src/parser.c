@@ -183,7 +183,7 @@ DM_Splited* read_file(char *resource_path)
 	//Count the number of interresting lines
 	while (fgets(buffer, 255, file) != NULL)
 	{
-		if (buffer[0] != '#' && buffer[0] != '\r' && buffer[0] != '\n')
+		if (buffer[0] != '#' && !_is_white_char(buffer[0]))
 		{
 			numb_lines++;
 		}
@@ -195,7 +195,7 @@ DM_Splited* read_file(char *resource_path)
 	rewind(file);
 	while (fgets(buffer, 255, file) != NULL)
 	{
-		if (buffer[0] != '#' && buffer[0] != '\r' && buffer[0] != '\n')
+		if (buffer[0] != '#' && !_is_white_char(buffer[0]))
 		{
 			splited->lines_array[line] = split(buffer, ';');
 			line++;
