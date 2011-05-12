@@ -33,13 +33,13 @@
 
 /**
  * \fn SDL_Surface* load_resource(char *resource_name)
- * \brief Search and load a resource.
+ * \brief Loads an image resource.
  *
- * This cross-platform function search the resource in different paths and
- * load it. If it can not find or load the resource, it stops the program
- * and displays an error. 
+ * Searches the resource in different paths and loads it. If it can not find or
+ * load the resource, it stops the program and displays an error.
  *
  * \param resource_name The resource name (ex. "logo.png").
+ *
  * \return A pointer on a SDL_Surface containing the resource.
  */
 SDL_Surface* load_resource(char *resource_name)
@@ -48,31 +48,31 @@ SDL_Surface* load_resource(char *resource_name)
 	char filepath[255];
 	//Try to load form the installation path
 	#ifdef LINUX
-	strcpy(filepath, "/usr/share/games/");
-	strcat(filepath, APP_NAME);
-	strcat(filepath, "/pixmaps/");
-	strcat(filepath, resource_name);
-	img = IMG_Load(filepath);
-	#endif
-	#ifdef WINDOWS
-	//TODO
+	sprintf(
+			filepath,
+			"/usr/share/games/%s/pixmaps/%s",
+			APP_NAME,
+			resource_name
+			);
 	#endif
 	#ifdef MAC_OS
-	strcpy(filepath, "./Damn Monkey.app/Contents/Resources/pixmaps/");
-	strcat(filepath, resource_name);
-	img = IMG_Load(filepath);
+	sprintf(
+			filepath,
+			"./%s.app/Contents/Resources/pixmaps/%s",
+			APP_PR_NAME,
+			resource_name
+			);
 	#endif
-	//Try to load from local path (devel)
+	img = IMG_Load(filepath);
+	//Try to load from local path
 	if (img == NULL)
 	{
-		strcpy(filepath, "./pixmaps/");
-		strcat(filepath, resource_name);
+		sprintf(filepath, "./pixmaps/%s", resource_name);
 		img = IMG_Load(filepath);
 	}
 	if (img == NULL)
 	{
-		strcpy(filepath, "../pixmaps/");
-		strcat(filepath, resource_name);
+		sprintf(filepath, "../pixmaps/%s", resource_name);
 		img = IMG_Load(filepath);
 	}
 	//If the resource can not be loaded, display an error and exit
@@ -88,12 +88,13 @@ SDL_Surface* load_resource(char *resource_name)
 
 /**
  * \fn DM_Surface* load_resource_as_dm_surface(char *resource_name)
- * \brief Creates a DM_Surface from a resource.
+ * \brief Creates a DM_Surface from an image resource.
  *
- * This function creates a DM_Surface from a image resource that can be used
- * with the SDL and refresh-functions.
+ * Creates a DM_Surface from a image resource that can be used
+ * with the global refresh.
  *
- * \param resource_name The image resource name (ex. "font_main.png"). 
+ * \param resource_name The resource name (ex. "font_main.png").
+ *
  * \return A pointer on a DM_Surface containing the image.
  */
 DM_Surface* load_resource_as_dm_surface(char *resource_name)
@@ -116,12 +117,9 @@ DM_Surface* load_resource_as_dm_surface(char *resource_name)
 
 /**
  * \fn void free_dm_surface(DM_Surface *surface)
- * \brief Releases the memory allowed to the DM_Surface.
+ * \brief Releases the memory of the DM_Surface.
  *
- * This function releases the memory allowed to the DM_Surface.
- *
- * \param surface The DM_Surface name. 
- * \return Nothing.
+ * \param surface The DM_Surface to free.
  */
 void free_dm_surface(DM_Surface *surface)
 {
@@ -132,14 +130,15 @@ void free_dm_surface(DM_Surface *surface)
 
 /**
  * \fn SDL_Surface* str_to_surface(char *font_name, char *str)
- * \brief Writing texts.
+ * \brief Makes a surface from a string.
  *
- * This function transforms a string into a SDL_Surface that can be used
+ * Transforms a string into a SDL_Surface that can be used
  * with the SDL.
  *
- * \param font_name The font resource name (ex. "font_main.png").
+ * \param font_name The font name (ex. "font_main.png").
  * \param str The string containing the wanted text. WARNING: only ASCII
  *            chars can be handled.
+ *
  * \return A pointer on a SDL_Surface containing the text.
  */
 SDL_Surface* str_to_surface(char *font_name, char *str)
@@ -222,16 +221,16 @@ SDL_Surface* str_to_surface(char *font_name, char *str)
 
 /**
  * \fn Mix_Chunk* load_sound_resource(char *resource_name)
- * \brief Search and load a sound resource.
+ * \brief Loads a sound resource.
  *
- * This cross-platform function search the sound in different paths and
- * load it. If it can not find or load the resource, it stops the program
- * and displays an error.
+ * Searches the sound in different paths and loads it. If it can not find
+ * or load the resource, it stops the program and displays an error.
  *
  * NOTE: Only the PCM (.wav) format is supported.
  *
  * \param resource_name The resource name (ex. "sound.wav").
- * \return A pointer on a Mix_Chunk containing the sound.
+ *
+ * \return Returns a pointer on a Mix_Chunk containing the sound.
  */
 Mix_Chunk* load_sound_resource(char *resource_name)
 {
@@ -239,31 +238,31 @@ Mix_Chunk* load_sound_resource(char *resource_name)
 	char filepath[255];
 	//Try to load form the installation path
 	#ifdef LINUX
-	strcpy(filepath, "/usr/share/games/");
-	strcat(filepath, APP_NAME);
-	strcat(filepath, "/sounds/");
-	strcat(filepath, resource_name);
-	sound = Mix_LoadWAV(filepath);
-	#endif
-	#ifdef WINDOWS
-	//TODO
+	sprintf(
+			filepath,
+			"/usr/share/games/%s/sounds/%s",
+			APP_NAME,
+			resource_name
+			);
 	#endif
 	#ifdef MAC_OS
-	strcpy(filepath, "./Damn Monkey.app/Contents/Resources/sounds/");
-	strcat(filepath, resource_name);
-	sound = Mix_LoadWAV(filepath);
+	sprintf(
+			filepath,
+			"./%s.app/Contents/Resources/sounds/%s",
+			APP_PR_NAME,
+			resource_name
+			);
 	#endif
-	//Try to load from local path (devel)
+	sound = Mix_LoadWAV(filepath);
+	//Try to load from local path
 	if (sound == NULL)
 	{
-		strcpy(filepath, "./sounds/");
-		strcat(filepath, resource_name);
+		sprintf(filepath, "./sounds/%s", resource_name);
 		sound = Mix_LoadWAV(filepath);
 	}
 	if (sound == NULL)
 	{
-		strcpy(filepath, "../sounds/");
-		strcat(filepath, resource_name);
+		sprintf(filepath, "../sounds/%s", resource_name);
 		sound = Mix_LoadWAV(filepath);
 	}
 	//If the resource can not be loaded, display an error and exit
@@ -279,16 +278,16 @@ Mix_Chunk* load_sound_resource(char *resource_name)
 
 /**
  * \fn Mix_Music* load_music_resource(char *resource_name)
- * \brief Search and load a music resource.
+ * \brief Loads a music resource.
  *
- * This cross-platform function search the music in different paths and
- * load it. If it can not find or load the resource, it stops the program
- * and displays an error.
+ * Searches the music in different paths and loads it. If it can not find
+ * or load the resource, it stops the program and displays an error.
  *
- * NOTE: OGG/Vorbis (.ogg), PCM (and MP3) formats are supported.
+ * NOTE: OGG/Vorbis (.ogg), PCM (and maybe MP3) formats are supported.
  *
  * \param resource_name The resource name (ex. "music.ogg").
- * \return A pointer on a Mix_Music containing the music.
+ *
+ * \return Returns a pointer on a Mix_Music containing the music.
  */
 Mix_Music* load_music_resource(char *resource_name)
 {
@@ -296,31 +295,31 @@ Mix_Music* load_music_resource(char *resource_name)
 	char filepath[255];
 	//Try to load form the installation path
 	#ifdef LINUX
-	strcpy(filepath, "/usr/share/games/");
-	strcat(filepath, APP_NAME);
-	strcat(filepath, "/musics/");
-	strcat(filepath, resource_name);
-	music = Mix_LoadMUS(filepath);
-	#endif
-	#ifdef WINDOWS
-	//TODO
+	sprintf(
+			filepath,
+			"/usr/share/games/%s/musics/%s",
+			APP_NAME,
+			resource_name
+			);
 	#endif
 	#ifdef MAC_OS
-	strcpy(filepath, "./Damn Monkey.app/Contents/Resources/musics/");
-	strcat(filepath, resource_name);
-	music = Mix_LoadMUS(filepath);
+	sprintf(
+			filepath,
+			"./%s.app/Contents/Resources/musics/%s",
+			APP_PR_NAME,
+			resource_name
+			);
 	#endif
+	music = Mix_LoadMUS(filepath);
 	//Try to load from local path (devel)
 	if (music == NULL)
 	{
-		strcpy(filepath, "./musics/");
-		strcat(filepath, resource_name);
+		sprintf(filepath, "./musics/%s", resource_name);
 		music = Mix_LoadMUS(filepath);
 	}
 	if (music == NULL)
 	{
-		strcpy(filepath, "../musics/");
-		strcat(filepath, resource_name);
+		sprintf(filepath, "../musics/%s", resource_name);
 		music = Mix_LoadMUS(filepath);
 	}
 	//If the resource can not be loaded, display an error and exit
@@ -332,4 +331,5 @@ Mix_Music* load_music_resource(char *resource_name)
 	//Return the music
 	return music;
 }
+
 
