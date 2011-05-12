@@ -132,15 +132,15 @@ int main(int argc, char *argv[])
 		selected = main_menu(screen);
 		switch (selected)
 		{
-			case 0:
+			case MAIN_MENU_PLAY:
 				Mix_HaltMusic();
 				level_01(screen);
 				Mix_PlayMusic(menu_music, -1);
 				break;
-			case 1:
+			case MAIN_MENU_CREDITS:
 				credits(screen);
 				break;
-			case 2:
+			case MAIN_MENU_QUIT:
 				Mix_HaltMusic();
 				exit(EXIT_SUCCESS);
 				break;

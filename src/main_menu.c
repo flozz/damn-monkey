@@ -34,6 +34,10 @@
  * \fn void corp_logo(SDL_Surface *screen)
  * \brief Display the corporation logo.
  *
+ * WARNING: This function does not use the global refresh, so it must not be
+ * called after the initialisation of the global refresh (it can crash The
+ * application) !
+ *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
  */
@@ -76,12 +80,13 @@ void corp_logo(SDL_Surface *screen)
 
 /**
  * \fn int main_menu(SDL_Surface *screen)
- * \brief The main menu.
+ * \brief Displays the main menu.
  *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
- * \return The index of the selected item: 0 = Play, 1 = Credits,
- *         2 = Quit.
+ *
+ * \return Returns the selected item (MAIN_MENU_PLAY, MAIN_MENU_CREDITS
+ *         or MAIN_MENU_QUIT).
  */
 int main_menu(SDL_Surface *screen)
 {
@@ -96,7 +101,7 @@ int main_menu(SDL_Surface *screen)
 	//Title
 	DM_Surface *title = load_resource_as_dm_surface("main_menu_title.png");
 	int title_refresh = ref_object(&layer_bg, title, surface_refresh_cb);
-	//version
+	//Version
 	DM_Surface version;
 	version.surface = str_to_surface("font_main.png", VERSION);
 	version.rect.x = 5;
@@ -104,11 +109,11 @@ int main_menu(SDL_Surface *screen)
 	int version_refresh = ref_object(&layer_bg, &version, surface_refresh_cb);
 	//Create the menu
 	DM_Menu *menu = new_menu(
-							 "Play\nCredits\nQuit",
-							 "font_menu.png",
-							 "font_menu_hl.png",
-							 "cursor.png"
-							 );
+			"Play\nCredits\nQuit",
+			"font_menu.png",
+			"font_menu_hl.png",
+			"cursor.png"
+			);
 	menu->menu_rect.x = (screen->w - menu->menu->w) / 4;
 	menu->menu_rect.y = (screen->h - menu->menu->h - 270) / 2 + 270;
 	int menu_refresh = ref_object(&layer_menu, menu, menu_glow_effect_cb);
@@ -159,12 +164,13 @@ int main_menu(SDL_Surface *screen)
 	deref_object(&layer_menu, menu_refresh);
 	menu_refresh = ref_object(&layer_menu, menu, menu_blink_effect_cb);
 	SDL_Delay(500);
-	//Dereference objects and free the memory
+	//Dereference the objects
 	deref_object(&layer_bg, bg_refresh);
 	deref_object(&layer_bg, title_refresh);
 	deref_object(&layer_bg, version_refresh);
 	deref_object(&layer_menu, menu_refresh);
-	SDL_Delay(20);
+	SDL_Delay(50);
+	//Free the memory
 	free_dm_surface(bg);
 	free_dm_surface(title);
 	SDL_FreeSurface(version.surface);
@@ -172,6 +178,7 @@ int main_menu(SDL_Surface *screen)
 	//Free sounds memory
 	Mix_FreeChunk(sound_select);
 	Mix_FreeChunk(sound_valid);
+	//Return the selected item
 	return selected;
 }
 

@@ -33,6 +33,21 @@
 #include "menu.h"
 
 
+/**
+ * \def MAIN_MENU_PLAY
+ * \brief Play item selected.
+ *
+ * \def MAIN_MENU_CREDITS
+ * \brief Credit item selected.
+ *
+ * \def MAIN_MENU_QUIT
+ * \brief Quit item selected.
+ */
+#define MAIN_MENU_PLAY    0
+#define MAIN_MENU_CREDITS 1
+#define MAIN_MENU_QUIT    2
+
+
 void corp_logo(SDL_Surface *screen);
 int main_menu(SDL_Surface *screen);
 
