@@ -97,16 +97,16 @@ int main_menu(SDL_Surface *screen)
 	Mix_Chunk *sound_valid = load_sound_resource("menu_valid.wav");
 	//Background
 	DM_Surface *bg = load_resource_as_dm_surface("menu_bg.png");
-	int bg_refresh = ref_object(&layer_bg, bg, surface_refresh_cb);
+	int bg_refresh = ref_object(&LAYER_BG, bg, surface_refresh_cb);
 	//Title
 	DM_Surface *title = load_resource_as_dm_surface("main_menu_title.png");
-	int title_refresh = ref_object(&layer_bg, title, surface_refresh_cb);
+	int title_refresh = ref_object(&LAYER_BG, title, surface_refresh_cb);
 	//Version
 	DM_Surface version;
 	version.surface = str_to_surface("font_main.png", VERSION);
 	version.rect.x = 5;
 	version.rect.y = screen->h - version.surface->h - 5;
-	int version_refresh = ref_object(&layer_bg, &version, surface_refresh_cb);
+	int version_refresh = ref_object(&LAYER_BG, &version, surface_refresh_cb);
 	//Create the menu
 	DM_Menu *menu = new_menu(
 			"Play\nCredits\nQuit",
@@ -116,7 +116,7 @@ int main_menu(SDL_Surface *screen)
 			);
 	menu->menu_rect.x = (screen->w - menu->menu->w) / 4;
 	menu->menu_rect.y = (screen->h - menu->menu->h - 270) / 2 + 270;
-	int menu_refresh = ref_object(&layer_menu, menu, menu_glow_effect_cb);
+	int menu_refresh = ref_object(&LAYER_MENU, menu, menu_glow_effect_cb);
 	//Main loop
 	SDL_Event event;
 	int selected = -1;
@@ -161,14 +161,14 @@ int main_menu(SDL_Surface *screen)
 	while (selected < 0);
 	//Play a confirmation sound and change the menu effect
 	Mix_PlayChannel(-1, sound_valid, 0);
-	deref_object(&layer_menu, menu_refresh);
-	menu_refresh = ref_object(&layer_menu, menu, menu_blink_effect_cb);
+	deref_object(&LAYER_MENU, menu_refresh);
+	menu_refresh = ref_object(&LAYER_MENU, menu, menu_blink_effect_cb);
 	SDL_Delay(500);
 	//Dereference the objects
-	deref_object(&layer_bg, bg_refresh);
-	deref_object(&layer_bg, title_refresh);
-	deref_object(&layer_bg, version_refresh);
-	deref_object(&layer_menu, menu_refresh);
+	deref_object(&LAYER_BG, bg_refresh);
+	deref_object(&LAYER_BG, title_refresh);
+	deref_object(&LAYER_BG, version_refresh);
+	deref_object(&LAYER_MENU, menu_refresh);
 	SDL_Delay(50);
 	//Free the memory
 	free_dm_surface(bg);

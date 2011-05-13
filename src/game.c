@@ -146,7 +146,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 	JUMPMAN.pos_y = map->start_point_y - JUMPMAN.sprite->items[JUMPMAN.movement].h;
 	update_jumpman();
 	//Reference Jumman in the global refresh
-	int jumpman_refresh = ref_object(&layer_active, JUMPMAN.sprite, sprite_cb);
+	int jumpman_refresh = ref_object(&LAYER_ACTIVE, JUMPMAN.sprite, sprite_cb);
 	//Declaration of some variables
 	int horiz_move = HORIZ_MOVE_NONE_R;
 	int vert_move = VERT_MOVE_NONE;
@@ -493,7 +493,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 	//TODO if the player win, play a music,...
 
 	//Dereference Jumpman
-	deref_object(&layer_active, jumpman_refresh);
+	deref_object(&LAYER_ACTIVE, jumpman_refresh);
 	//Return the game state
 	return GAME_STATE;
 }

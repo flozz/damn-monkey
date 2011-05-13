@@ -23,7 +23,19 @@
 
 /**
  * \file refresh.c
- * \brief TODO.
+ * \brief Contains the code of the Global Refresh system.
+ *
+ * The Global Refresh system handles all objects to display on the screen, and
+ * manages the screen refresh. In order to keep a consistent display of all
+ * the objects, it provides 4 layers:
+ * - LAYER_BG: The background layer, used for the level objects like
+ *             platforms,...
+ * - LAYER_ACTIVE: The layer that contains the actives objects like Jumpman,
+ *                 barrels,...
+ * - LAYER_FG: The foreground layer that is used for objects that should be
+ *             over Jumpman, and for displaying the remaining lives and the
+ *             score.
+ * - LAYER_MENU: The layer used for displaying the menus.
  */
 
 
@@ -32,27 +44,27 @@
 
 /**
  * \fn void refresh_init(SDL_Surface *screen)
- * \brief Initialize the refresh
+ * \brief Initializes the Global Refresh.
  *
- * \param screen The main SDL_Surface.
+ * \param screen The main SDL_Surface (called screen in the main() function).
  */
 void refresh_init(SDL_Surface *screen)
 {
-	main_timer = SDL_AddTimer(20, refresh_cb, NULL);
-	layer_bg.screen = screen;
-	layer_bg.next = NULL;
-	layer_active.screen = screen;
-	layer_active.next = NULL;
-	layer_fg.screen = screen;
-	layer_fg.next = NULL;
-	layer_menu.screen = screen;
-	layer_menu.next = NULL;
+	main_timer = SDL_AddTimer(20, refresh_cb, NULL); //50 Hz refresh
+	LAYER_BG.screen = screen;
+	LAYER_BG.next = NULL;
+	LAYER_ACTIVE.screen = screen;
+	LAYER_ACTIVE.next = NULL;
+	LAYER_FG.screen = screen;
+	LAYER_FG.next = NULL;
+	LAYER_MENU.screen = screen;
+	LAYER_MENU.next = NULL;
 }
 
 
 /**
  * \fn void refresh_destroy()
- * \brief Stop the refresh
+ * \brief Stops the Global Refresh.
  */
 void refresh_destroy()
 {
@@ -62,17 +74,20 @@ void refresh_destroy()
 
 /**
  * \fn int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)())
- * \brief Add an object to the refresh list.
+ * \brief Adds an object to the Global Refresh objects list.
  *
- * \param layer The layer where the object will be added.
- * \param object A pointer on the object
- * \param callback The callback function that will be called for blitting the object
- *                 This function must have a prototype that looks like that:
+ * \param layer The layer on which the object will be added (LAYER_BG,
+ *              LAYER_ACTIVE, LAYER_FG or LAYER_MENU).
+ * \param object A pointer on the object to register.
+ * \param callback The callback function that will be called for blitting the
+ *                 object. This function must have a prototype that looks like
+ *                 that:
  * \code
  * void function_name(void *object, SDL_Surface *screen);
  * \endcode
- * 
- * \return The id of the refresh item.
+ *
+ * \return Returns the id of the item (used by the Global Refresh for
+ * identifying the object).
  */
 int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)())
 {
@@ -86,7 +101,7 @@ int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)())
 		exit(EXIT_FAILURE);
 	}
 	//Set field
-	item->id = get_id();
+	item->id = _get_id();
 	item->object = object;
 	item->callback = callback;
 	item->next = NULL;
@@ -112,9 +127,10 @@ int ref_object(DM_Refresh_Layer *layer, void *object, void (*callback)())
 
 /**
  * \fn void deref_object(DM_Refresh_Layer *layer, int id)
- * \brief Dereference an object.
+ * \brief Dereference an object of the Global Refresh list.
  *
- * \param layer The layer where is the object.
+ * \param layer The layer on which is the object (LAYER_BG, LAYER_ACTIVE,
+ *              LAYER_FG or LAYER_MENU).
  * \param id The identifier of the object.
  */
 void deref_object(DM_Refresh_Layer *layer, int id)
@@ -137,10 +153,11 @@ void deref_object(DM_Refresh_Layer *layer, int id)
 
 /**
  * \fn Uint32 refresh_cb(Uint32 interval, void *arg)
- * \brief The main timer callback (used for refresh).
+ * \brief The main timer callback (used for the Global Refresh).
  *
  * \param interval The timer interval.
  * \param args A DM_Refresh_Layer or NULL.
+ *
  * \return The timer interval.
  */
 Uint32 refresh_cb(Uint32 interval, void *arg)
@@ -148,14 +165,18 @@ Uint32 refresh_cb(Uint32 interval, void *arg)
 	if (arg == NULL)
 	{
 		//Clear the screen
-		SDL_FillRect(layer_bg.screen, NULL, SDL_MapRGB(layer_bg.screen->format, 0, 0, 0));
+		SDL_FillRect(
+				LAYER_BG.screen,
+				NULL,
+				SDL_MapRGB(LAYER_BG.screen->format, 0, 0, 0)
+				);
 		//Blit all layers
-		refresh_cb(interval, &layer_bg);
-		refresh_cb(interval, &layer_active);
-		refresh_cb(interval, &layer_fg);
-		refresh_cb(interval, &layer_menu);
+		refresh_cb(interval, &LAYER_BG);
+		refresh_cb(interval, &LAYER_ACTIVE);
+		refresh_cb(interval, &LAYER_FG);
+		refresh_cb(interval, &LAYER_MENU);
 		//Refresh the screen
-		SDL_Flip(layer_bg.screen);
+		SDL_Flip(LAYER_BG.screen);
 	}
 	else
 	{
@@ -189,30 +210,32 @@ Uint32 refresh_cb(Uint32 interval, void *arg)
 
 
 /**
- * \fn int get_id()
- * \brief Return an unique identifier.
- *
- * \return The identifier.
- */
-int get_id()
-{
-	static int id = 0;
-	id++;
-	return id;
-}
-
-
-/**
  * \fn surface_refresh_cb(void *object, SDL_Surface *screen)
- * \brief Blit a DM_Surface.
+ * \brief Refreshes a DM_Surface.
  *
- * \param object The DM_Surface to blit.
- * \param screen The main surface.
+ * This is the callback function for the Global Refresh that handles
+ * the DM_Surface refresh.
+ *
+ * \param object The DM_Surface to refresh.
+ * \param screen The main surface (called screen in the main() function).
  */
 void surface_refresh_cb(void *object, SDL_Surface *screen)
 {
 	DM_Surface *surface = object;
 	SDL_BlitSurface(surface->surface, NULL, screen, &surface->rect);
 }
+
+
+/** \cond */ //Hide the "privates" functions for Doxygen
+
+//This function returns a unique identifier used by the Global Refresh.
+int _get_id()
+{
+	static int id = 0;
+	id++;
+	return id;
+}
+
+/** \endcond */
 
 

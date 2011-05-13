@@ -42,7 +42,7 @@ void level_01(SDL_Surface *screen)
 {
 	//Load the background
 	DM_Surface *level_surface = load_resource_as_dm_surface("level_01.png");
-	int level_surface_refresh = ref_object(&layer_bg, level_surface, surface_refresh_cb);
+	int level_surface_refresh = ref_object(&LAYER_BG, level_surface, surface_refresh_cb);
 	
 	//Load the level infos (collides,...)
 	DM_Map *map = load_map_infos("level_01");
@@ -50,7 +50,7 @@ void level_01(SDL_Surface *screen)
 	//FIXME: free dm_map
 	
 	//Dereference objects and free the memory
-	deref_object(&layer_bg, level_surface_refresh);
+	deref_object(&LAYER_BG, level_surface_refresh);
 	SDL_Delay(20);
 	free_dm_surface(level_surface);
 }

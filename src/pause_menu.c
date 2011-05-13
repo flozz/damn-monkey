@@ -44,7 +44,7 @@ int pause_menu(SDL_Surface *screen)
 	//Initialize variables
 	DM_Surface *shading_bg = load_resource_as_dm_surface("pause_menu.png");
 	int shading_refresh = ref_object(
-			&layer_menu,
+			&LAYER_MENU,
 			shading_bg,
 			surface_refresh_cb
 			);
@@ -62,7 +62,7 @@ int pause_menu(SDL_Surface *screen)
 			);
 	menu->menu_rect.x = screen->w / 2.8;
 	menu->menu_rect.y = screen->h / 2.15;
-	int menu_refresh = ref_object(&layer_menu, menu, menu_glow_effect_cb);
+	int menu_refresh = ref_object(&LAYER_MENU, menu, menu_glow_effect_cb);
 	//Main loop
 	SDL_Event event;
 	int selected = -1;
@@ -105,12 +105,12 @@ int pause_menu(SDL_Surface *screen)
 	while (selected < 0);
 	//Play a confirmation sound and change the menu effect
 	Mix_PlayChannel(-1, sound_valid, 0);
-	deref_object(&layer_menu, menu_refresh);
-	menu_refresh = ref_object(&layer_menu, menu, menu_blink_effect_cb);
+	deref_object(&LAYER_MENU, menu_refresh);
+	menu_refresh = ref_object(&LAYER_MENU, menu, menu_blink_effect_cb);
 	SDL_Delay(500);
 	//Clear the ressources
-	deref_object(&layer_menu, menu_refresh);
-	deref_object(&layer_menu, shading_refresh);
+	deref_object(&LAYER_MENU, menu_refresh);
+	deref_object(&LAYER_MENU, shading_refresh);
 	SDL_Delay(50);
 	free_dm_surface(shading_bg);
 	free_menu(menu);
