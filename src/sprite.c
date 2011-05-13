@@ -32,9 +32,10 @@
 
 /**
  * \fn DM_Sprite* new_sprite(char *sprite_name)
- * \brief Create a new DM_Sprite
+ * \brief Creates a new DM_Sprite
  *
- * \param sprite_name The name of the sprite file
+ * \param sprite_name The name of the sprite file without the extention
+ *                    (e.g. "jumpman").
  */
 DM_Sprite* new_sprite(char *sprite_name)
 {
@@ -58,8 +59,7 @@ DM_Sprite* new_sprite(char *sprite_name)
 	sprite->current_mov = SPRITE_LOOK_RIGHT;
 	sprite->prev_mov = -1;
 	//Load the image
-	strcpy(file_name, sprite_name);
-	strcat(file_name, ".png");
+	sprintf(file_name, "%s.png", sprite_name);
 	sprite->sprite = load_resource(file_name);
 	//Load the sprite informations
 	char path[42] = "";
@@ -122,12 +122,18 @@ DM_Sprite* new_sprite(char *sprite_name)
 
 			if (action >= 0)
 			{
-				sprite->items[action].x = atoi(sprite_infos->lines_array[i]->parameters[1]) + 1;
-				sprite->items[action].y = atoi(sprite_infos->lines_array[i]->parameters[2]) + 1;
-				sprite->items[action].w = atoi(sprite_infos->lines_array[i]->parameters[3]);
-				sprite->items[action].h = atoi(sprite_infos->lines_array[i]->parameters[4]);
-				sprite->items[action].n = atoi(sprite_infos->lines_array[i]->parameters[5]);
-				sprite->items[action].d = atoi(sprite_infos->lines_array[i]->parameters[6]);
+				sprite->items[action].x = atoi(
+						sprite_infos->lines_array[i]->parameters[1]);
+				sprite->items[action].y = atoi(
+						sprite_infos->lines_array[i]->parameters[2]);
+				sprite->items[action].w = atoi(
+						sprite_infos->lines_array[i]->parameters[3]);
+				sprite->items[action].h = atoi(
+						sprite_infos->lines_array[i]->parameters[4]);
+				sprite->items[action].n = atoi(
+						sprite_infos->lines_array[i]->parameters[5]);
+				sprite->items[action].d = atoi(
+						sprite_infos->lines_array[i]->parameters[6]);
 			}
 		}
 	}
@@ -170,14 +176,19 @@ void sprite_cb(void *object, SDL_Surface *screen)
 		sprite->image_pos.y = sprite->items[sprite->current_mov].y;
 		sprite->image_pos.h = sprite->items[sprite->current_mov].h;
 		sprite->screen_pos.w = sprite->items[sprite->current_mov].w;
-		sprite->screen_pos.w = sprite->items[sprite->current_mov].w;
+		sprite->screen_pos.h = sprite->items[sprite->current_mov].h;
 		sprite->last_step_change = SDL_GetTicks();
 	}
 	//Select the current image
 	sprite->image_pos.x = sprite->items[sprite->current_mov].x \
 						  + sprite->items[sprite->current_mov].w * sprite->step;
 	//blit the image
-	SDL_BlitSurface(sprite->sprite, &sprite->image_pos, screen, &sprite->screen_pos);
+	SDL_BlitSurface(
+			sprite->sprite,
+			&sprite->image_pos,
+			screen,
+			&sprite->screen_pos
+			);
 	//Increment the step
 	if (SDL_GetTicks() - sprite->last_step_change >=  sprite->items[sprite->current_mov].d)
 	{

@@ -30,25 +30,65 @@
 #include "parser.h"
 
 
-#define NUMB_SPRITE_ITEMS 12
+/**
+ * \def SPRITE_LOOK_RIGHT
+ * \brief Don't move, just looking at right (for Jumpman).
+ *
+ * \def SPRITE_WALK_RIGHT
+ * \brief Walking to the right (for Jumpman and the barrels).
+ *
+ * \def SPRITE_LOOK_LEFT
+ * \brief Don't move, just looking at left (for Jumpman).
+ *
+ * \def SPRITE_WALK_LEFT
+ * \brief Walking to the left (for Jumpman and the barrels).
+ *
+ * \def SPRITE_JUMP_RIGHT
+ * \brief Jumping to the right (for Jumpman).
+ *
+ * \def SPRITE_JUMP_LEFT
+ * \brief Jumping to the left (for Jumpman).
+ *
+ * \def SPRITE_LADDER
+ * \brief Don't move, on a ladder (for Jumpman).
+ *
+ * \def SPRITE_WALK_LADDER
+ * \brief Riding up or riding donw a ladder (for Jumpman and barrels).
+ *
+ * \def SPRITE_DEAD
+ * \brief Dead (for Jumpman).
+ *
+ * \def SPRITE_THROW_BARREL
+ * \brief Throwing barrels (for Donkey Kong).
+ *
+ * \def SPRITE_ASK_HELP
+ * \brief Asking help (for Lady).
+ *
+ * \def SPRITE_CUSTOM
+ * \brief Used for any animated objects.
+ */
+#define SPRITE_LOOK_RIGHT    0 //look-right
+#define SPRITE_WALK_RIGHT    1 //walk-right
+#define SPRITE_LOOK_LEFT     2 //look-left
+#define SPRITE_WALK_LEFT     3 //walk-left
+#define SPRITE_JUMP_RIGHT    4 //jump-right
+#define SPRITE_JUMP_LEFT     5 //jump-left
+#define SPRITE_LADDER        6 //ladder
+#define SPRITE_WALK_LADDER   7 //walk-ladder
+#define SPRITE_DEAD          8 //dead
+#define SPRITE_THROW_BARREL  9 //throw-barrel
+#define SPRITE_ASK_HELP     10 //ask-help
+#define SPRITE_CUSTOM       11 //custom
 
-#define SPRITE_LOOK_RIGHT    0 //look-right   (jumpman, barrel)
-#define SPRITE_WALK_RIGHT    1 //walk-right   (jumpman, barrel)
-#define SPRITE_LOOK_LEFT     2 //look-left    (jumpman)
-#define SPRITE_WALK_LEFT     3 //walk-left    (jumpman)
-#define SPRITE_JUMP_RIGHT    4 //jump-right   (jumpman)
-#define SPRITE_JUMP_LEFT     5 //jump-left    (jumpman)
-#define SPRITE_LADDER        6 //ladder       (jumpman)
-#define SPRITE_WALK_LADDER   7 //walk-ladder  (jumpman)
-#define SPRITE_DEAD          8 //dead         (jumpman)
-#define SPRITE_THROW_BARREL  9 //throw-barrel (dk)
-#define SPRITE_ASK_HELP     10 //ask-help     (lady)
-#define SPRITE_CUSTOM       11 //custom       (any animated object)
+/** \cond */ //Hide this to Doxygen
+#define NUMB_SPRITE_ITEMS 12 //The number of sprites movements (SPRITES_*)
+/** \endcond */
 
 
 /**
  * \struct DM_Sprite_item
- * \brief This structure contain all the informations about a single animation.
+ * \brief Contains all the informations about a single animation of a
+ *        sprite file.
  */
 typedef struct DM_Sprite_item DM_Sprite_item;
 struct DM_Sprite_item
@@ -57,26 +97,26 @@ struct DM_Sprite_item
 	int y;  /*!< The y position of the first image. */
 	int w;  /*!< The width of an image. */
 	int h;  /*!< The height of an image. */
-	int n;  /*!< The number of images for this item. */
-	int d;  /*!< The delay between two moves. */
+	int n;  /*!< The number of images for this animation. */
+	int d;  /*!< The delay between two steps of the animations. */
 };
 
 
 /**
  * \struct DM_Sprite
- * \brief Contain all the animations of a sprite file.
+ * \brief Contains all the animations of a sprite file.
  */
 typedef struct DM_Sprite DM_Sprite;
 struct DM_Sprite
 {
 	SDL_Surface *sprite;        /*!< The sprite SDL_Surface. */
-	DM_Sprite_item items[NUMB_SPRITE_ITEMS];    /*!< The item list. */
+	DM_Sprite_item items[NUMB_SPRITE_ITEMS];    /*!< The animations list. */
 	SDL_Rect screen_pos;        /*!< The position of the sprite on the screen. */
 	SDL_Rect image_pos;         /*!< The position of the image in the sprite. */
-	int current_mov;
-	int prev_mov;
-	int step;
-	int last_step_change;
+	int current_mov;            /*!< The current movement (SPRITE_*). */
+	int prev_mov;               /*!< \private */
+	int step;                   /*!< \private */
+	int last_step_change;       /*!< \private */
 };
 
 
