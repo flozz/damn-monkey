@@ -1,24 +1,37 @@
-/***************************************************************************
-*                                                                          *
-*  This file is part of Damn Monkey                                        *
-*                                                                          *
-*  Copyright (C) 2010 - 2011  Fabien LOISON, Mathilde BOUTIGNY,            *
-*  Vincent PEYROUSE, Germain CARRÉ and Matthis FRENAY                      *
-*                                                                          *
-*  Damn Monkey is free software: you can redistribute it and/or modify     *
-*  it under the terms of the GNU General Public License as published by    *
-*  the Free Software Foundation, either version 3 of the License, or       *
-*  (at your option) any later version.                                     *
-*                                                                          *
-*  This program is distributed in the hope that it will be useful,         *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of          *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
-*  GNU General Public License for more details.                            *
-*                                                                          *
-*  You should have received a copy of the GNU General Public License       *
-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
-*                                                                          *
-***************************************************************************/
+/****************************************************************************
+*        ___                                           _                    *
+*       /   \__ _ _ __ ___  _ __     /\/\   ___  _ __ | | _____ _   _       *
+*      / /\ / _` | '_ ` _ \| '_ \   /    \ / _ \| '_ \| |/ / _ \ | | |      *
+*     / /_// (_| | | | | | | | | | / /\/\ \ (_) | | | |   <  __/ |_| |      *
+*    /___,' \__,_|_| |_| |_|_| |_| \/    \/\___/|_| |_|_|\_\___|\__, |      *
+*                                                               |___/       *
+*                                                                           *
+*   This file is part of Damn Monkey                                        *
+*                                                                           *
+*   Copyright (C) 2010 - 2011  Fabien LOISON                                *
+*   Copyright (C) 2010 - 2011  Mathilde BOUTIGNY                            *
+*   Copyright (C) 2010 - 2011  Vincent PEYROUSE                             *
+*   Copyright (C) 2010 - 2011  Germain CARRÉ                                *
+*   Copyright (C) 2010 - 2011  Matthis FRENAY                               *
+*                                                                           *
+*   Damn Monkey is free software: you can redistribute it and/or modify     *
+*   it under the terms of the GNU General Public License as published by    *
+*   the Free Software Foundation, either version 3 of the License, or       *
+*   (at your option) any later version.                                     *
+*                                                                           *
+*   This program is distributed in the hope that it will be useful,         *
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
+*   GNU General Public License for more details.                            *
+*                                                                           *
+*   You should have received a copy of the GNU General Public License       *
+*   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
+*                                                                           *
+*****************************************************************************
+*                                                                           *
+*  WEB SITE: https://launchpad.net/damn-monkey                              *
+*                                                                           *
+****************************************************************************/
 
 
 /**
@@ -71,13 +84,21 @@ int main(int argc, char *argv[])
 	//Initialize the SDL library
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0)
 	{
-		fprintf(stderr, "E: Can not initialize the SDL library: %s\n", SDL_GetError());
+		fprintf(
+				stderr,
+				"E: Can not initialize the SDL library: %s\n",
+				SDL_GetError()
+				);
 		exit(EXIT_FAILURE);
 	}
 	//Initialize the SDL_mixer library
-	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096) != 0)
+	if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 512) != 0)
 	{
-		fprintf(stderr, "E: Can not initialize the SDL_mixer library: %s\n", Mix_GetError());
+		fprintf(
+				stderr,
+				"E: Can not initialize the SDL_mixer library: %s\n",
+				Mix_GetError()
+				);
 		exit(EXIT_FAILURE);
 	}
 	//Register the SDL_Quit() and the Mix_CloseAudio() functions to be
@@ -95,7 +116,12 @@ int main(int argc, char *argv[])
 	SDL_WM_SetIcon(load_resource("icon64.png"),NULL);
 	#endif
 	//Configure the window
-	SDL_Surface *screen = SDL_SetVideoMode(800, 600, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	SDL_Surface *screen = SDL_SetVideoMode(
+			800, //Witdh
+			600, //Height
+			32,  //Depth
+			SDL_HWSURFACE | SDL_DOUBLEBUF
+			);
 	if (screen == NULL)
 	{
 		fprintf(stderr, "E: Can not set the video mode: %s\n", SDL_GetError());
@@ -119,20 +145,23 @@ int main(int argc, char *argv[])
 		selected = main_menu(screen);
 		switch (selected)
 		{
-			case 0:
+			case MAIN_MENU_PLAY:
 				Mix_HaltMusic();
 				level_01(screen);
 				Mix_PlayMusic(menu_music, -1);
 				break;
-			case 1:
+			case MAIN_MENU_CREDITS:
 				credits(screen);
 				break;
-			case 2:
+			case MAIN_MENU_QUIT:
 				Mix_HaltMusic();
 				exit(EXIT_SUCCESS);
 				break;
+			default:
+				break;
 		}
 	}
+	return EXIT_SUCCESS;
 }
 
 

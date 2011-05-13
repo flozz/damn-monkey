@@ -1,24 +1,37 @@
-/***************************************************************************
-*                                                                          *
-*  This file is part of Damn Monkey                                        *
-*                                                                          *
-*  Copyright (C) 2010 - 2011  Fabien LOISON, Mathilde BOUTIGNY,            *
-*  Vincent PEYROUSE, Germain CARRÉ and Matthis FRENAY                      *
-*                                                                          *
-*  Damn Monkey is free software: you can redistribute it and/or modify     *
-*  it under the terms of the GNU General Public License as published by    *
-*  the Free Software Foundation, either version 3 of the License, or       *
-*  (at your option) any later version.                                     *
-*                                                                          *
-*  This program is distributed in the hope that it will be useful,         *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of          *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
-*  GNU General Public License for more details.                            *
-*                                                                          *
-*  You should have received a copy of the GNU General Public License       *
-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
-*                                                                          *
-***************************************************************************/
+/****************************************************************************
+*        ___                                           _                    *
+*       /   \__ _ _ __ ___  _ __     /\/\   ___  _ __ | | _____ _   _       *
+*      / /\ / _` | '_ ` _ \| '_ \   /    \ / _ \| '_ \| |/ / _ \ | | |      *
+*     / /_// (_| | | | | | | | | | / /\/\ \ (_) | | | |   <  __/ |_| |      *
+*    /___,' \__,_|_| |_| |_|_| |_| \/    \/\___/|_| |_|_|\_\___|\__, |      *
+*                                                               |___/       *
+*                                                                           *
+*   This file is part of Damn Monkey                                        *
+*                                                                           *
+*   Copyright (C) 2010 - 2011  Fabien LOISON                                *
+*   Copyright (C) 2010 - 2011  Mathilde BOUTIGNY                            *
+*   Copyright (C) 2010 - 2011  Vincent PEYROUSE                             *
+*   Copyright (C) 2010 - 2011  Germain CARRÉ                                *
+*   Copyright (C) 2010 - 2011  Matthis FRENAY                               *
+*                                                                           *
+*   Damn Monkey is free software: you can redistribute it and/or modify     *
+*   it under the terms of the GNU General Public License as published by    *
+*   the Free Software Foundation, either version 3 of the License, or       *
+*   (at your option) any later version.                                     *
+*                                                                           *
+*   This program is distributed in the hope that it will be useful,         *
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
+*   GNU General Public License for more details.                            *
+*                                                                           *
+*   You should have received a copy of the GNU General Public License       *
+*   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
+*                                                                           *
+*****************************************************************************
+*                                                                           *
+*  WEB SITE: https://launchpad.net/damn-monkey                              *
+*                                                                           *
+****************************************************************************/
 
 
 /**
@@ -33,6 +46,10 @@
 /**
  * \fn void corp_logo(SDL_Surface *screen)
  * \brief Display the corporation logo.
+ *
+ * WARNING: This function does not use the global refresh, so it must not be
+ * called after the initialisation of the global refresh (it can crash The
+ * application) !
  *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
@@ -76,12 +93,13 @@ void corp_logo(SDL_Surface *screen)
 
 /**
  * \fn int main_menu(SDL_Surface *screen)
- * \brief The main menu.
+ * \brief Displays the main menu.
  *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
- * \return The index of the selected item: 0 = Play, 1 = Credits,
- *         2 = Quit.
+ *
+ * \return Returns the selected item (MAIN_MENU_PLAY, MAIN_MENU_CREDITS
+ *         or MAIN_MENU_QUIT).
  */
 int main_menu(SDL_Surface *screen)
 {
@@ -92,26 +110,26 @@ int main_menu(SDL_Surface *screen)
 	Mix_Chunk *sound_valid = load_sound_resource("menu_valid.wav");
 	//Background
 	DM_Surface *bg = load_resource_as_dm_surface("menu_bg.png");
-	int bg_refresh = ref_object(&layer_bg, bg, surface_refresh_cb);
+	int bg_refresh = ref_object(&LAYER_BG, bg, surface_refresh_cb);
 	//Title
 	DM_Surface *title = load_resource_as_dm_surface("main_menu_title.png");
-	int title_refresh = ref_object(&layer_bg, title, surface_refresh_cb);
-	//version
+	int title_refresh = ref_object(&LAYER_BG, title, surface_refresh_cb);
+	//Version
 	DM_Surface version;
 	version.surface = str_to_surface("font_main.png", VERSION);
 	version.rect.x = 5;
 	version.rect.y = screen->h - version.surface->h - 5;
-	int version_refresh = ref_object(&layer_bg, &version, surface_refresh_cb);
+	int version_refresh = ref_object(&LAYER_BG, &version, surface_refresh_cb);
 	//Create the menu
 	DM_Menu *menu = new_menu(
-							 "Play\nCredits\nQuit",
-							 "font_menu.png",
-							 "font_menu_hl.png",
-							 "cursor.png"
-							 );
+			"Play\nCredits\nQuit",
+			"font_menu.png",
+			"font_menu_hl.png",
+			"cursor.png"
+			);
 	menu->menu_rect.x = (screen->w - menu->menu->w) / 4;
 	menu->menu_rect.y = (screen->h - menu->menu->h - 270) / 2 + 270;
-	int menu_refresh = ref_object(&layer_menu, menu, menu_glow_effect_cb);
+	int menu_refresh = ref_object(&LAYER_MENU, menu, menu_glow_effect_cb);
 	//Main loop
 	SDL_Event event;
 	int selected = -1;
@@ -123,7 +141,7 @@ int main_menu(SDL_Surface *screen)
 			switch (event.key.keysym.sym)
 			{
 				case SDLK_ESCAPE:
-					menu->selected = menu->numb_of_items - 1;
+					menu->selected = MAIN_MENU_QUIT;
 					selected = menu->selected;
 					break;
 				case SDLK_UP:
@@ -149,22 +167,23 @@ int main_menu(SDL_Surface *screen)
 		}
 		else if (event.type == SDL_QUIT)
 		{
-			menu->selected = menu->numb_of_items - 1;
+			menu->selected = MAIN_MENU_QUIT;
 			selected = menu->selected;
 		}
 	}
 	while (selected < 0);
 	//Play a confirmation sound and change the menu effect
 	Mix_PlayChannel(-1, sound_valid, 0);
-	deref_object(&layer_menu, menu_refresh);
-	menu_refresh = ref_object(&layer_menu, menu, menu_blink_effect_cb);
+	deref_object(&LAYER_MENU, menu_refresh);
+	menu_refresh = ref_object(&LAYER_MENU, menu, menu_blink_effect_cb);
 	SDL_Delay(500);
-	//Dereference objects and free the memory
-	deref_object(&layer_bg, bg_refresh);
-	deref_object(&layer_bg, title_refresh);
-	deref_object(&layer_bg, version_refresh);
-	deref_object(&layer_menu, menu_refresh);
-	SDL_Delay(20);
+	//Dereference the objects
+	deref_object(&LAYER_BG, bg_refresh);
+	deref_object(&LAYER_BG, title_refresh);
+	deref_object(&LAYER_BG, version_refresh);
+	deref_object(&LAYER_MENU, menu_refresh);
+	SDL_Delay(50);
+	//Free the memory
 	free_dm_surface(bg);
 	free_dm_surface(title);
 	SDL_FreeSurface(version.surface);
@@ -172,6 +191,7 @@ int main_menu(SDL_Surface *screen)
 	//Free sounds memory
 	Mix_FreeChunk(sound_select);
 	Mix_FreeChunk(sound_valid);
+	//Return the selected item
 	return selected;
 }
 

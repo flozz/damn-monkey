@@ -1,29 +1,42 @@
-/***************************************************************************
-*                                                                          *
-*  This file is part of Damn Monkey                                        *
-*                                                                          *
-*  Copyright (C) 2010 - 2011  Fabien LOISON, Mathilde BOUTIGNY,            *
-*  Vincent PEYROUSE, Germain CARRÉ and Matthis FRENAY                      *
-*                                                                          *
-*  Damn Monkey is free software: you can redistribute it and/or modify     *
-*  it under the terms of the GNU General Public License as published by    *
-*  the Free Software Foundation, either version 3 of the License, or       *
-*  (at your option) any later version.                                     *
-*                                                                          *
-*  This program is distributed in the hope that it will be useful,         *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of          *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
-*  GNU General Public License for more details.                            *
-*                                                                          *
-*  You should have received a copy of the GNU General Public License       *
-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
-*                                                                          *
-***************************************************************************/
+/****************************************************************************
+*        ___                                           _                    *
+*       /   \__ _ _ __ ___  _ __     /\/\   ___  _ __ | | _____ _   _       *
+*      / /\ / _` | '_ ` _ \| '_ \   /    \ / _ \| '_ \| |/ / _ \ | | |      *
+*     / /_// (_| | | | | | | | | | / /\/\ \ (_) | | | |   <  __/ |_| |      *
+*    /___,' \__,_|_| |_| |_|_| |_| \/    \/\___/|_| |_|_|\_\___|\__, |      *
+*                                                               |___/       *
+*                                                                           *
+*   This file is part of Damn Monkey                                        *
+*                                                                           *
+*   Copyright (C) 2010 - 2011  Fabien LOISON                                *
+*   Copyright (C) 2010 - 2011  Mathilde BOUTIGNY                            *
+*   Copyright (C) 2010 - 2011  Vincent PEYROUSE                             *
+*   Copyright (C) 2010 - 2011  Germain CARRÉ                                *
+*   Copyright (C) 2010 - 2011  Matthis FRENAY                               *
+*                                                                           *
+*   Damn Monkey is free software: you can redistribute it and/or modify     *
+*   it under the terms of the GNU General Public License as published by    *
+*   the Free Software Foundation, either version 3 of the License, or       *
+*   (at your option) any later version.                                     *
+*                                                                           *
+*   This program is distributed in the hope that it will be useful,         *
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
+*   GNU General Public License for more details.                            *
+*                                                                           *
+*   You should have received a copy of the GNU General Public License       *
+*   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
+*                                                                           *
+*****************************************************************************
+*                                                                           *
+*  WEB SITE: https://launchpad.net/damn-monkey                              *
+*                                                                           *
+****************************************************************************/
 
 
 /**
  * \file credits.c
- * \brief Contains all the functions for credits page.
+ * \brief Contains all the functions for the credits page.
  */
 
 
@@ -32,9 +45,10 @@
 
 /**
  * \fn DM_Credits* new_credits(int numb_pages)
- * \brief Create a new DM_Credits.
+ * \brief Creates a new DM_Credits.
  *
  * \param numb_page The number of pages.
+ *
  * \return A pointer on the new DM_Credits.
  */
 DM_Credits* new_credits(int numb_pages)
@@ -56,7 +70,7 @@ DM_Credits* new_credits(int numb_pages)
 
 /**
  * \fn void free_credits(DM_Credits *credits)
- * \brief Free the memory of a DM_Credits.
+ * \brief Frees the memory of a DM_Credits.
  *
  * \param credits The DM_Credits to free.
  */
@@ -76,7 +90,7 @@ void free_credits(DM_Credits *credits)
 
 /**
  * \fn void credits_cb(void *object, SDL_Surface *screen)
- * \brief Refresh callback for the DM_Credits.
+ * \brief Refreshes callback for the DM_Credits.
  *
  * \param object The DM_Credits to refresh.
  * \param screen The main surface (called screen in the main() function)
@@ -100,19 +114,31 @@ void credits_cb(void *object, SDL_Surface *screen)
 	{
 		credits->page_rect.x = -800;
 	}
-	SDL_BlitSurface(credits->pages[credits->current_page-1], NULL, screen, &credits->page_rect);
-	SDL_BlitSurface(credits->titles[credits->current_page-1], NULL, screen, &credits->title_rect);
+	SDL_BlitSurface(
+			credits->pages[credits->current_page-1],
+			NULL,
+			screen,
+			&credits->page_rect
+			);
+	SDL_BlitSurface(
+			credits->titles[credits->current_page-1],
+			NULL,
+			screen,
+			&credits->title_rect
+			);
 	//Move
 	credits->page_rect.x -= credits->speed;
 	credits->title_rect.x += credits->speed / 2.5 + 1;
 	//Change speed
 	if (credits->page_rect.x > screen->w / 3)
 	{
-		credits->speed = (credits->page_rect.x - screen->w / 3) * 30 / (2 * screen->w / 2) + 1;
+		credits->speed = (credits->page_rect.x - screen->w / 3) \
+						 * 30 / (2 * screen->w / 2) + 1;
 	}
 	if (credits->page_rect.x < screen->w / 4)
 	{
-		credits->speed = (3* screen->w / 4 - credits->page_rect.x) * 20 / (screen->w / 2) + 1;
+		credits->speed = (3* screen->w / 4 - credits->page_rect.x) \
+						 * 20 / (screen->w / 2) + 1;
 	}
 	//Change of layer
 	if (credits->title_rect.x > screen->w - 50)
@@ -129,7 +155,7 @@ void credits_cb(void *object, SDL_Surface *screen)
 
 /**
  * \fn void credits(SDL_Surface *screen)
- * \brief Display the credits.
+ * \brief Displays the credits page.
  *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
@@ -142,20 +168,20 @@ void credits(SDL_Surface *screen)
 	Mix_Chunk *sound_valid = load_sound_resource("menu_valid.wav");
 	//Background
 	DM_Surface *bg = load_resource_as_dm_surface("menu_bg.png");
-	int bg_refresh = ref_object(&layer_bg, bg, surface_refresh_cb);
+	int bg_refresh = ref_object(&LAYER_BG, bg, surface_refresh_cb);
 	//Title
 	DM_Surface *title = load_resource_as_dm_surface("main_menu_title.png");
-	int title_refresh = ref_object(&layer_bg, title, surface_refresh_cb);
+	int title_refresh = ref_object(&LAYER_BG, title, surface_refresh_cb);
 	//Create the menu
 	DM_Menu *menu = new_menu(
 			"Back",
-			 "font_menu.png",
-			 "font_menu_hl.png",
-			 "cursor.png"
-			 );
+			"font_menu.png",
+			"font_menu_hl.png",
+			"cursor.png"
+			);
 	menu->menu_rect.x = screen->w - menu->menu->w - 20;
 	menu->menu_rect.y = screen->h - menu->menu->h - 15;
-	int menu_refresh = ref_object(&layer_menu, menu, menu_glow_effect_cb);
+	int menu_refresh = ref_object(&LAYER_MENU, menu, menu_glow_effect_cb);
 	//Credits
 	DM_Credits *credits = new_credits(4);
 	credits->titles[0] = str_to_surface("font_main.png", "- DEVELOPERS -");
@@ -182,10 +208,9 @@ void credits(SDL_Surface *screen)
 	credits->titles[3] = str_to_surface("font_main.png", "- MUSICS -");
 	credits->pages[3] = str_to_surface(
 			"font_main.png",
-			"Core Wizard\n\
-			Dark Master"
+			"Andrey Avkhimovich"
 			);
-	int credits_refresh = ref_object(&layer_active, credits, credits_cb);
+	int credits_refresh = ref_object(&LAYER_ACTIVE, credits, credits_cb);
 	//Main loop
 	SDL_Event event;
 	int selected = -1;
@@ -221,15 +246,15 @@ void credits(SDL_Surface *screen)
 	while (selected < 0);
 	//Play a confirmation sound and change the menu effect
 	Mix_PlayChannel(-1, sound_valid, 0);
-	deref_object(&layer_menu, menu_refresh);
-	menu_refresh = ref_object(&layer_menu, menu, menu_blink_effect_cb);
+	deref_object(&LAYER_MENU, menu_refresh);
+	menu_refresh = ref_object(&LAYER_MENU, menu, menu_blink_effect_cb);
 	SDL_Delay(500);
 	//Dereference objects and free the memory
-	deref_object(&layer_bg, bg_refresh);
-	deref_object(&layer_bg, title_refresh);
-	deref_object(&layer_menu, menu_refresh);
-	deref_object(&layer_active, credits_refresh);
-	SDL_Delay(20);
+	deref_object(&LAYER_BG, bg_refresh);
+	deref_object(&LAYER_BG, title_refresh);
+	deref_object(&LAYER_MENU, menu_refresh);
+	deref_object(&LAYER_ACTIVE, credits_refresh);
+	SDL_Delay(50);
 	free_dm_surface(bg);
 	free_dm_surface(title);
 	free_menu(menu);

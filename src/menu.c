@@ -1,24 +1,37 @@
-/***************************************************************************
-*                                                                          *
-*  This file is part of Damn Monkey                                        *
-*                                                                          *
-*  Copyright (C) 2010 - 2011  Fabien LOISON, Mathilde BOUTIGNY,            *
-*  Vincent PEYROUSE, Germain CARRÉ and Matthis FRENAY                      *
-*                                                                          *
-*  Damn Monkey is free software: you can redistribute it and/or modify     *
-*  it under the terms of the GNU General Public License as published by    *
-*  the Free Software Foundation, either version 3 of the License, or       *
-*  (at your option) any later version.                                     *
-*                                                                          *
-*  This program is distributed in the hope that it will be useful,         *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of          *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
-*  GNU General Public License for more details.                            *
-*                                                                          *
-*  You should have received a copy of the GNU General Public License       *
-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
-*                                                                          *
-***************************************************************************/
+/****************************************************************************
+*        ___                                           _                    *
+*       /   \__ _ _ __ ___  _ __     /\/\   ___  _ __ | | _____ _   _       *
+*      / /\ / _` | '_ ` _ \| '_ \   /    \ / _ \| '_ \| |/ / _ \ | | |      *
+*     / /_// (_| | | | | | | | | | / /\/\ \ (_) | | | |   <  __/ |_| |      *
+*    /___,' \__,_|_| |_| |_|_| |_| \/    \/\___/|_| |_|_|\_\___|\__, |      *
+*                                                               |___/       *
+*                                                                           *
+*   This file is part of Damn Monkey                                        *
+*                                                                           *
+*   Copyright (C) 2010 - 2011  Fabien LOISON                                *
+*   Copyright (C) 2010 - 2011  Mathilde BOUTIGNY                            *
+*   Copyright (C) 2010 - 2011  Vincent PEYROUSE                             *
+*   Copyright (C) 2010 - 2011  Germain CARRÉ                                *
+*   Copyright (C) 2010 - 2011  Matthis FRENAY                               *
+*                                                                           *
+*   Damn Monkey is free software: you can redistribute it and/or modify     *
+*   it under the terms of the GNU General Public License as published by    *
+*   the Free Software Foundation, either version 3 of the License, or       *
+*   (at your option) any later version.                                     *
+*                                                                           *
+*   This program is distributed in the hope that it will be useful,         *
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
+*   GNU General Public License for more details.                            *
+*                                                                           *
+*   You should have received a copy of the GNU General Public License       *
+*   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
+*                                                                           *
+*****************************************************************************
+*                                                                           *
+*  WEB SITE: https://launchpad.net/damn-monkey                              *
+*                                                                           *
+****************************************************************************/
 
 
 /**
@@ -32,16 +45,17 @@
 
 /**
  * \fn DM_Menu* new_menu(char *items, char *font_name, char *hl_font_name, char *cursor)
- * \brief Create a new menu.
+ * \brief Creates a new menu.
  *
- * \param items A string that contain the list of the items separated by a '\\n'
- *        (ex. "Start\nOptions\nQuit").
- * \param font_name The font resource name (ex. "font_main.png").
- * \param hl_font_name The font to use for the selected item of the menu.
+ * \param items A string that contain the list of the items separated by a
+ *        new line ('\\n').\n(e.g. "Start\nOptions\nQuit").
+ * \param font_name The font resource name (e.g. "font_main.png").
+ * \param hl_font_name The font to use for the selected item of the menu.\n
  *                     NOTE: need an image with no alpha channel ; the
  *                     black color will be transparent.
  * \param cursor The name of the resource that will be use as a cursor.
- * \return A pointer on a DM_Menu.
+ *
+ * \return Returns a pointer on a DM_Menu.
  */
 DM_Menu* new_menu(char *items, char *font_name, char *hl_font_name, char *cursor)
 {
@@ -102,7 +116,7 @@ void free_menu(DM_Menu *menu)
 
 /**
  * \fn void draw_menu(SDL_Surface *screen, DM_Menu *menu)
- * \brief Draw the menu with its cursor.
+ * \brief Draws the menu with its cursor.
  *
  * \param screen The main surface (called screen in the main() function)
  *               on which to draw.
@@ -140,7 +154,7 @@ void draw_menu(SDL_Surface *screen, DM_Menu *menu)
 
 /**
  * \fn void menu_change_selected(DM_Menu *menu, int increment)
- * \brief Change the selected item of a menu.
+ * \brief Changes the selected item of a menu.
  *
  * \param menu The DM_Menu.
  * \param increment The increment (+1 or -1).
@@ -164,7 +178,7 @@ void menu_change_selected(DM_Menu *menu, int increment)
  * \fn void menu_glow_effect_cb(void *object, SDL_Surface *screen)
  * \brief Callback function for the refresh of the menu with a glow effect.
  *
- * \param screen The main SDL surface.
+ * \param screen The main SDL surface (called screen in the main() function).
  * \param object A DM_Menu.
  */
 void menu_glow_effect_cb(void *object, SDL_Surface *screen)
@@ -183,7 +197,7 @@ void menu_glow_effect_cb(void *object, SDL_Surface *screen)
  * \fn void menu_blink_effect_cb(void *object, SDL_Surface *screen)
  * \brief Callback function for the refresh of the menu with a blink effect.
  *
- * \param screen The main SDL surface.
+ * \param screen The main SDL surface (called screen in the main() function).
  * \param object A DM_Menu.
  */
 void menu_blink_effect_cb(void *object, SDL_Surface *screen)
@@ -196,6 +210,5 @@ void menu_blink_effect_cb(void *object, SDL_Surface *screen)
 	}
 	draw_menu(screen, menu);
 }
-
 
 

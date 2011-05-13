@@ -1,0 +1,95 @@
+*****************************************************************************
+*        ___                                           _                    *
+*       /   \__ _ _ __ ___  _ __     /\/\   ___  _ __ | | _____ _   _       *
+*      / /\ / _` | '_ ` _ \| '_ \   /    \ / _ \| '_ \| |/ / _ \ | | |      *
+*     / /_// (_| | | | | | | | | | / /\/\ \ (_) | | | |   <  __/ |_| |      *
+*    /___,' \__,_|_| |_| |_|_| |_| \/    \/\___/|_| |_|_|\_\___|\__, |      *
+*                                                               |___/       *
+*                                                                           *
+*****************************************************************************
+*                                                                           *
+*  WEB SITE: https://launchpad.net/damn-monkey                              *
+*                                                                           *
+*****************************************************************************
+
+
+Damn Monkey is a game inspired by the famous arcade game, Donkey Kong.
+
+
+
+*****************************************************************************
+* BUILDING DAMN MONKEY                                                      *
+*****************************************************************************
+
+BUILD DEPENDENCIES:
+
+    To be built, Damn Monkey needs the following dependencies:
+        * SDL <http://www.libsdl.org/>,
+        * SDL Image <http://www.libsdl.org/projects/SDL_image/>
+        * SDL Mixer <http://www.libsdl.org/projects/SDL_mixer>
+
+
+BUILD ON LINUX:
+
+    Just type the `make` command from in the Damn Monkey directory.
+
+
+BUILD ON WINDOWS:
+
+    TODO
+
+
+BUILD ON MAC OS:
+
+    TODO
+
+
+
+*****************************************************************************
+* CREDITS                                                                   *
+*****************************************************************************
+
+SOURCE CODE:
+
+    The source code was made by
+        * Fabien LOISON,
+        * Mathilde BOUTIGNY,
+        * Vincent PEYROUSE,
+        * Germain CARRÉ,
+        * and Matthis FRENAY.
+    It is released under the GPLv3+ license
+    <http://www.gnu.org/licenses/gpl.html>.
+
+
+PICTURES:
+
+    All the pictures and drawings was made by
+        * Fabien LOISON,
+        * Mathilde BOUTIGNY,
+        * and Matthis FRENAY.
+    They are released under the CC BY-SA 3.0 license
+    <http://creativecommons.org/licenses/by-sa/3.0/>.
+
+    The original "New York City at night" photo used for the Damn Monkey
+    banner was downloaded from wikimedia commons at the following address:
+    <http://commons.wikimedia.org/wiki/File:New_York_City_at_night_HDR.jpg>.
+    The author of this photo is Paulo Barcellos Jr. This photo is licensed
+    under the CC BY-SA 2.0 license
+    <http://creativecommons.org/licenses/by-sa/2.0/>.
+
+
+SOUNDS:
+
+    All the sounds effects was made by Fabien LOISON and were released under
+    the CC BY-SA 3.0 license <http://creativecommons.org/licenses/by-sa/3.0/>.
+
+
+MUSICS:
+
+    The menu.ogg (10 PRINT "HELLO WORLD") and game.ogg (20 GOTO 10) were
+    downloaded from Jamendo at the following address:
+    <http://www.jamendo.com/fr/album/89586>. They are released under the
+    CC BY 3.0 license <http://creativecommons.org/licenses/by/3.0/> by
+    Andrey Avkhimovich.
+
+
