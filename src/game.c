@@ -151,12 +151,15 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 {
 	//Disable the key repetition
 	SDL_EnableKeyRepeat(0, 0);
+	//Load sounds
+	Mix_Chunk *sound_die = load_sound_resource("die.wav");
 	//Initialize the GAME_STATE variable
 	GAME_STATE = GAME_STATE_PLAYING;
 	//Set the start position of Jumpman
 	JUMPMAN.movement = map->start_look;
 	JUMPMAN.pos_x = map->start_point_x - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 	JUMPMAN.pos_y = map->start_point_y - JUMPMAN.sprite->items[JUMPMAN.movement].h;
+	JUMPMAN.last_y_collide = JUMPMAN.pos_y;
 	update_jumpman();
 	//Reference Jumman in the global refresh
 	int jumpman_refresh = ref_object(&LAYER_ACTIVE, JUMPMAN.sprite, sprite_cb);
@@ -376,8 +379,8 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 			else if (vert_move == VERT_MOVE_DOWN) //MOVE DOWN (ladders)
 			{
 				//Center Jumpman on the ladder
-					JUMPMAN.pos_x = get_collide_ladder_center(&JUMPMAN.platform_collide, map) - \
-									JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
+				JUMPMAN.pos_x = get_collide_ladder_center(&JUMPMAN.platform_collide, map) - \
+								JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
 				if (check_ladder_collides(&JUMPMAN.platform_collide, map))
 				{
 					JUMPMAN.platform_collide.y1++;
@@ -404,6 +407,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 		}
 		else // JUMPING //
 		{
+			vert_move = VERT_MOVE_NONE;
 			if (horiz_move == HORIZ_MOVE_LEFT)
 			{
 				JUMPMAN.movement = SPRITE_JUMP_LEFT;
@@ -458,7 +462,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 				{
 					JUMPMAN.pos_y -= 2;
 				}
-				else if (jump_y_start - JUMPMAN.pos_y < 35)
+				else if (jump_y_start - JUMPMAN.pos_y < 40)
 				{
 					JUMPMAN.pos_y -= 1;
 				}
@@ -484,6 +488,29 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 			if (!check_platform_collides(&JUMPMAN.platform_collide, map))
 			{
 				JUMPMAN.pos_y++;
+				if (JUMPMAN.pos_y - JUMPMAN.last_y_collide > 50)
+				{
+					JUMPMAN.platform_collide.y1++;
+					if (!check_platform_collides(&JUMPMAN.platform_collide, map))
+					{
+						JUMPMAN.pos_y++;
+					}
+					else
+					{
+						JUMPMAN.platform_collide.y1--;
+					}
+				}
+			}
+			else
+			{
+				if (JUMPMAN.pos_y - JUMPMAN.last_y_collide > 50)
+				{
+					GAME_STATE = GAME_STATE_LIFE_LOST;
+				}
+				else
+				{
+					JUMPMAN.last_y_collide = JUMPMAN.pos_y;
+				}
 			}
 		}
 		update_jumpman();
@@ -498,15 +525,56 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 	//If the player die
 	if (GAME_STATE == GAME_STATE_LIFE_LOST)
 	{
+		Mix_PlayChannel(-1, sound_die, 0);
 		JUMPMAN.movement = SPRITE_DEAD;
 		update_jumpman();
-		SDL_Delay(1500);
+		//Animate the jumpman death
+		JUMPMAN.last_y_collide = JUMPMAN.pos_y;
+		while (JUMPMAN.last_y_collide - JUMPMAN.pos_y < 70 && JUMPMAN.pos_y > 10)
+		{
+			JUMPMAN.pos_y -= 8;
+			update_jumpman();
+			SDL_Delay(5);
+		}
+		while (JUMPMAN.last_y_collide - JUMPMAN.pos_y < 90 && JUMPMAN.pos_y > 10)
+		{
+			JUMPMAN.pos_y -= 2;
+			update_jumpman();
+			SDL_Delay(5);
+		}
+		while (JUMPMAN.last_y_collide - JUMPMAN.pos_y < 100 && JUMPMAN.pos_y > 10)
+		{
+			JUMPMAN.pos_y -= 1;
+			update_jumpman();
+			SDL_Delay(8);
+		}
+		while (JUMPMAN.last_y_collide - JUMPMAN.pos_y > 90 && JUMPMAN.pos_y < screen->h - 50)
+		{
+			JUMPMAN.pos_y += 1;
+			update_jumpman();
+			SDL_Delay(8);
+		}
+		while (JUMPMAN.last_y_collide - JUMPMAN.pos_y > 70 && JUMPMAN.pos_y < screen->h - 50)
+		{
+			JUMPMAN.pos_y += 2;
+			update_jumpman();
+			SDL_Delay(5);
+		}
+		while (JUMPMAN.pos_y < screen->h - 40)
+		{
+			JUMPMAN.pos_y += 5;
+			update_jumpman();
+			SDL_Delay(5);
+		}
+		SDL_Delay(150);
 	}
 
 	//TODO if the player win, play a music,...
 
 	//Dereference Jumpman
 	deref_object(&LAYER_ACTIVE, jumpman_refresh);
+	//Free the memory
+	Mix_FreeChunk(sound_die);
 	//Return the game state
 	return GAME_STATE;
 }

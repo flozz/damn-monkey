@@ -210,6 +210,7 @@ struct DM_Jumpman
 	DM_Sprite *sprite;           /*!< The sprite of Jumpman. */
 	int pos_x;                   /*!< The position of Jumpman (x). */
 	int pos_y;                   /*!< The position of Jumpman (y). */
+	int last_y_collide;          /*!< The last y collide point. */
 	int movement;                /*!< The current movement for animation (SPRITE_*). */
 };
 
