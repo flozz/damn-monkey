@@ -36,7 +36,7 @@
 
 /**
  * \file level_01.c
- * \brief TODO.
+ * \brief This is the code of the first level of Damn Monkey.
  */
 
 
@@ -44,12 +44,10 @@
 
 
 /**
- * \fn void level_01()
- * \brief Draw the first level.
+ * \fn void level_01(SDL_Surface *screen)
+ * \brief Play to the first level.
  *
- * \param screen The main surface.
- *
- * \return Nothing.
+ * \param screen The main surface (called screen in the main() function).
  */
 void level_01(SDL_Surface *screen)
 {
@@ -60,12 +58,12 @@ void level_01(SDL_Surface *screen)
 	//Load the level infos (collides,...)
 	DM_Map *map = load_map_infos("level_01");
 	lets_play_yeah(screen, map);
-	//FIXME: free dm_map
 	
 	//Dereference objects and free the memory
 	deref_object(&LAYER_BG, level_surface_refresh);
-	SDL_Delay(20);
+	SDL_Delay(50);
 	free_dm_surface(level_surface);
+	free_dm_map(map);
 }
 
 
