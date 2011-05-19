@@ -370,6 +370,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 						JUMPMAN.pos_y--;
 						JUMPMAN.movement = SPRITE_WALK_LADDER;
 					}
+					JUMPMAN.last_y_collide = JUMPMAN.pos_y;
 				}
 				else
 				{
@@ -394,6 +395,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 						vert_move = VERT_MOVE_NONE;
 						JUMPMAN.pos_y--;
 					}
+					JUMPMAN.last_y_collide = JUMPMAN.pos_y;
 				}
 				else
 				{
