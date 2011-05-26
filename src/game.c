@@ -416,7 +416,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 				JUMPMAN.platform_collide.x1--;
 				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
 				{
-					JUMPMAN.pos_x -= 1;
+					JUMPMAN.pos_x -= 2;
 				}
 				else
 				{
@@ -438,7 +438,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 				JUMPMAN.platform_collide.x1++;
 				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
 				{
-					JUMPMAN.pos_x += 1;
+					JUMPMAN.pos_x += 2;
 				}
 				else
 				{
