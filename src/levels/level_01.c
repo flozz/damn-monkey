@@ -102,30 +102,36 @@ void deref_barrel(int id)
 //Callback function for the barrel_timer
 Uint32 _barrel_cb(Uint32 interval, void *arg)
 {
-	int i;
-	for (i=0 ; i<10 ; i++)
-	{
-		if (BARRELS[i].sprite->screen_pos.x > 800 || BARRELS[i].sprite->screen_pos.y > 600)
+	static int last_sent = 0;
+	
+	if (GAME_STATE != GAME_STATE_PAUSED){
+		int i;
+		for (i=0 ; i<10 ; i++)
 		{
-			deref_barrel(BARRELS[i].refresh_id);
-			BARRELS[i].refresh_id = -1;
-			SDL_Delay(20);
-			BARRELS[i].sprite->screen_pos.x = 0;
-			BARRELS[i].sprite->screen_pos.y = 150;
-		}
-		else if (BARRELS[i].sprite->screen_pos.x == 150 && BARRELS[i].sprite->screen_pos.y == 150)
-		{
-			BARRELS[i].refresh_id = ref_barrel(&BARRELS[i], barrel_cb);
-		}
-		else if (BARRELS[i].sprite->screen_pos.x < 150 && BARRELS[i].sprite->screen_pos.y == 150)
-		{
-			if (BARRELS[i-1].refresh_id != -1)
+			if (BARRELS[i].sprite->screen_pos.x > 780 || BARRELS[i].sprite->screen_pos.y > 550)
 			{
-				BARRELS[i].sprite->screen_pos.x++;
+				deref_barrel(BARRELS[i].refresh_id);
+				BARRELS[i].refresh_id = -1;
+				SDL_Delay(20);
+				BARRELS[i].sprite->screen_pos.x = 0;
+				BARRELS[i].sprite->screen_pos.y = 150;
+			}
+			else if (BARRELS[i].sprite->screen_pos.x == 150 && BARRELS[i].sprite->screen_pos.y == 150)
+			{
+				BARRELS[i].refresh_id = ref_barrel(&BARRELS[i], barrel_cb);
+			}
+			else if (BARRELS[i].sprite->screen_pos.x < 150 && BARRELS[i].sprite->screen_pos.y == 150)
+			{
+				if (BARRELS[last_sent].sprite->screen_pos.y >= 167)
+				{
+					last_sent = i;
+					BARRELS[i].sprite->screen_pos.x = 150;
+				}
 			}
 		}
+		return refresh_cb(interval, &LAYER_ACTIVE);
 	}
-	return refresh_cb(interval, &LAYER_ACTIVE);
+	return interval;
 }
 
 /** \endcond */
@@ -150,10 +156,7 @@ void barrel_cb(void *object, SDL_Surface *screen)
 				if (rand()%2)
 				{
 					barrel->sprite->current_mov = SPRITE_WALK_LADDER;
-					barrel->sprite->screen_pos.y++;
-					barrel->sprite->screen_pos.y++;
-					barrel->sprite->screen_pos.y++;
-					barrel->sprite->screen_pos.y++;
+					barrel->sprite->screen_pos.y = barrel->sprite->screen_pos.y + 4;
 				}
 				else
 				{
@@ -254,7 +257,7 @@ int check_platform_orientation(DM_Collide *collide_point, DM_Map *map)
  */
 void free_dm_barrel(DM_Barrel *barrels)
 {
-	//We don't deallocate the map pointer because it'll we freed later
+	//We don't deallocate the map pointer because it'll be freed later
 	free_sprite(barrels->sprite);
 	free(barrels);
 }
@@ -293,10 +296,9 @@ int level_01(SDL_Surface *screen)
 		BARRELS[i].sprite->current_mov = SPRITE_WALK_RIGHT;
 		BARRELS[i].jumpman_collide.shape = COLLIDE_RECT;
 		BARRELS[i].sprite->screen_pos.x = 0;
-		BARRELS[0].sprite->screen_pos.x = 150;
 		BARRELS[i].sprite->screen_pos.y = 150;
-		BARRELS[i].jumpman_collide.x1 = BARRELS[i].sprite->screen_pos.x + 2 ;
-		BARRELS[i].jumpman_collide.y1 = BARRELS[i].sprite->screen_pos.y + 2 ;
+		BARRELS[i].jumpman_collide.x1 = BARRELS[i].sprite->screen_pos.x + 2;
+		BARRELS[i].jumpman_collide.y1 = BARRELS[i].sprite->screen_pos.y + 2;
 		BARRELS[i].jumpman_collide.x2 = BARRELS[i].jumpman_collide.x1 + BARRELS[i].sprite->items[BARRELS[i].sprite->current_mov].w - 4;
 		BARRELS[i].jumpman_collide.y2 = BARRELS[i].jumpman_collide.x1 + BARRELS[i].sprite->items[BARRELS[i].sprite->current_mov].h - 4;
 		BARRELS[i].platform_collide.shape = COLLIDE_POINT;
@@ -306,10 +308,13 @@ int level_01(SDL_Surface *screen)
 		BARRELS[i].platform_collide.y2 = 0;
 		BARRELS[i].refresh_id = -1;
 	}
-	barrel_init(screen);
+	BARRELS[0].sprite->screen_pos.x = 150;
+	
 	//GAME_STATE gestion
 	int status = 0;
+	barrel_init(screen);
 	status = lets_play_yeah(screen, map);
+	
 	//Dereference objects and free the memory
 	barrel_destroy();
 	for(i=0 ; i<barrels_nb ; i++)
