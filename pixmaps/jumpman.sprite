@@ -1,12 +1,12 @@
 #Movement   ;  x ;  y ;  w ;  h ; numb. img ; delay ms ;
-look-right  ;  0 ;  0 ; 24 ; 31 ;         1 ;        0 ;
-walk-right  ; 25 ;  0 ; 29 ; 31 ;         2 ;      100 ;
-look-left   ;  0 ; 32 ; 24 ; 31 ;         1 ;        0 ;
-walk-left   ; 25 ; 32 ; 29 ; 31 ;         2 ;      100 ;
-jump-right  ; 54 ;  0 ; 29 ; 31 ;         1 ;        0 ;
-jump-left   ; 54 ; 32 ; 29 ; 31 ;         1 ;        0 ;
-ladder      ; 24 ; 64 ; 23 ; 31 ;         1 ;        0 ;
-walk-ladder ;  0 ; 64 ; 23 ; 31 ;         2 ;      120 ;
-dead        ;  0 ; 96 ; 32 ; 32 ;         4 ;      100 ;
+look-right  ;  0 ;  0 ; 20 ; 31 ;         1 ;        0 ;
+walk-right  ; 20 ;  0 ; 25 ; 31 ;         2 ;      100 ;
+look-left   ;  0 ; 31 ; 20 ; 31 ;         1 ;        0 ;
+walk-left   ; 20 ; 31 ; 25 ; 31 ;         2 ;      100 ;
+jump-right  ; 45 ;  0 ; 25 ; 31 ;         1 ;        0 ;
+jump-left   ; 45 ; 32 ; 25 ; 31 ;         1 ;        0 ;
+ladder      ; 26 ; 62 ; 25 ; 35 ;         1 ;        0 ;
+walk-ladder ;  0 ; 62 ; 25 ; 35 ;         2 ;      120 ;
+dead        ;  0 ; 97 ; 34 ; 34 ;         4 ;      100 ;
 
 
