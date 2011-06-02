@@ -102,14 +102,17 @@ void deref_barrel(int id)
 //Callback function for the barrel_timer
 Uint32 _barrel_cb(Uint32 interval, void *arg)
 {
-	static int last_sent = 0;
+	static int last_sent = 0; //Index of the last barrel sent
 	
-	if (GAME_STATE != GAME_STATE_PAUSED){
+	if (GAME_STATE != GAME_STATE_PAUSED)
+	{
 		int i;
-		for (i=0 ; i<10 ; i++)
+		//Every 'turn' we check every barrel
+		for (i=0 ; i<20 ; i++)
 		{
 			if (BARRELS[i].sprite->screen_pos.x > 780 || BARRELS[i].sprite->screen_pos.y > 550)
 			{
+				//The barrel is at the level end, we dereference it and replace at the level beginning
 				deref_barrel(BARRELS[i].refresh_id);
 				BARRELS[i].refresh_id = -1;
 				SDL_Delay(20);
@@ -118,12 +121,15 @@ Uint32 _barrel_cb(Uint32 interval, void *arg)
 			}
 			else if (BARRELS[i].sprite->screen_pos.x == 150 && BARRELS[i].sprite->screen_pos.y == 150)
 			{
+				//The barrel is after Donkey Kong, we reference it and show it
 				BARRELS[i].refresh_id = ref_barrel(&BARRELS[i], barrel_cb);
 			}
 			else if (BARRELS[i].sprite->screen_pos.x < 150 && BARRELS[i].sprite->screen_pos.y == 150)
 			{
+				//The barrel is waiting to being launched
 				if (BARRELS[last_sent].sprite->screen_pos.y >= 167)
 				{
+					//The last barrel is already sent with an enough offset, we can launch the next one. 
 					last_sent = i;
 					BARRELS[i].sprite->screen_pos.x = 150;
 				}
@@ -146,13 +152,15 @@ Uint32 _barrel_cb(Uint32 interval, void *arg)
  */
 void barrel_cb(void *object, SDL_Surface *screen)
 {
-	if (GAME_STATE == GAME_STATE_PLAYING)
+	if (GAME_STATE != GAME_STATE_PAUSED)
 	{
 		DM_Barrel *barrel = object;
 		if (!collide(&barrel->jumpman_collide, &JUMPMAN.enemy_collide))
 		{
+			//There's no collision between Jumpman and a barrel
 			if (check_ladder_top_collides(&barrel->platform_collide, barrel->map) && barrel->platform_collide.x1 == get_collide_ladder_center(&barrel->platform_collide, barrel->map))
 			{
+				//The barrel is on a ladder, random fall on the ladder
 				if (rand()%2)
 				{
 					barrel->sprite->current_mov = SPRITE_WALK_LADDER;
@@ -160,6 +168,7 @@ void barrel_cb(void *object, SDL_Surface *screen)
 				}
 				else
 				{
+					//Movement continuation
 					if (barrel->sprite->current_mov != SPRITE_WALK_LEFT)
 					{
 						barrel->sprite->screen_pos.x++;
@@ -172,8 +181,10 @@ void barrel_cb(void *object, SDL_Surface *screen)
 			}
 			else
 			{
+				//The barrel isn't on a ladder so we check if it is in collision with a platform
 				if (check_platform_collides(&barrel->platform_collide, barrel->map))
 				{
+					//We generate the good movement according to the gravity
 					barrel->sprite->current_mov = check_platform_orientation(&barrel->platform_collide, barrel->map);
 					if (barrel->sprite->current_mov != SPRITE_WALK_LEFT)
 					{
@@ -186,9 +197,12 @@ void barrel_cb(void *object, SDL_Surface *screen)
 				}
 				else
 				{
+					//No collision : the barrel is falling/descending
 					barrel->sprite->screen_pos.y++;
 				}
-			}                                        
+			}
+			
+			//Collision rect and point update
 			barrel->jumpman_collide.x1 = barrel->sprite->screen_pos.x + 2;
 			barrel->jumpman_collide.y1 = barrel->sprite->screen_pos.y + 2;
 			barrel->jumpman_collide.x2 = barrel->jumpman_collide.x1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
@@ -200,8 +214,10 @@ void barrel_cb(void *object, SDL_Surface *screen)
 		}
 		else
 		{
+			//There's a collision between Jumpman and a barrel => A life lost
 			GAME_STATE = GAME_STATE_LIFE_LOST;
 		}
+		//Call of sprite_cb in order to update the screen
 		sprite_cb(barrel->sprite, screen);
 	}
 }
@@ -221,6 +237,7 @@ int check_platform_orientation(DM_Collide *collide_point, DM_Map *map)
 	int i;
 	for (i=0 ; i<map->platform_count ; i++)
 	{
+		//The collide function allow us to find the barrel which is considered
 		if (collide(collide_point, &map->platforms[i]))
 		{
 			if (map->platforms[i].x1 < map->platforms[i].x2 && map->platforms[i].y1 > map->platforms[i].y2)
@@ -284,10 +301,9 @@ int level_01(SDL_Surface *screen)
 	Mix_Music *level_music = load_music_resource("game.ogg");
 	Mix_PlayMusic(level_music, -1);
 	
-	
 	//Load barrels and launch the barrel timer
 	int i;
-	int barrels_nb = 10;
+	int barrels_nb = 20;
 	BARRELS = malloc(barrels_nb * sizeof(DM_Barrel));
 	for (i=0 ; i<barrels_nb ; i++)
 	{
@@ -313,6 +329,7 @@ int level_01(SDL_Surface *screen)
 	//GAME_STATE gestion
 	int status = 0;
 	barrel_init(screen);
+	SDL_Delay(5000); //Allow barrels to roll before Jumpman start //FIXME + TODO : Improve design and animation	
 	status = lets_play_yeah(screen, map);
 	
 	//Dereference objects and free the memory
