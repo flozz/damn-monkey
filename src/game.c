@@ -47,6 +47,68 @@
 
 
 /**
+ * \fn void game(SDL_Surface *screen)
+ * \brief Play to the game.
+ *
+ * This function manage the levels and the lives.
+ *
+ * \param screen The main surface (called screen in the main() function).
+ */
+void game(SDL_Surface *screen)
+{
+	int current_level = 1;
+	int levels_count = 1; //Number of levels
+	JUMPMAN_LIVES = 3;
+	//TODO Set the speed to its default value
+	GAME_STATE = GAME_STATE_PLAYING;
+
+	while (GAME_STATE != GAME_STATE_NONE && GAME_STATE != GAME_STATE_OVER)
+	{
+		//Launch the level
+		switch (current_level)
+		{
+			case 1:
+				level_01(screen);
+				break;
+			default:
+				break;
+		}
+		//Check the status
+		switch (GAME_STATE)
+		{
+			case GAME_STATE_LIFE_LOST:
+				JUMPMAN_LIVES -= 1;
+				if (JUMPMAN_LIVES <= 0)
+				{
+					GAME_STATE = GAME_STATE_OVER;
+				}
+				break;
+			case GAME_STATE_LEVEL_COMPLETED:
+				current_level += 1;
+				if (current_level > levels_count)
+				{
+					current_level = 1; //Restart with the first level;
+					//TODO Increase the game speed
+				}
+				break;
+			case GAME_STATE_NONE:
+				break;
+			default:
+				printf("W: Abnormal game status: %i", GAME_STATE);
+				GAME_STATE = GAME_STATE_NONE;
+				break;
+		}
+	}
+	if (GAME_STATE == GAME_STATE_OVER)
+	{
+		printf("GAME OVER\n"); //TODO: Display the GAME OVER screen
+	}
+	//End of the game
+	GAME_STATE == GAME_STATE_NONE;
+}
+
+
+/**
  * \fn void init_game()
  * \brief Initialize the game.
  *
