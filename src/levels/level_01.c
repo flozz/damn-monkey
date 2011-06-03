@@ -55,34 +55,14 @@ void level_01(SDL_Surface *screen)
 	DM_Surface *level_surface = load_resource_as_dm_surface("level_01.png");
 	int level_surface_refresh = ref_object(&LAYER_BG, level_surface, surface_refresh_cb);
 	
-	//Load and show remaining lifes
-	DM_Surface *life = load_resource_as_dm_surface("life.png");
-	life->rect.x = 730;
-	life->rect.y = 17;
-	int life_refresh = ref_object(&LAYER_MENU, life, surface_refresh_cb);
-	DM_Surface *life_text = malloc(sizeof(DM_Surface));
-	//"x <number of remaining lives>" surface creation
-	char life_char[3];
-	sprintf(life_char, "x%d", JUMPMAN_LIVES);
-	life_text->surface = str_to_surface("font_main.png", life_char);
-	life_text->rect.w = life_text->surface->w;
-	life_text->rect.h = life_text->surface->h;
-	life_text->rect.x = life->rect.x + life->rect.w + 5;
-	life_text->rect.y = life->rect.y;
-	int life_text_refresh = ref_object(&LAYER_MENU, life_text, surface_refresh_cb);
-	
 	//Load the level infos (collides,...)
 	DM_Map *map = load_map_infos("level_01");
 		
 	lets_play_yeah(screen, map);
 	
 	//Dereference objects and free the memory
-	deref_object(&LAYER_MENU, life_text_refresh);
-	deref_object(&LAYER_MENU, life_refresh);
 	deref_object(&LAYER_BG, level_surface_refresh);
 	SDL_Delay(50);
-	free_dm_surface(life_text);
-	free_dm_surface(life);
 	free_dm_surface(level_surface);
 	free_dm_map(map);
 }
