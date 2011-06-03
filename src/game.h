@@ -233,11 +233,12 @@ int GAME_SPEED;
 int GAME_STATE;
 /**
  * \var JUMPMAN_LIVES
- * \brief The remaining lives of Jumpman (FIXME not implemented yet).
+ * \brief The remaining lives of Jumpman
  */
 int JUMPMAN_LIVES;
 
 
+void game(SDL_Surface *screen);
 void init_game();
 void update_jumpman();
 int lets_play_yeah(SDL_Surface *screen, DM_Map *map);

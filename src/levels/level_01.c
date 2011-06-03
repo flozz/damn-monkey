@@ -57,6 +57,7 @@ void level_01(SDL_Surface *screen)
 	
 	//Load the level infos (collides,...)
 	DM_Map *map = load_map_infos("level_01");
+		
 	lets_play_yeah(screen, map);
 	
 	//Dereference objects and free the memory

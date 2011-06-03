@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 		{
 			case MAIN_MENU_PLAY:
 				Mix_HaltMusic();
-				level_01(screen);
+				game(screen);
 				Mix_PlayMusic(menu_music, -1);
 				break;
 			case MAIN_MENU_CREDITS:
