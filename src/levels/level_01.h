@@ -96,7 +96,7 @@ Uint32 _barrel_cb(Uint32 interval, void *arg);
 /** \endcond */
 int check_platform_orientation(DM_Collide *collide_point, DM_Map *map);
 void free_dm_barrel(DM_Barrel *barrels);
-int level_01(SDL_Surface *screen);
+void level_01(SDL_Surface *screen);
 
 
 #endif //LEVEL_01_H_INCLUDED

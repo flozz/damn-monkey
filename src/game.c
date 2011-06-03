@@ -44,6 +44,84 @@
 
 
 #include "game.h"
+#include "levels/level_01.h"
+
+
+/**
+ * \fn void game(SDL_Surface *screen)
+ * \brief Play to the game.
+ *
+ * This function manage the levels and the lives.
+ *
+ * \param screen The main surface (called screen in the main() function).
+ */
+void game(SDL_Surface *screen)
+{
+	int current_level = 1;
+	int levels_count = 1; //Number of levels
+	JUMPMAN_LIVES = 3;
+	GAME_SPEED = 1;
+	GAME_STATE = GAME_STATE_PLAYING;
+
+	while (GAME_STATE != GAME_STATE_NONE && GAME_STATE != GAME_STATE_OVER)
+	{
+		//Launch the level
+		switch (current_level)
+		{
+			case 1:
+				level_01(screen);
+				break;
+			default:
+				break;
+		}
+		//Check the status
+		switch (GAME_STATE)
+		{
+			case GAME_STATE_LIFE_LOST:
+				JUMPMAN_LIVES -= 1;
+				if (JUMPMAN_LIVES <= 0)
+				{
+					GAME_STATE = GAME_STATE_OVER;
+				}
+				break;
+			case GAME_STATE_LEVEL_COMPLETED:
+				current_level += 1;
+				if (current_level > levels_count)
+				{
+					current_level = 1; //Restart with the first level;
+					GAME_SPEED++;
+				}
+				break;
+			case GAME_STATE_NONE:
+				break;
+			default:
+				printf("W: Abnormal game status: %i", GAME_STATE);
+				GAME_STATE = GAME_STATE_NONE;
+				break;
+		}
+	}
+	if (GAME_STATE == GAME_STATE_OVER)
+	{
+		DM_Surface *bg = load_resource_as_dm_surface("menu_bg.png");
+		int bg_refresh = ref_object(&LAYER_MENU, bg, surface_refresh_cb);
+		DM_Surface *text = malloc(sizeof(DM_Surface));
+		text->surface = str_to_surface("font_menu.png", "GAME OVER");
+		text->rect.w = text->surface->w;
+		text->rect.h = text->surface->h;
+		text->rect.x = (screen->w - text->rect.w) / 2;
+		text->rect.y = (screen->h / 3);
+		int text_refresh = ref_object(&LAYER_MENU, text, surface_refresh_cb);
+		//TODO : Make it became sexier with a picture and sad song
+		SDL_Delay(2000);
+		deref_object(&LAYER_MENU, bg_refresh);
+		deref_object(&LAYER_MENU, text_refresh);
+		SDL_Delay(20);
+		free_dm_surface(bg);
+		free_dm_surface(text);
+	}
+	//End of the game
+	GAME_STATE == GAME_STATE_NONE;
+}
 
 
 /**
@@ -155,6 +233,21 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 	Mix_Chunk *sound_die = load_sound_resource("die.wav");
 	//Initialize the GAME_STATE variable
 	GAME_STATE = GAME_STATE_PLAYING;
+	//Load and show remaining lifes
+	DM_Surface *life = load_resource_as_dm_surface("life.png");
+	life->rect.x = 730;
+	life->rect.y = 17;
+	int life_refresh = ref_object(&LAYER_FG, life, surface_refresh_cb);
+	DM_Surface *life_text = malloc(sizeof(DM_Surface));
+	//"x <number of remaining lives>" surface creation
+	char life_char[3];
+	sprintf(life_char, "x%d", JUMPMAN_LIVES);
+	life_text->surface = str_to_surface("font_main.png", life_char);
+	life_text->rect.w = life_text->surface->w;
+	life_text->rect.h = life_text->surface->h;
+	life_text->rect.x = life->rect.x + life->rect.w + 5;
+	life_text->rect.y = life->rect.y;
+	int life_text_refresh = ref_object(&LAYER_FG, life_text, surface_refresh_cb);
 	//Set the start position of Jumpman
 	JUMPMAN.movement = map->start_look;
 	JUMPMAN.pos_x = map->start_point_x - JUMPMAN.sprite->items[JUMPMAN.movement].w / 2;
@@ -573,10 +666,15 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 
 	//TODO if the player win, play a music,...
 
-	//Dereference Jumpman
+	//Dereference Jumpman and remaining lifes
 	deref_object(&LAYER_ACTIVE, jumpman_refresh);
+	deref_object(&LAYER_FG, life_text_refresh);
+	deref_object(&LAYER_FG, life_refresh);
+	SDL_Delay(50);
 	//Free the memory
 	Mix_FreeChunk(sound_die);
+	free_dm_surface(life_text);
+	free_dm_surface(life);
 	//Return the game state
 	return GAME_STATE;
 }

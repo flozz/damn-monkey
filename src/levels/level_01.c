@@ -281,19 +281,17 @@ void free_dm_barrel(DM_Barrel *barrels)
 
 
 /**
- * \fn int level_01(SDL_Surface *screen)
+ * \fn void level_01(SDL_Surface *screen)
  * \brief Play to the first level.
  *
  * \param screen The main surface (called screen in the main() function).
- *
- * \return int The status.
  */
-int level_01(SDL_Surface *screen)
+void level_01(SDL_Surface *screen)
 {
 	//Load the background
 	DM_Surface *level_surface = load_resource_as_dm_surface("level_01.png");
 	int level_surface_refresh = ref_object(&LAYER_BG, level_surface, surface_refresh_cb);
-	
+
 	//Load the level infos (collides,...)
 	DM_Map *map = load_map_infos("level_01");
 	
@@ -327,10 +325,9 @@ int level_01(SDL_Surface *screen)
 	BARRELS[0].sprite->screen_pos.x = 150;
 	
 	//GAME_STATE gestion
-	int status = 0;
 	barrel_init(screen);
-	SDL_Delay(5000); //Allow barrels to roll before Jumpman start //FIXME + TODO : Improve design and animation	
-	status = lets_play_yeah(screen, map);
+	//SDL_Delay(5000); //Allow barrels to roll before Jumpman start //FIXME + TODO : Improve design and animation
+	lets_play_yeah(screen, map);
 	
 	//Dereference objects and free the memory
 	barrel_destroy();
@@ -339,13 +336,11 @@ int level_01(SDL_Surface *screen)
 		deref_barrel(BARRELS[i].refresh_id);
 	}
 	deref_object(&LAYER_BG, level_surface_refresh);
-	SDL_Delay(20);
+	SDL_Delay(50);
 	Mix_FreeMusic(level_music);
 	free_dm_barrel(BARRELS);
 	free_dm_surface(level_surface);	
 	free_dm_map(map);
-	
-	return status;
 }
 
 
