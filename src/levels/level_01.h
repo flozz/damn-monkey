@@ -101,6 +101,7 @@ SDL_TimerID barrel_timer;
 
 DM_Barrel_Array *BARRELS;
 
+
 void barrel_init(SDL_Surface *screen);
 void barrel_destroy();
 int ref_barrel(void *object, void (*callback)());

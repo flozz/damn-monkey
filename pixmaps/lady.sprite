@@ -1,2 +1,4 @@
 #Movement   ;  x ;  y ;  w ;  h ; numb. img ; delay ms ;
 ask-help    ;  0 ;  0 ; 40 ; 42 ;         2 ;     1000 ;
+
+

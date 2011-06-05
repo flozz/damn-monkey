@@ -70,8 +70,9 @@ void barrel_destroy()
  * \brief Add a barrel to the refresh list.
  *
  * \param object A pointer on the object
- * \param callback The callback function that will be called for blitting the object
- *                 This function must have a prototype that looks like that:
+ * \param callback The callback function that will be called for blitting the
+ *                 object. This function must have a prototype that looks
+ *                 like that:
  * \code
  * void function_name(void *object, SDL_Surface *screen);
  * \endcode
@@ -97,7 +98,7 @@ void deref_barrel(int id)
 }
 
 
-/** \cond */ //Hide the "privates" functions for Doxygen
+/** \cond */ //Hide the "privates" functions to Doxygen
 
 //Callback function for the barrel_timer
 Uint32 _barrel_cb(Uint32 interval, void *arg)
@@ -108,30 +109,40 @@ Uint32 _barrel_cb(Uint32 interval, void *arg)
 		//Every 'turn' we check every barrel
 		for (i=0 ; i<BARRELS->numb_items ; i++)
 		{
-			if (BARRELS->barrels[i].sprite->screen_pos.x > 780 || BARRELS->barrels[i].sprite->screen_pos.y > 550)
+			if (BARRELS->barrels[i].sprite->screen_pos.x > 780 \
+					|| BARRELS->barrels[i].sprite->screen_pos.y > 550)
 			{
-				//The barrel is at the level end, we dereference it and replace at the level beginning
+				//The barrel is at the level end, we dereference it and replace
+				//at the level beginning
 				deref_barrel(BARRELS->barrels[i].refresh_id);
 				BARRELS->barrels[i].refresh_id = -1;
 				SDL_Delay(20);
 				BARRELS->barrels[i].sprite->screen_pos.x = 0;
 				BARRELS->barrels[i].sprite->screen_pos.y = 150;
 			}
-			else if (BARRELS->barrels[i].sprite->screen_pos.x == 150 && BARRELS->barrels[i].sprite->screen_pos.y == 150)
+			else if (BARRELS->barrels[i].sprite->screen_pos.x == 150 \
+					&& BARRELS->barrels[i].sprite->screen_pos.y == 150)
 			{
 				//The barrel is after Donkey Kong, we reference it and show it
-				BARRELS->barrels[i].refresh_id = ref_barrel(&BARRELS->barrels[i], barrel_cb);
+				BARRELS->barrels[i].refresh_id = ref_barrel(
+						&BARRELS->barrels[i],
+						barrel_cb
+						);
 			}
-			else if (BARRELS->barrels[i].sprite->screen_pos.x < 150 && BARRELS->barrels[i].sprite->screen_pos.y == 150)
+			else if (BARRELS->barrels[i].sprite->screen_pos.x < 150 \
+					&& BARRELS->barrels[i].sprite->screen_pos.y == 150)
 			{
 				//The barrel is waiting to being launched
-				if (BARRELS->barrels[BARRELS->last_sent].sprite->screen_pos.y >= 180 - 8 * GAME_SPEED - 5)
+				if (BARRELS->barrels[BARRELS->last_sent].sprite->screen_pos.y \
+						>= 180 - 8 * GAME_SPEED - 5)
 				{
 					BARRELS->damnmonkey->current_mov = SPRITE_THROW_BARREL;
 				}
-				if (BARRELS->barrels[BARRELS->last_sent].sprite->screen_pos.y >= 180 - 8 * GAME_SPEED)
+				if (BARRELS->barrels[BARRELS->last_sent].sprite->screen_pos.y \
+						>= 180 - 8 * GAME_SPEED)
 				{
-					//The last barrel is already sent with an enough offset, we can launch the next one.
+					//The last barrel is already sent with an enough offset,
+					//we can launch the next one.
 					BARRELS->damnmonkey->current_mov = SPRITE_CUSTOM;
 					BARRELS->last_sent = i;
 					BARRELS->barrels[i].sprite->screen_pos.x = 150;
@@ -164,19 +175,27 @@ void barrel_cb(void *object, SDL_Surface *screen)
 		damnmonkey_collide.shape = COLLIDE_RECT;
 		damnmonkey_collide.x1 = BARRELS->damnmonkey->screen_pos.x;
 		damnmonkey_collide.y1 = BARRELS->damnmonkey->screen_pos.y;
-		damnmonkey_collide.x2 = BARRELS->damnmonkey->screen_pos.x + BARRELS->damnmonkey->screen_pos.w;
-		damnmonkey_collide.y2 = BARRELS->damnmonkey->screen_pos.y + BARRELS->damnmonkey->screen_pos.h;
+		damnmonkey_collide.x2 = BARRELS->damnmonkey->screen_pos.x + \
+								BARRELS->damnmonkey->screen_pos.w;
+		damnmonkey_collide.y2 = BARRELS->damnmonkey->screen_pos.y + \
+								BARRELS->damnmonkey->screen_pos.h;
 		
-		if (!collide(barrel->jumpman_collide, &JUMPMAN.enemy_collide) && !collide(&JUMPMAN.enemy_collide, &damnmonkey_collide))
+		if (!collide(barrel->jumpman_collide, &JUMPMAN.enemy_collide) \
+				&& !collide(&JUMPMAN.enemy_collide, &damnmonkey_collide))
 		{
 			//There's no collision between Jumpman and a barrel
-			if (check_ladder_top_collides(barrel->platform_collide, barrel->map) && barrel->platform_collide->x1 == get_collide_ladder_center(barrel->platform_collide, barrel->map))
+			if (check_ladder_top_collides(barrel->platform_collide, barrel->map) \
+					&& barrel->platform_collide->x1 == get_collide_ladder_center(
+						barrel->platform_collide, barrel->map
+						)
+					)
 			{
 				//The barrel is on a ladder, random fall on the ladder
 				if (rand()%2)
 				{
 					barrel->sprite->current_mov = SPRITE_WALK_LADDER;
-					barrel->sprite->screen_pos.y = barrel->sprite->screen_pos.y + 4;
+					barrel->sprite->screen_pos.y = barrel->sprite->screen_pos.y \
+												   + 4;
 				}
 				else
 				{
@@ -193,11 +212,15 @@ void barrel_cb(void *object, SDL_Surface *screen)
 			}
 			else
 			{
-				//The barrel isn't on a ladder so we check if it is in collision with a platform
+				//The barrel isn't on a ladder so we check if it is in
+				//collision with a platform
 				if (check_platform_collides(barrel->platform_collide, barrel->map))
 				{
 					//We generate the good movement according to the gravity
-					barrel->sprite->current_mov = check_platform_orientation(barrel->platform_collide, barrel->map);
+					barrel->sprite->current_mov = check_platform_orientation(
+							barrel->platform_collide,
+							barrel->map
+							);
 					if (barrel->sprite->current_mov != SPRITE_WALK_LEFT)
 					{
 						barrel->sprite->screen_pos.x++;
@@ -252,19 +275,23 @@ int check_platform_orientation(DM_Collide *collide_point, DM_Map *map)
 		//The collide function allow us to find the barrel which is considered
 		if (collide(collide_point, &map->platforms[i]))
 		{
-			if (map->platforms[i].x1 < map->platforms[i].x2 && map->platforms[i].y1 > map->platforms[i].y2)
+			if (map->platforms[i].x1 < map->platforms[i].x2 \
+					&& map->platforms[i].y1 > map->platforms[i].y2)
 			{
 				return SPRITE_WALK_LEFT;
 			}
-			else if (map->platforms[i].x1 < map->platforms[i].x2 && map->platforms[i].y1 < map->platforms[i].y2)
+			else if (map->platforms[i].x1 < map->platforms[i].x2 \
+					&& map->platforms[i].y1 < map->platforms[i].y2)
 			{
 				return SPRITE_WALK_RIGHT;
 			}
-			else if (map->platforms[i].x1 > map->platforms[i].x2 && map->platforms[i].y1 > map->platforms[i].y2)
+			else if (map->platforms[i].x1 > map->platforms[i].x2 \
+					&& map->platforms[i].y1 > map->platforms[i].y2)
 			{
 				return SPRITE_WALK_RIGHT;
 			}
-			else if (map->platforms[i].x1 > map->platforms[i].x2 && map->platforms[i].y1 < map->platforms[i].y2)
+			else if (map->platforms[i].x1 > map->platforms[i].x2 \
+					&& map->platforms[i].y1 < map->platforms[i].y2)
 			{
 				return SPRITE_WALK_LEFT;
 			}
@@ -303,8 +330,12 @@ void level_01(SDL_Surface *screen)
 {
 	//Load the background
 	DM_Surface *level_surface = load_resource_as_dm_surface("level_01.png");
-	int level_surface_refresh = ref_object(&LAYER_BG, level_surface, surface_refresh_cb);
-	
+	int level_surface_refresh = ref_object(
+			&LAYER_BG,
+			level_surface,
+			surface_refresh_cb
+			);
+
 	//Load Lady and help sprites
 	DM_Sprite *lady = new_sprite("lady");
 	lady->current_mov = SPRITE_ASK_HELP;
@@ -316,14 +347,14 @@ void level_01(SDL_Surface *screen)
 	help->screen_pos.x = 340;
 	help->screen_pos.y = 10;
 	int help_refresh = ref_object(&LAYER_ACTIVE, help, sprite_cb);
-	
+
 	//Load the level infos (collides,...)
 	DM_Map *map = load_map_infos("level_01");
 	
 	//Load and play level music
 	Mix_Music *level_music = load_music_resource("game.ogg");
 	Mix_PlayMusic(level_music, -1);
-	
+
 	//Load barrels and launch the barrel timer
 	int i;
 	int barrels_nb = 20;
@@ -342,28 +373,35 @@ void level_01(SDL_Surface *screen)
 		BARRELS->barrels[i].jumpman_collide->shape = COLLIDE_RECT;
 		BARRELS->barrels[i].jumpman_collide->x1 = BARRELS->barrels[i].sprite->screen_pos.x + 2;
 		BARRELS->barrels[i].jumpman_collide->y1 = BARRELS->barrels[i].sprite->screen_pos.y + 2;
-		BARRELS->barrels[i].jumpman_collide->x2 = BARRELS->barrels[i].jumpman_collide->x1 + BARRELS->barrels[i].sprite->items[BARRELS->barrels[i].sprite->current_mov].w - 4;
-		BARRELS->barrels[i].jumpman_collide->y2 = BARRELS->barrels[i].jumpman_collide->x1 + BARRELS->barrels[i].sprite->items[BARRELS->barrels[i].sprite->current_mov].h - 4;
+		BARRELS->barrels[i].jumpman_collide->x2 = BARRELS->barrels[i].jumpman_collide->x1 + \
+												  BARRELS->barrels[i].sprite->items[BARRELS->barrels[i].sprite->current_mov].w - 4;
+		BARRELS->barrels[i].jumpman_collide->y2 = BARRELS->barrels[i].jumpman_collide->x1 + \
+												  BARRELS->barrels[i].sprite->items[BARRELS->barrels[i].sprite->current_mov].h - 4;
 		BARRELS->barrels[i].platform_collide = malloc(sizeof(DM_Collide));
 		BARRELS->barrels[i].platform_collide->shape = COLLIDE_POINT;
-		BARRELS->barrels[i].platform_collide->x1 = BARRELS->barrels[i].jumpman_collide->x1 + (BARRELS->barrels[i].sprite->screen_pos.w / 2);
-		BARRELS->barrels[i].platform_collide->y1 = BARRELS->barrels[i].jumpman_collide->y1 + (BARRELS->barrels[i].sprite->screen_pos.h);
+		BARRELS->barrels[i].platform_collide->x1 = BARRELS->barrels[i].jumpman_collide->x1 \
+												   + (BARRELS->barrels[i].sprite->screen_pos.w / 2);
+		BARRELS->barrels[i].platform_collide->y1 = BARRELS->barrels[i].jumpman_collide->y1 \
+												   + (BARRELS->barrels[i].sprite->screen_pos.h);
 		BARRELS->barrels[i].platform_collide->x2 = 0;
 		BARRELS->barrels[i].platform_collide->y2 = 0;
 		BARRELS->barrels[i].refresh_id = -1;
 	}
 	BARRELS->barrels[0].sprite->screen_pos.x = 150;
-	
+
 	//Load Damn Monkey
 	BARRELS->damnmonkey = new_sprite("damnmonkey");
 	BARRELS->damnmonkey->screen_pos.x = 55;
 	BARRELS->damnmonkey->screen_pos.y = 94;
 	BARRELS->damnmonkey->current_mov = SPRITE_CUSTOM;
-	int damnmonkey_refresh = ref_object(&LAYER_ACTIVE, BARRELS->damnmonkey, sprite_cb);
-	
+	int damnmonkey_refresh = ref_object(
+			&LAYER_ACTIVE,
+			BARRELS->damnmonkey,
+			sprite_cb
+			);
+
 	//GAME_STATE gestion
 	barrel_init(screen);
-	//SDL_Delay(5000); //Allow barrels to roll before Jumpman start //FIXME + TODO : Improve design and animation
 	lets_play_yeah(screen, map);
 	//Dereference objects and free the memory
 	barrel_destroy();
