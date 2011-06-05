@@ -102,36 +102,34 @@ void deref_barrel(int id)
 //Callback function for the barrel_timer
 Uint32 _barrel_cb(Uint32 interval, void *arg)
 {
-	static int last_sent = 0; //Index of the last barrel sent
-	
 	if (GAME_STATE != GAME_STATE_PAUSED)
 	{
 		int i;
 		//Every 'turn' we check every barrel
-		for (i=0 ; i<20 ; i++)
+		for (i=0 ; i<BARRELS->numb_items ; i++)
 		{
-			if (BARRELS[i].sprite->screen_pos.x > 780 || BARRELS[i].sprite->screen_pos.y > 550)
+			if (BARRELS->barrels[i].sprite->screen_pos.x > 780 || BARRELS->barrels[i].sprite->screen_pos.y > 550)
 			{
 				//The barrel is at the level end, we dereference it and replace at the level beginning
-				deref_barrel(BARRELS[i].refresh_id);
-				BARRELS[i].refresh_id = -1;
+				deref_barrel(BARRELS->barrels[i].refresh_id);
+				BARRELS->barrels[i].refresh_id = -1;
 				SDL_Delay(20);
-				BARRELS[i].sprite->screen_pos.x = 0;
-				BARRELS[i].sprite->screen_pos.y = 150;
+				BARRELS->barrels[i].sprite->screen_pos.x = 0;
+				BARRELS->barrels[i].sprite->screen_pos.y = 150;
 			}
-			else if (BARRELS[i].sprite->screen_pos.x == 150 && BARRELS[i].sprite->screen_pos.y == 150)
+			else if (BARRELS->barrels[i].sprite->screen_pos.x == 150 && BARRELS->barrels[i].sprite->screen_pos.y == 150)
 			{
 				//The barrel is after Donkey Kong, we reference it and show it
-				BARRELS[i].refresh_id = ref_barrel(&BARRELS[i], barrel_cb);
+				BARRELS->barrels[i].refresh_id = ref_barrel(&BARRELS->barrels[i], barrel_cb);
 			}
-			else if (BARRELS[i].sprite->screen_pos.x < 150 && BARRELS[i].sprite->screen_pos.y == 150)
+			else if (BARRELS->barrels[i].sprite->screen_pos.x < 150 && BARRELS->barrels[i].sprite->screen_pos.y == 150)
 			{
 				//The barrel is waiting to being launched
-				if (BARRELS[last_sent].sprite->screen_pos.y >= 167)
+				if (BARRELS->barrels[BARRELS->last_sent].sprite->screen_pos.y >= 180 - 8 * GAME_SPEED)
 				{
 					//The last barrel is already sent with an enough offset, we can launch the next one. 
-					last_sent = i;
-					BARRELS[i].sprite->screen_pos.x = 150;
+					BARRELS->last_sent = i;
+					BARRELS->barrels[i].sprite->screen_pos.x = 150;
 				}
 			}
 		}
@@ -155,10 +153,10 @@ void barrel_cb(void *object, SDL_Surface *screen)
 	if (GAME_STATE != GAME_STATE_PAUSED)
 	{
 		DM_Barrel *barrel = object;
-		if (!collide(&barrel->jumpman_collide, &JUMPMAN.enemy_collide))
+		if (!collide(barrel->jumpman_collide, &JUMPMAN.enemy_collide))
 		{
 			//There's no collision between Jumpman and a barrel
-			if (check_ladder_top_collides(&barrel->platform_collide, barrel->map) && barrel->platform_collide.x1 == get_collide_ladder_center(&barrel->platform_collide, barrel->map))
+			if (check_ladder_top_collides(barrel->platform_collide, barrel->map) && barrel->platform_collide->x1 == get_collide_ladder_center(barrel->platform_collide, barrel->map))
 			{
 				//The barrel is on a ladder, random fall on the ladder
 				if (rand()%2)
@@ -182,10 +180,10 @@ void barrel_cb(void *object, SDL_Surface *screen)
 			else
 			{
 				//The barrel isn't on a ladder so we check if it is in collision with a platform
-				if (check_platform_collides(&barrel->platform_collide, barrel->map))
+				if (check_platform_collides(barrel->platform_collide, barrel->map))
 				{
 					//We generate the good movement according to the gravity
-					barrel->sprite->current_mov = check_platform_orientation(&barrel->platform_collide, barrel->map);
+					barrel->sprite->current_mov = check_platform_orientation(barrel->platform_collide, barrel->map);
 					if (barrel->sprite->current_mov != SPRITE_WALK_LEFT)
 					{
 						barrel->sprite->screen_pos.x++;
@@ -203,14 +201,14 @@ void barrel_cb(void *object, SDL_Surface *screen)
 			}
 			
 			//Collision rect and point update
-			barrel->jumpman_collide.x1 = barrel->sprite->screen_pos.x + 2;
-			barrel->jumpman_collide.y1 = barrel->sprite->screen_pos.y + 2;
-			barrel->jumpman_collide.x2 = barrel->jumpman_collide.x1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
-			barrel->jumpman_collide.y2 = barrel->jumpman_collide.y1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
-			barrel->platform_collide.x1 = barrel->jumpman_collide.x1 + (barrel->sprite->items[barrel->sprite->current_mov].w / 2);
-			barrel->platform_collide.y1 = barrel->jumpman_collide.y1 + barrel->sprite->items[barrel->sprite->current_mov].h;
-			barrel->platform_collide.x2 = 0;
-			barrel->platform_collide.y2 = 0;
+			barrel->jumpman_collide->x1 = barrel->sprite->screen_pos.x + 2;
+			barrel->jumpman_collide->y1 = barrel->sprite->screen_pos.y + 2;
+			barrel->jumpman_collide->x2 = barrel->jumpman_collide->x1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
+			barrel->jumpman_collide->y2 = barrel->jumpman_collide->y1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
+			barrel->platform_collide->x1 = barrel->jumpman_collide->x1 + (barrel->sprite->items[barrel->sprite->current_mov].w / 2);
+			barrel->platform_collide->y1 = barrel->jumpman_collide->y1 + barrel->sprite->items[barrel->sprite->current_mov].h;
+			barrel->platform_collide->x2 = 0;
+			barrel->platform_collide->y2 = 0;
 		}
 		else
 		{
@@ -272,11 +270,12 @@ int check_platform_orientation(DM_Collide *collide_point, DM_Map *map)
  *
  * \param splited The DM_Barrel pointer to free.
  */
-void free_dm_barrel(DM_Barrel *barrels)
+void free_dm_barrel(DM_Barrel *barrel)
 {
 	//We don't deallocate the map pointer because it'll be freed later
-	free_sprite(barrels->sprite);
-	free(barrels);
+	free_sprite(barrel->sprite);
+	free(barrel->jumpman_collide);
+	free(barrel->platform_collide);
 }
 
 
@@ -291,54 +290,78 @@ void level_01(SDL_Surface *screen)
 	//Load the background
 	DM_Surface *level_surface = load_resource_as_dm_surface("level_01.png");
 	int level_surface_refresh = ref_object(&LAYER_BG, level_surface, surface_refresh_cb);
-
+	
+	//Load Lady and help sprites
+	DM_Sprite *lady = new_sprite("lady");
+	lady->current_mov = SPRITE_ASK_HELP;
+	lady->screen_pos.x = 300;
+	lady->screen_pos.y = 48;
+	int lady_refresh = ref_object(&LAYER_ACTIVE, lady, sprite_cb);
+	DM_Sprite *help = new_sprite("help");
+	help->current_mov = SPRITE_CUSTOM;
+	help->screen_pos.x = 340;
+	help->screen_pos.y = 10;
+	int help_refresh = ref_object(&LAYER_ACTIVE, help, sprite_cb);
+	
 	//Load the level infos (collides,...)
 	DM_Map *map = load_map_infos("level_01");
 	
 	//Load and play level music
 	Mix_Music *level_music = load_music_resource("game.ogg");
-	Mix_PlayMusic(level_music, -1);
+	//Mix_PlayMusic(level_music, -1);
 	
 	//Load barrels and launch the barrel timer
 	int i;
 	int barrels_nb = 20;
-	BARRELS = malloc(barrels_nb * sizeof(DM_Barrel));
-	for (i=0 ; i<barrels_nb ; i++)
+	BARRELS = malloc(sizeof(DM_Barrel_Array));
+	BARRELS->numb_items = barrels_nb;
+	BARRELS->last_sent = 0;
+	BARRELS->barrels = malloc(BARRELS->numb_items * sizeof(DM_Barrel));
+	for (i=0 ; i<BARRELS->numb_items ; i++)
 	{
-		BARRELS[i].map = map;
-		BARRELS[i].sprite = new_sprite("barrel");
-		BARRELS[i].sprite->current_mov = SPRITE_WALK_RIGHT;
-		BARRELS[i].jumpman_collide.shape = COLLIDE_RECT;
-		BARRELS[i].sprite->screen_pos.x = 0;
-		BARRELS[i].sprite->screen_pos.y = 150;
-		BARRELS[i].jumpman_collide.x1 = BARRELS[i].sprite->screen_pos.x + 2;
-		BARRELS[i].jumpman_collide.y1 = BARRELS[i].sprite->screen_pos.y + 2;
-		BARRELS[i].jumpman_collide.x2 = BARRELS[i].jumpman_collide.x1 + BARRELS[i].sprite->items[BARRELS[i].sprite->current_mov].w - 4;
-		BARRELS[i].jumpman_collide.y2 = BARRELS[i].jumpman_collide.x1 + BARRELS[i].sprite->items[BARRELS[i].sprite->current_mov].h - 4;
-		BARRELS[i].platform_collide.shape = COLLIDE_POINT;
-		BARRELS[i].platform_collide.x1 = BARRELS->jumpman_collide.x1 + (BARRELS[i].sprite->screen_pos.w / 2);
-		BARRELS[i].platform_collide.y1 = BARRELS->jumpman_collide.y1 + (BARRELS[i].sprite->screen_pos.h);
-		BARRELS[i].platform_collide.x2 = 0;
-		BARRELS[i].platform_collide.y2 = 0;
-		BARRELS[i].refresh_id = -1;
+		BARRELS->barrels[i].map = map;
+		BARRELS->barrels[i].sprite = new_sprite("barrel");
+		BARRELS->barrels[i].sprite->current_mov = SPRITE_WALK_RIGHT;
+		BARRELS->barrels[i].sprite->screen_pos.x = 0;
+		BARRELS->barrels[i].sprite->screen_pos.y = 150;
+		BARRELS->barrels[i].jumpman_collide = malloc(sizeof(DM_Collide));
+		BARRELS->barrels[i].jumpman_collide->shape = COLLIDE_RECT;
+		BARRELS->barrels[i].jumpman_collide->x1 = BARRELS->barrels[i].sprite->screen_pos.x + 2;
+		BARRELS->barrels[i].jumpman_collide->y1 = BARRELS->barrels[i].sprite->screen_pos.y + 2;
+		BARRELS->barrels[i].jumpman_collide->x2 = BARRELS->barrels[i].jumpman_collide->x1 + BARRELS->barrels[i].sprite->items[BARRELS->barrels[i].sprite->current_mov].w - 4;
+		BARRELS->barrels[i].jumpman_collide->y2 = BARRELS->barrels[i].jumpman_collide->x1 + BARRELS->barrels[i].sprite->items[BARRELS->barrels[i].sprite->current_mov].h - 4;
+		BARRELS->barrels[i].platform_collide = malloc(sizeof(DM_Collide));
+		BARRELS->barrels[i].platform_collide->shape = COLLIDE_POINT;
+		BARRELS->barrels[i].platform_collide->x1 = BARRELS->barrels[i].jumpman_collide->x1 + (BARRELS->barrels[i].sprite->screen_pos.w / 2);
+		BARRELS->barrels[i].platform_collide->y1 = BARRELS->barrels[i].jumpman_collide->y1 + (BARRELS->barrels[i].sprite->screen_pos.h);
+		BARRELS->barrels[i].platform_collide->x2 = 0;
+		BARRELS->barrels[i].platform_collide->y2 = 0;
+		BARRELS->barrels[i].refresh_id = -1;
 	}
-	BARRELS[0].sprite->screen_pos.x = 150;
+	BARRELS->barrels[0].sprite->screen_pos.x = 150;
 	
 	//GAME_STATE gestion
 	barrel_init(screen);
 	//SDL_Delay(5000); //Allow barrels to roll before Jumpman start //FIXME + TODO : Improve design and animation
 	lets_play_yeah(screen, map);
-	
 	//Dereference objects and free the memory
 	barrel_destroy();
-	for(i=0 ; i<barrels_nb ; i++)
+	for(i=0 ; i<BARRELS->numb_items ; i++)
 	{
-		deref_barrel(BARRELS[i].refresh_id);
+		deref_barrel(BARRELS->barrels[i].refresh_id);
 	}
+	deref_object(&LAYER_ACTIVE, help_refresh);
+	deref_object(&LAYER_ACTIVE, lady_refresh);
 	deref_object(&LAYER_BG, level_surface_refresh);
 	SDL_Delay(50);
 	Mix_FreeMusic(level_music);
-	free_dm_barrel(BARRELS);
+	for(i=0 ; i<BARRELS->numb_items ; i++)
+	{
+		free_dm_barrel(&BARRELS->barrels[i]);
+	}
+	free(BARRELS);
+	free_sprite(help);
+	free_sprite(lady);
 	free_dm_surface(level_surface);	
 	free_dm_map(map);
 }

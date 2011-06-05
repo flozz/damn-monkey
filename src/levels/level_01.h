@@ -68,23 +68,37 @@
 
 /**
  * \struct DM_Barrel
- * \brief Contain informations about barrels.
+ * \brief Contain informations about one barrel.
  */
 typedef struct DM_Barrel DM_Barrel;
 struct DM_Barrel
 {
-	DM_Map *map;                 /*!< Pointer to the DM_Map considered*/
-	DM_Collide platform_collide; /*!< Collision point with platforms. */
-	DM_Collide jumpman_collide;  /*!< Collision rect with jumpman. */
-	DM_Sprite *sprite;           /*!< The sprite of barrel. */
-	int refresh_id;              /*!< The refresh id*/
+	DM_Map *map;                  /*!< Pointer to the DM_Map considered*/
+	DM_Collide *platform_collide; /*!< Collision point with platforms. */
+	DM_Collide *jumpman_collide;  /*!< Collision rect with jumpman. */
+	DM_Sprite *sprite;            /*!< The sprite of barrel. */
+	int refresh_id;               /*!< The refresh id*/
 };
+
+
+/**
+ * \struct DM_Barrel_Array
+ * \brief Contain informations about barrels.
+ */
+typedef struct DM_Barrel_Array DM_Barrel_Array;
+struct DM_Barrel_Array
+{
+	DM_Barrel *barrels;          /*!< Barrels array*/
+	int numb_items;              /*!< The number of barrels in the array*/
+	int last_sent;               /*!< The last sent barrel index in the array*/
+};
+
 
 /** \cond */ //Hide this to doxygen
 SDL_TimerID barrel_timer;
 /** \endcond */
 
-DM_Barrel *BARRELS;
+DM_Barrel_Array *BARRELS;
 
 void barrel_init(SDL_Surface *screen);
 void barrel_destroy();

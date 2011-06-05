@@ -1,3 +1,4 @@
-walk-right ; 0 ;  0 ; 24 ; 20 ; 4 ; 100 ;
-walk-left  ; 0 ; 20 ; 24 ; 20 ; 4 ; 100 ;
-walk-ladder; 0 ; 41 ; 34 ; 20 ; 2 ; 100 ;
+#Movement   ; x ;  y ;  w ;  h ; numb. img ; delay ms ;
+walk-right  ; 0 ;  0 ; 24 ; 20 ;         4 ;      100 ;
+walk-left   ; 0 ; 20 ; 24 ; 20 ;         4 ;      100 ;
+walk-ladder ; 0 ; 41 ; 34 ; 20 ;         2 ;      100 ;
