@@ -89,6 +89,7 @@ typedef struct DM_Barrel_Array DM_Barrel_Array;
 struct DM_Barrel_Array
 {
 	DM_Barrel *barrels;          /*!< Barrels array*/
+	DM_Sprite *damnmonkey;       /*!< Damn Monkey sprite */
 	int numb_items;              /*!< The number of barrels in the array*/
 	int last_sent;               /*!< The last sent barrel index in the array*/
 };

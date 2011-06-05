@@ -125,9 +125,14 @@ Uint32 _barrel_cb(Uint32 interval, void *arg)
 			else if (BARRELS->barrels[i].sprite->screen_pos.x < 150 && BARRELS->barrels[i].sprite->screen_pos.y == 150)
 			{
 				//The barrel is waiting to being launched
+				if (BARRELS->barrels[BARRELS->last_sent].sprite->screen_pos.y >= 180 - 8 * GAME_SPEED - 5)
+				{
+					BARRELS->damnmonkey->current_mov = SPRITE_THROW_BARREL;
+				}
 				if (BARRELS->barrels[BARRELS->last_sent].sprite->screen_pos.y >= 180 - 8 * GAME_SPEED)
 				{
-					//The last barrel is already sent with an enough offset, we can launch the next one. 
+					//The last barrel is already sent with an enough offset, we can launch the next one.
+					BARRELS->damnmonkey->current_mov = SPRITE_CUSTOM;
 					BARRELS->last_sent = i;
 					BARRELS->barrels[i].sprite->screen_pos.x = 150;
 				}
@@ -153,7 +158,16 @@ void barrel_cb(void *object, SDL_Surface *screen)
 	if (GAME_STATE != GAME_STATE_PAUSED)
 	{
 		DM_Barrel *barrel = object;
-		if (!collide(barrel->jumpman_collide, &JUMPMAN.enemy_collide))
+		
+		//Damn Monkey collide initialisation
+		DM_Collide damnmonkey_collide;
+		damnmonkey_collide.shape = COLLIDE_RECT;
+		damnmonkey_collide.x1 = BARRELS->damnmonkey->screen_pos.x;
+		damnmonkey_collide.y1 = BARRELS->damnmonkey->screen_pos.y;
+		damnmonkey_collide.x2 = BARRELS->damnmonkey->screen_pos.x + BARRELS->damnmonkey->screen_pos.w;
+		damnmonkey_collide.y2 = BARRELS->damnmonkey->screen_pos.y + BARRELS->damnmonkey->screen_pos.h;
+		
+		if (!collide(barrel->jumpman_collide, &JUMPMAN.enemy_collide) && !collide(&JUMPMAN.enemy_collide, &damnmonkey_collide))
 		{
 			//There's no collision between Jumpman and a barrel
 			if (check_ladder_top_collides(barrel->platform_collide, barrel->map) && barrel->platform_collide->x1 == get_collide_ladder_center(barrel->platform_collide, barrel->map))
@@ -308,7 +322,7 @@ void level_01(SDL_Surface *screen)
 	
 	//Load and play level music
 	Mix_Music *level_music = load_music_resource("game.ogg");
-	//Mix_PlayMusic(level_music, -1);
+	Mix_PlayMusic(level_music, -1);
 	
 	//Load barrels and launch the barrel timer
 	int i;
@@ -340,6 +354,13 @@ void level_01(SDL_Surface *screen)
 	}
 	BARRELS->barrels[0].sprite->screen_pos.x = 150;
 	
+	//Load Damn Monkey
+	BARRELS->damnmonkey = new_sprite("damnmonkey");
+	BARRELS->damnmonkey->screen_pos.x = 55;
+	BARRELS->damnmonkey->screen_pos.y = 94;
+	BARRELS->damnmonkey->current_mov = SPRITE_CUSTOM;
+	int damnmonkey_refresh = ref_object(&LAYER_ACTIVE, BARRELS->damnmonkey, sprite_cb);
+	
 	//GAME_STATE gestion
 	barrel_init(screen);
 	//SDL_Delay(5000); //Allow barrels to roll before Jumpman start //FIXME + TODO : Improve design and animation
@@ -350,6 +371,7 @@ void level_01(SDL_Surface *screen)
 	{
 		deref_barrel(BARRELS->barrels[i].refresh_id);
 	}
+	deref_object(&LAYER_ACTIVE, damnmonkey_refresh);
 	deref_object(&LAYER_ACTIVE, help_refresh);
 	deref_object(&LAYER_ACTIVE, lady_refresh);
 	deref_object(&LAYER_BG, level_surface_refresh);
@@ -359,6 +381,7 @@ void level_01(SDL_Surface *screen)
 	{
 		free_dm_barrel(&BARRELS->barrels[i]);
 	}
+	free_sprite(BARRELS->damnmonkey);
 	free(BARRELS);
 	free_sprite(help);
 	free_sprite(lady);
