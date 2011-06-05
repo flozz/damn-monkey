@@ -60,7 +60,7 @@ void game(SDL_Surface *screen)
 	int current_level = 1;
 	int levels_count = 1; //Number of levels
 	JUMPMAN_LIVES = 3;
-	GAME_SPEED = 1;
+	GAME_SPEED = 0;
 	GAME_STATE = GAME_STATE_PLAYING;
 
 	while (GAME_STATE != GAME_STATE_NONE && GAME_STATE != GAME_STATE_OVER)
@@ -85,11 +85,15 @@ void game(SDL_Surface *screen)
 				}
 				break;
 			case GAME_STATE_LEVEL_COMPLETED:
-				current_level += 1;
+				GAME_SPEED += 1;
+				if (GAME_SPEED >= 4)
+				{
+					current_level +=1;
+					GAME_SPEED = 0;
+				}
 				if (current_level > levels_count)
 				{
-					current_level = 1; //Restart with the first level;
-					GAME_SPEED++;
+					current_level = 1; //Restart with the first level;					
 				}
 				break;
 			case GAME_STATE_NONE:
@@ -120,7 +124,7 @@ void game(SDL_Surface *screen)
 		free_dm_surface(text);
 	}
 	//End of the game
-	GAME_STATE == GAME_STATE_NONE;
+	GAME_STATE = GAME_STATE_NONE;
 }
 
 
@@ -509,7 +513,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 				JUMPMAN.platform_collide.x1--;
 				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
 				{
-					JUMPMAN.pos_x -= 1;
+					JUMPMAN.pos_x -= 2;
 				}
 				else
 				{
@@ -531,7 +535,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 				JUMPMAN.platform_collide.x1++;
 				if (!check_platform_collides(&JUMPMAN.platform_collide, map))
 				{
-					JUMPMAN.pos_x += 1;
+					JUMPMAN.pos_x += 2;
 				}
 				else
 				{
