@@ -399,8 +399,9 @@ void level_01(SDL_Surface *screen)
 			sprite_cb
 			);
 
-	//GAME_STATE gestion
+	//Level launch
 	barrel_init(screen);
+	introduction(screen);
 	lets_play_yeah(screen, map);
 	//Dereference objects and free the memory
 	barrel_destroy();
@@ -424,6 +425,55 @@ void level_01(SDL_Surface *screen)
 	free_sprite(lady);
 	free_dm_surface(level_surface);	
 	free_dm_map(map);
+}
+
+
+/**
+ * \fn void introduction(SDL_Screen *surface)
+ * \brief Show the level intro.
+ *
+ * Show a introduction screen before the level beginning
+ *
+ * \param screen The main surface (called screen in the main() function). 
+ */
+void introduction(SDL_Surface *screen)
+{
+	DM_Surface *bg = load_resource_as_dm_surface("level_01_begin.png");
+	int bg_refresh = ref_object(&LAYER_FG, bg, surface_refresh_cb);
+	DM_Sprite *damnmonkey = new_sprite("damnmonkey");
+	damnmonkey->current_mov = SPRITE_WALK_LADDER;
+	damnmonkey->screen_pos.x = 400;
+	damnmonkey->screen_pos.y = 601;
+	int damnmonkey_refresh = ref_object(&LAYER_FG, damnmonkey, sprite_cb);
+	SDL_Delay(1000);
+	while (damnmonkey->screen_pos.y >= 53)
+	{
+		damnmonkey->screen_pos.y -= 2;
+		SDL_Delay(20);
+	}
+	damnmonkey->current_mov = SPRITE_CUSTOM;
+	damnmonkey->screen_pos.x = 470;
+	DM_Sprite *lady = new_sprite("lady");
+	lady->current_mov = SPRITE_ASK_HELP;
+	lady->screen_pos.x = 570;
+	lady->screen_pos.y = 90;
+	int lady_refresh = ref_object(&LAYER_FG, lady, sprite_cb);
+	DM_Sprite *help = new_sprite("help");
+	help->current_mov = SPRITE_CUSTOM;
+	help->screen_pos.x = 610;
+	help->screen_pos.y = 45;
+	int help_refresh = ref_object(&LAYER_FG, help, sprite_cb);
+	SDL_Delay(2000);
+	//Derefence objects and free the memory
+	deref_object(&LAYER_FG, help_refresh);
+	deref_object(&LAYER_FG, lady_refresh);
+	deref_object(&LAYER_FG, damnmonkey_refresh);
+	deref_object(&LAYER_FG, bg_refresh);
+	SDL_Delay(20);
+	free_sprite(help);
+	free_sprite(lady);
+	free_sprite(damnmonkey);
+	free_dm_surface(bg);
 }
 
 

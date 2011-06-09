@@ -63,7 +63,7 @@ void game(SDL_Surface *screen)
 	GAME_SPEED = 0;
 	GAME_STATE = GAME_STATE_PLAYING;
 
-	while (GAME_STATE != GAME_STATE_NONE && GAME_STATE != GAME_STATE_OVER)
+	while (GAME_STATE != GAME_STATE_NONE && GAME_STATE != GAME_STATE_OVER && GAME_SPEED < 4)
 	{
 		//Launch the level
 		switch (current_level)
@@ -85,16 +85,11 @@ void game(SDL_Surface *screen)
 				}
 				break;
 			case GAME_STATE_LEVEL_COMPLETED:
-				GAME_SPEED += 1;
-				if (GAME_SPEED >= 4)
-				{
-					current_level +=1;
-					GAME_SPEED = 0;
-				}
 				if (current_level > levels_count)
 				{
 					current_level = 1; //Restart with the first level;					
 				}
+				GAME_SPEED += 1;
 				break;
 			case GAME_STATE_NONE:
 				break;
@@ -112,7 +107,10 @@ void game(SDL_Surface *screen)
 		deref_object(&LAYER_MENU, bg_refresh);
 		SDL_Delay(20);
 		free_dm_surface(bg);
-
+	}
+	else
+	{
+		//TODO : Make a success screen
 	}
 	//End of the game
 	GAME_STATE = GAME_STATE_NONE;
