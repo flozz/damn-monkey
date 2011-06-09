@@ -1,6 +1,4 @@
-#Movement    ;  x ;   y ;   w ;   h ; numb. img ; delay ms ;
-ladder-walk  ;  0 ; 163 ;  84 ;  95 ;         2 ;      160 ;
-throw-barrel ;  0 ;  81 ; 110 ;  82 ;         3 ;      220 ;
-custom       ;  0 ;   0 ;  87 ;  81 ;         1 ;      100 ;
-
-
+#Movement ; x ; y ; w ; h ; numb. img ; delay ms ;
+walk-ladder ; 0 ; 163 ; 95 ; 90 ; 2 ; 200 ;
+throw-barrel ; 0 ; 81 ; 110 ; 82 ; 3 ; 220 ;
+custom ; 0 ; 0 ; 87 ; 81 ; 1 ; 100 ;
