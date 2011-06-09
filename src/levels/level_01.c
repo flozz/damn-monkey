@@ -244,8 +244,7 @@ void barrel_cb(void *object, SDL_Surface *screen)
 			barrel->jumpman_collide->y2 = barrel->jumpman_collide->y1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
 			barrel->platform_collide->x1 = barrel->jumpman_collide->x1 + (barrel->sprite->items[barrel->sprite->current_mov].w / 2);
 			barrel->platform_collide->y1 = barrel->jumpman_collide->y1 + barrel->sprite->items[barrel->sprite->current_mov].h;
-			barrel->platform_collide->x2 = 0;
-			barrel->platform_collide->y2 = 0;
+
 		}
 		else
 		{

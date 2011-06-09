@@ -106,22 +106,13 @@ void game(SDL_Surface *screen)
 	}
 	if (GAME_STATE == GAME_STATE_OVER)
 	{
-		DM_Surface *bg = load_resource_as_dm_surface("menu_bg.png");
-		int bg_refresh = ref_object(&LAYER_MENU, bg, surface_refresh_cb);
-		DM_Surface *text = malloc(sizeof(DM_Surface));
-		text->surface = str_to_surface("font_menu.png", "GAME OVER");
-		text->rect.w = text->surface->w;
-		text->rect.h = text->surface->h;
-		text->rect.x = (screen->w - text->rect.w) / 2;
-		text->rect.y = (screen->h / 3);
-		int text_refresh = ref_object(&LAYER_MENU, text, surface_refresh_cb);
-		//TODO : Make it became sexier with a picture and sad song
+		DM_Surface *bg = load_resource_as_dm_surface("gameover.png");
+		int bg_refresh = ref_object(&LAYER_MENU, bg, surface_refresh_cb);		
 		SDL_Delay(2000);
 		deref_object(&LAYER_MENU, bg_refresh);
-		deref_object(&LAYER_MENU, text_refresh);
 		SDL_Delay(20);
 		free_dm_surface(bg);
-		free_dm_surface(text);
+
 	}
 	//End of the game
 	GAME_STATE = GAME_STATE_NONE;
