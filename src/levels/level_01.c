@@ -440,6 +440,25 @@ void introduction(SDL_Surface *screen)
 {
 	DM_Surface *bg = load_resource_as_dm_surface("level_01_begin.png");
 	int bg_refresh = ref_object(&LAYER_FG, bg, surface_refresh_cb);
+	
+	DM_Surface *title = malloc(sizeof(DM_Surface));
+	title->surface = str_to_surface("font_main.png", "First Level");
+	title->rect.w = title->surface->w;
+	title->rect.h = title->surface->h;
+	title->rect.x = 50;
+	title->rect.y = 450;
+	int title_refresh = ref_object(&LAYER_FG, title, surface_refresh_cb);
+	
+	DM_Surface *level = malloc(sizeof(DM_Surface));
+	char buffer[5];
+	sprintf(buffer, "%i m", 25 * (GAME_SPEED + 1));
+	level->surface = str_to_surface("font_main.png", buffer);
+	level->rect.w = level->surface->w;
+	level->rect.h = level->surface->h;
+	level->rect.x = 100;
+	level->rect.y = 500;
+	int level_refresh = ref_object(&LAYER_FG, level, surface_refresh_cb);
+	
 	DM_Sprite *damnmonkey = new_sprite("damnmonkey");
 	damnmonkey->current_mov = SPRITE_WALK_LADDER;
 	damnmonkey->screen_pos.x = 400;
@@ -453,26 +472,33 @@ void introduction(SDL_Surface *screen)
 	}
 	damnmonkey->current_mov = SPRITE_CUSTOM;
 	damnmonkey->screen_pos.x = 470;
+	
 	DM_Sprite *lady = new_sprite("lady");
 	lady->current_mov = SPRITE_ASK_HELP;
 	lady->screen_pos.x = 570;
 	lady->screen_pos.y = 90;
 	int lady_refresh = ref_object(&LAYER_FG, lady, sprite_cb);
+	
 	DM_Sprite *help = new_sprite("help");
 	help->current_mov = SPRITE_CUSTOM;
 	help->screen_pos.x = 610;
 	help->screen_pos.y = 45;
 	int help_refresh = ref_object(&LAYER_FG, help, sprite_cb);
+    
 	SDL_Delay(2000);
 	//Derefence objects and free the memory
 	deref_object(&LAYER_FG, help_refresh);
 	deref_object(&LAYER_FG, lady_refresh);
 	deref_object(&LAYER_FG, damnmonkey_refresh);
+	deref_object(&LAYER_FG, level_refresh);
+	deref_object(&LAYER_FG, title_refresh);
 	deref_object(&LAYER_FG, bg_refresh);
 	SDL_Delay(20);
 	free_sprite(help);
 	free_sprite(lady);
 	free_sprite(damnmonkey);
+	free_dm_surface(level);
+	free_dm_surface(title);
 	free_dm_surface(bg);
 }
 
