@@ -374,6 +374,27 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 						break;
 				}
 			}
+			//Window close button clicked
+			else if (event.type == SDL_QUIT)
+			{
+				GAME_STATE = GAME_STATE_PAUSED;
+				switch (pause_menu(screen))
+				{
+					case PAUSE_MENU_CONTINUE:
+						GAME_STATE = GAME_STATE_PLAYING; //Continue
+						break;
+					case PAUSE_MENU_MAIN_MENU:
+						GAME_STATE = GAME_STATE_NONE; //Stop
+						break;
+					case PAUSE_MENU_QUIT:
+						exit(EXIT_SUCCESS); //Quit
+						break;
+					default:
+						GAME_STATE = GAME_STATE_PLAYING;
+						printf("W: Unhandled item for pause menu.\n");
+						break;
+				}
+			}
 		}
 		//Update the Jumpman position
 		if (!jump) // NOT JUMPING //
