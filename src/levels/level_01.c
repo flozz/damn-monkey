@@ -460,6 +460,20 @@ void introduction(SDL_Surface *screen)
 	level->rect.y = 500;
 	int level_refresh = ref_object(&LAYER_FG, level, surface_refresh_cb);
 	
+	DM_Surface *life = load_resource_as_dm_surface("life.png");
+	life->rect.x = 100;
+	life->rect.y = 550;
+	int life_refresh = ref_object(&LAYER_FG, life, surface_refresh_cb);
+	DM_Surface *life_text = malloc(sizeof(DM_Surface));
+	char life_char[3];
+	sprintf(life_char, "x%d", JUMPMAN_LIVES);
+	life_text->surface = str_to_surface("font_main.png", life_char);
+	life_text->rect.w = life_text->surface->w;
+	life_text->rect.h = life_text->surface->h;
+	life_text->rect.x = life->rect.x + life->rect.w + 5;
+	life_text->rect.y = life->rect.y;
+	int life_text_refresh = ref_object(&LAYER_FG, life_text, surface_refresh_cb);
+	
 	DM_Sprite *damnmonkey = new_sprite("damnmonkey");
 	damnmonkey->current_mov = SPRITE_WALK_LADDER;
 	damnmonkey->screen_pos.x = 400;
@@ -488,6 +502,8 @@ void introduction(SDL_Surface *screen)
     
 	SDL_Delay(2000);
 	//Derefence objects and free the memory
+	deref_object(&LAYER_FG, life_refresh);
+	deref_object(&LAYER_FG, life_text_refresh);
 	deref_object(&LAYER_FG, help_refresh);
 	deref_object(&LAYER_FG, lady_refresh);
 	deref_object(&LAYER_FG, damnmonkey_refresh);
@@ -495,6 +511,8 @@ void introduction(SDL_Surface *screen)
 	deref_object(&LAYER_FG, title_refresh);
 	deref_object(&LAYER_FG, bg_refresh);
 	SDL_Delay(20);
+	free_dm_surface(life);
+	free_dm_surface(life_text);
 	free_sprite(help);
 	free_sprite(lady);
 	free_sprite(damnmonkey);
