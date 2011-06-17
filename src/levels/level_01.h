@@ -74,8 +74,8 @@ typedef struct DM_Barrel DM_Barrel;
 struct DM_Barrel
 {
 	DM_Map *map;                  /*!< Pointer to the DM_Map considered*/
-	DM_Collide *platform_collide; /*!< Collision point with platforms. */
-	DM_Collide *jumpman_collide;  /*!< Collision rect with jumpman. */
+	DM_Collide platform_collide; /*!< Collision point with platforms. */
+	DM_Collide jumpman_collide;  /*!< Collision rect with jumpman. */
 	DM_Sprite *sprite;            /*!< The sprite of barrel. */
 	int refresh_id;               /*!< The refresh id*/
 };

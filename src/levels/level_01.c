@@ -180,13 +180,13 @@ void barrel_cb(void *object, SDL_Surface *screen)
 		damnmonkey_collide.y2 = BARRELS->damnmonkey->screen_pos.y + \
 								BARRELS->damnmonkey->screen_pos.h;
 		
-		if (!collide(barrel->jumpman_collide, &JUMPMAN.enemy_collide) \
+		if (!collide(&barrel->jumpman_collide, &JUMPMAN.enemy_collide) \
 				&& !collide(&JUMPMAN.enemy_collide, &damnmonkey_collide))
 		{
 			//There's no collision between Jumpman and a barrel
-			if (check_ladder_top_collides(barrel->platform_collide, barrel->map) \
-					&& barrel->platform_collide->x1 == get_collide_ladder_center(
-						barrel->platform_collide, barrel->map
+			if (check_ladder_top_collides(&barrel->platform_collide, barrel->map) \
+					&& barrel->platform_collide.x1 == get_collide_ladder_center(
+						&barrel->platform_collide, barrel->map
 						)
 					)
 			{
@@ -214,11 +214,11 @@ void barrel_cb(void *object, SDL_Surface *screen)
 			{
 				//The barrel isn't on a ladder so we check if it is in
 				//collision with a platform
-				if (check_platform_collides(barrel->platform_collide, barrel->map))
+				if (check_platform_collides(&barrel->platform_collide, barrel->map))
 				{
 					//We generate the good movement according to the gravity
 					barrel->sprite->current_mov = check_platform_orientation(
-							barrel->platform_collide,
+							&barrel->platform_collide,
 							barrel->map
 							);
 					if (barrel->sprite->current_mov != SPRITE_WALK_LEFT)
@@ -238,12 +238,12 @@ void barrel_cb(void *object, SDL_Surface *screen)
 			}
 			
 			//Collision rect and point update
-			barrel->jumpman_collide->x1 = barrel->sprite->screen_pos.x + 2;
-			barrel->jumpman_collide->y1 = barrel->sprite->screen_pos.y + 2;
-			barrel->jumpman_collide->x2 = barrel->jumpman_collide->x1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
-			barrel->jumpman_collide->y2 = barrel->jumpman_collide->y1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
-			barrel->platform_collide->x1 = barrel->jumpman_collide->x1 + (barrel->sprite->items[barrel->sprite->current_mov].w / 2);
-			barrel->platform_collide->y1 = barrel->jumpman_collide->y1 + barrel->sprite->items[barrel->sprite->current_mov].h;
+			barrel->jumpman_collide.x1 = barrel->sprite->screen_pos.x + 2;
+			barrel->jumpman_collide.y1 = barrel->sprite->screen_pos.y + 2;
+			barrel->jumpman_collide.x2 = barrel->jumpman_collide.x1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
+			barrel->jumpman_collide.y2 = barrel->jumpman_collide.y1 + barrel->sprite->items[barrel->sprite->current_mov].w - 4;
+			barrel->platform_collide.x1 = barrel->jumpman_collide.x1 + (barrel->sprite->items[barrel->sprite->current_mov].w / 2);
+			barrel->platform_collide.y1 = barrel->jumpman_collide.y1 + barrel->sprite->items[barrel->sprite->current_mov].h;
 
 		}
 		else
@@ -314,8 +314,6 @@ void free_dm_barrel(DM_Barrel *barrel)
 {
 	//We don't deallocate the map pointer because it'll be freed later
 	free_sprite(barrel->sprite);
-	free(barrel->jumpman_collide);
-	free(barrel->platform_collide);
 }
 
 
@@ -348,22 +346,20 @@ void level_01(SDL_Surface *screen)
 		BARRELS->barrels[i].sprite->current_mov = SPRITE_WALK_RIGHT;
 		BARRELS->barrels[i].sprite->screen_pos.x = 0;
 		BARRELS->barrels[i].sprite->screen_pos.y = 150;
-		BARRELS->barrels[i].jumpman_collide = malloc(sizeof(DM_Collide));
-		BARRELS->barrels[i].jumpman_collide->shape = COLLIDE_RECT;
-		BARRELS->barrels[i].jumpman_collide->x1 = BARRELS->barrels[i].sprite->screen_pos.x + 2;
-		BARRELS->barrels[i].jumpman_collide->y1 = BARRELS->barrels[i].sprite->screen_pos.y + 2;
-		BARRELS->barrels[i].jumpman_collide->x2 = BARRELS->barrels[i].jumpman_collide->x1 + \
+		BARRELS->barrels[i].jumpman_collide.shape = COLLIDE_RECT;
+		BARRELS->barrels[i].jumpman_collide.x1 = BARRELS->barrels[i].sprite->screen_pos.x + 2;
+		BARRELS->barrels[i].jumpman_collide.y1 = BARRELS->barrels[i].sprite->screen_pos.y + 2;
+		BARRELS->barrels[i].jumpman_collide.x2 = BARRELS->barrels[i].jumpman_collide.x1 + \
 												  BARRELS->barrels[i].sprite->items[BARRELS->barrels[i].sprite->current_mov].w - 4;
-		BARRELS->barrels[i].jumpman_collide->y2 = BARRELS->barrels[i].jumpman_collide->x1 + \
+		BARRELS->barrels[i].jumpman_collide.y2 = BARRELS->barrels[i].jumpman_collide.x1 + \
 												  BARRELS->barrels[i].sprite->items[BARRELS->barrels[i].sprite->current_mov].h - 4;
-		BARRELS->barrels[i].platform_collide = malloc(sizeof(DM_Collide));
-		BARRELS->barrels[i].platform_collide->shape = COLLIDE_POINT;
-		BARRELS->barrels[i].platform_collide->x1 = BARRELS->barrels[i].jumpman_collide->x1 \
+		BARRELS->barrels[i].platform_collide.shape = COLLIDE_POINT;
+		BARRELS->barrels[i].platform_collide.x1 = BARRELS->barrels[i].jumpman_collide.x1 \
 												   + (BARRELS->barrels[i].sprite->screen_pos.w / 2);
-		BARRELS->barrels[i].platform_collide->y1 = BARRELS->barrels[i].jumpman_collide->y1 \
+		BARRELS->barrels[i].platform_collide.y1 = BARRELS->barrels[i].jumpman_collide.y1 \
 												   + (BARRELS->barrels[i].sprite->screen_pos.h);
-		BARRELS->barrels[i].platform_collide->x2 = 0;
-		BARRELS->barrels[i].platform_collide->y2 = 0;
+		BARRELS->barrels[i].platform_collide.x2 = 0;
+		BARRELS->barrels[i].platform_collide.y2 = 0;
 		BARRELS->barrels[i].refresh_id = -1;
 	}
 	BARRELS->barrels[0].sprite->screen_pos.x = 150;
@@ -451,7 +447,7 @@ void introduction(SDL_Surface *screen)
 	int title_refresh = ref_object(&LAYER_FG, title, surface_refresh_cb);
 	
 	DM_Surface *level = malloc(sizeof(DM_Surface));
-	char buffer[5];
+	char buffer[6];
 	sprintf(buffer, "%i m", 25 * (GAME_SPEED + 1));
 	level->surface = str_to_surface("font_main.png", buffer);
 	level->rect.w = level->surface->w;

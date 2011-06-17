@@ -118,6 +118,7 @@ DM_Line_Splited* split(char *str, char separator)
 		i++;
 		field++;
 	}
+	free(buffer);
 	return splited_line;
 }
 
