@@ -102,10 +102,10 @@ void game(SDL_Surface *screen)
 	if (GAME_STATE == GAME_STATE_OVER)
 	{
 		DM_Surface *bg = load_resource_as_dm_surface("gameover.png");
-		int bg_refresh = ref_object(&LAYER_MENU, bg, surface_refresh_cb);		
+		int bg_refresh = ref_object(&LAYER_FG, bg, surface_refresh_cb);		
 		SDL_Delay(2000);
-		deref_object(&LAYER_MENU, bg_refresh);
-		SDL_Delay(20);
+		deref_object(&LAYER_FG, bg_refresh);
+		SDL_Delay(50);
 		free_dm_surface(bg);
 	}
 	else
@@ -630,7 +630,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 		}
 		SDL_Delay(5);
 	} //-- End of the main loop --
-
+	
 	//If the player die
 	if (GAME_STATE == GAME_STATE_LIFE_LOST)
 	{
@@ -677,7 +677,7 @@ int lets_play_yeah(SDL_Surface *screen, DM_Map *map)
 		}
 		SDL_Delay(150);
 	}
-
+	
 	//TODO if the player win, play a music,...
 
 	//Dereference Jumpman and remaining lifes

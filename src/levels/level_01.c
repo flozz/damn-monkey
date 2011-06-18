@@ -115,8 +115,8 @@ Uint32 _barrel_cb(Uint32 interval, void *arg)
 				//The barrel is at the level end, we dereference it and replace
 				//at the level beginning
 				deref_barrel(BARRELS->barrels[i].refresh_id);
-				BARRELS->barrels[i].refresh_id = -1;
-				SDL_Delay(20);
+				BARRELS->barrels[i].refresh_id = -1; 
+				SDL_Delay(50);
 				BARRELS->barrels[i].sprite->screen_pos.x = 0;
 				BARRELS->barrels[i].sprite->screen_pos.y = 150;
 			}
@@ -506,7 +506,7 @@ void introduction(SDL_Surface *screen)
 	deref_object(&LAYER_FG, level_refresh);
 	deref_object(&LAYER_FG, title_refresh);
 	deref_object(&LAYER_FG, bg_refresh);
-	SDL_Delay(20);
+	SDL_Delay(50);
 	free_dm_surface(life);
 	free_dm_surface(life_text);
 	free_sprite(help);
